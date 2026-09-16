@@ -35,66 +35,103 @@ function clearMapState(){dom.map.setAttribute("viewBox","0 0 1080 650");[...dom.
 function render(){const y=+dom.year.value,e=eraFor(y);setMapMode(y);dom.title.textContent=realMode?`${y}年中东与北非国家边界`:e.map;dom.yearText.textContent=y;dom.year.style.setProperty("--progress",`${(y-1797)/229*100}%`);if(!selected){dom.summaryHeading.textContent="历史概述";dom.selectedLabel.textContent="区域总览";dom.panelKicker.textContent=`${y} · REGIONAL OVERVIEW`;dom.polityName.textContent=e.title;dom.polityNative.textContent=e.native;dom.badge.textContent=e.badge;dom.summary.textContent=e.summary;dom.facts.innerHTML=`<div><span>区域格局</span><strong>${e.title}</strong></div><div><span>观察年份</span><strong>${y}</strong></div><div><span>地图状态</span><strong>${historicalBoundaryYear(y)?"CShapes 年度边界":realMode?"GIS 国界快照":"年度示意快照"}</strong></div>`}else{const m=meta[selected],o=countryEra(selected,y);dom.summaryHeading.innerHTML="政权概述 <span>REGIME</span>";dom.selectedLabel.textContent=m[0];dom.panelKicker.textContent=`${y} · ${selected.toUpperCase()}`;dom.polityName.textContent=o?.[2]||`${m[0]} · ${e.badge}`;dom.polityNative.textContent=m[0];dom.badge.textContent=e.badge;dom.summary.textContent=o?.[3]||`在${y}年的区域格局中，${m[0]}处于“${e.title}”这一历史阶段。地图使用该年度边界图层展示其空间位置。`;dom.facts.innerHTML=`<div><span>地区</span><strong>${m[0]}</strong></div><div><span>首府／政治中心</span><strong>${o?.[4]||"见该年史料"}</strong></div><div><span>政权性质</span><strong>${o?.[5]||"主权国家／政治实体"}</strong></div>`}dom.eventList.innerHTML=eventCards(e.events);dom.eventCount.textContent=`${e.events.length} 项`;historicalStyles(y)}
  function render(){const y=+dom.year.value,e=eraFor(y);setMapMode(y);dom.title.textContent=realMode?`${y}年中东与北非国家边界`:e.map;dom.yearText.textContent=y;dom.year.style.setProperty("--progress",`${(y-1797)/229*100}%`);if(!selected){dom.summaryHeading.textContent="历史概述";dom.selectedLabel.textContent="区域总览";dom.panelKicker.textContent=`${y} · REGIONAL OVERVIEW`;dom.polityName.textContent=e.title;dom.polityNative.textContent=e.native;dom.badge.textContent=e.badge;dom.summary.textContent=e.summary;dom.facts.innerHTML=`<div><span>区域格局</span><strong>${e.title}</strong></div><div><span>观察年份</span><strong>${y}</strong></div><div><span>地图状态</span><strong>${historicalBoundaryYear(y)?"CShapes 年度边界":realMode?"GIS 国界快照":"年度示意快照"}</strong></div>`}else{const m=meta[selected],o=countryEra(selected,y);dom.summaryHeading.innerHTML="政权概述 <span>REGIME</span>";dom.selectedLabel.textContent=m[0];dom.panelKicker.textContent=`${y} · ${selected.toUpperCase()}`;dom.polityName.textContent=o?.[2]||`${m[0]} · ${e.badge}`;dom.polityNative.textContent=m[0];dom.badge.textContent=e.badge;dom.summary.textContent=o?.[3]||`在${y}年的区域格局中，${m[0]}处于“${e.title}”这一历史阶段。地图使用该年度边界图层展示其空间位置。`;dom.facts.innerHTML=`<div><span>地区</span><strong>${m[0]}</strong></div><div><span>首府／政治中心</span><strong>${o?.[4]||"见该年史料"}</strong></div><div><span>政权性质</span><strong>${o?.[5]||"主权国家／政治实体"}</strong></div>`}dom.eventList.innerHTML=eventCards(e.events);dom.eventCount.textContent=`${e.events.length} 项`;historicalStyles(y);syncFlags(y);if(realMode){if(dom.realRoot.classList.contains("updating"))requestAnimationFrame(()=>{if(realMode&&boundaryKey===boundaryKeyFor(+dom.year.value))dom.realRoot.classList.remove("updating")})}else dom.realRoot.classList.remove("updating")}
 const mapColors=["#9d4035","#486f78","#b0792f","#655782","#4f755e","#a05262","#516987","#8d653d","#35706b","#7b4d58","#74763c","#35678a","#a65d37","#5d7050","#8a4f76","#54637b","#9b713e","#3f786f","#765c42","#6d5680","#99604a","#60754c"];
-function flagSpec(id,y){
-  if(id==="morocco")return{colors:["#c1272d"],emblem:"star"};
-  if(id==="morocco-spanish")return{colors:y>=1931&&y<1939?["#aa151b","#f1bf00","#7b1e48"]:["#aa151b","#f1bf00","#aa151b"]};
-  if(id==="western-sahara")return y<1976?{colors:["#aa151b","#f1bf00","#aa151b"]}:{colors:["#111","#fff","#178b55"],hoist:"#d71920",emblem:"star"};
-  if(id==="algeria")return y<1962?{colors:["#174a9a","#fff","#d53d3d"],vertical:true}:{colors:["#16824a","#fff"],emblem:"crescent"};
-  if(id==="tunisia")return{colors:["#d21f2b"],emblem:"crescent"};
-  if(id==="libya")return y<1912?{colors:["#17813b","#fff","#d71920"],vertical:true}:y<1951?{colors:["#d71920","#111","#178b55"]}:y<1969?{colors:["#d71920","#111","#178b55"],emblem:"crescent"}:y<1977?{colors:["#d71920","#fff","#111"]}:y<2011?{colors:["#168b43"]}:{colors:["#d71920","#111","#178b55"],emblem:"crescent"};
-  if(id==="egypt")return{colors:["#ce1126","#fff","#111"],emblem:"eagle"};
-  if(id==="sudan")return y<1970?{colors:["#1e5aa8","#f2c230","#24923b"]}:{colors:["#d71920","#fff","#111"],hoist:"#178b55"};
-  if(id==="turkey")return{colors:["#e30a17"],emblem:"crescent"};
-  if(id==="syria")return y<1932?{colors:["#178b55","#fff","#d71920"],vertical:true}:y<1958?{colors:["#178b55","#fff","#111"],emblem:"stars"}:{colors:["#d71920","#fff","#111"],emblem:"stars"};
-  if(id==="lebanon")return y<1943?{colors:["#d71920","#fff","#174a9a"],vertical:true}:{colors:["#d71920","#fff","#d71920"],emblem:"cedar"};
-  if(id==="israel")return{colors:["#fff","#fff","#fff"],emblem:"star-of-david"};
-  if(id==="palestine")return{colors:["#111","#fff","#178b55"],hoist:"#ce1126"};
-  if(id==="jordan")return{colors:["#111","#fff","#178b55"],hoist:"#ce1126",emblem:"star"};
-  if(id==="iraq")return{colors:["#ce1126","#fff","#111"],emblem:y>=1963?"stars":null};
-  if(id==="iran")return y<1979?{colors:["#178b55","#fff","#d71920"],emblem:"lion"}:{colors:["#178b55","#fff","#d71920"],emblem:"seal"};
-  if(id==="kuwait")return y<1961?{colors:["#173f5f"],emblem:"union"}:{colors:["#178b55","#fff","#ce1126"],hoist:"#111"};
-  if(id==="saudi")return{colors:["#178b55"],emblem:"sword"};
-  if(id==="qatar")return{colors:["#7d1f3d","#fff"],vertical:true};
-  if(id==="uae")return y<1971?{colors:["#ce1126"]}:{colors:["#178b55","#fff","#111"],hoist:"#ce1126"};
-  if(id==="oman")return y<1970?{colors:["#ce1126"]}:{colors:["#fff","#d71920","#178b55"],hoist:"#ce1126"};
-  if(["yemen-north","yemen-south","yemen"].includes(id))return{colors:["#ce1126","#fff","#111"]};
-  if(id==="bahrain")return{colors:["#ce1126"],hoist:"#fff"};
-  return{colors:["#9d4035","#f0dfb8","#486f78"]};
-}
-function flagSvg(id,y,w,h){
-  const s=flagSpec(id,y),x=-w/2,top=-h/2,parts=[];
-  if(s.vertical){const step=w/s.colors.length;s.colors.forEach((color,i)=>parts.push(`<rect x="${nflag(x+i*step)}" y="${nflag(top)}" width="${nflag(step+.2)}" height="${nflag(h)}" fill="${color}"/>`))}
-  else{const step=h/s.colors.length;s.colors.forEach((color,i)=>parts.push(`<rect x="${nflag(x)}" y="${nflag(top+i*step)}" width="${nflag(w)}" height="${nflag(step+.2)}" fill="${color}"/>`))}
-  if(s.hoist)parts.push(`<rect x="${nflag(x)}" y="${nflag(top)}" width="${nflag(w*.28)}" height="${nflag(h)}" fill="${s.hoist}"/>`);
-  const cx=0,cy=0,r=Math.max(1.8,Math.min(w,h)*.2);
-  if(s.emblem==="crescent")parts.push(`<circle cx="${cx}" cy="${cy}" r="${nflag(r)}" fill="#fff"/><circle cx="${nflag(r*.38)}" cy="${nflag(-r*.18)}" r="${nflag(r*.82)}" fill="${s.colors[0]}"/>`);
-  if(s.emblem==="star"||s.emblem==="star-of-david")parts.push(`<path d="${starPath(cx,cy,r)}" fill="${s.emblem==="star"?"#178b55":"#174a9a"}"/>`);
-  if(s.emblem==="stars")parts.push(`<circle cx="${nflag(-r)}" cy="0" r="${nflag(r*.22)}" fill="#fff"/><circle cx="${nflag(r)}" cy="0" r="${nflag(r*.22)}" fill="#fff"/>`);
-  if(s.emblem==="cedar")parts.push(`<path d="M0 ${nflag(-r*1.2)}l${nflag(-r*.7)} ${nflag(r*1.9)}h${nflag(r*1.4)}z" fill="#178b55"/>`);
-  if(["eagle","lion","seal","sword","union"].includes(s.emblem))parts.push(`<circle cx="0" cy="0" r="${nflag(r*.7)}" fill="#e7c35b" opacity=".9"/>`);
-  return `<rect x="${nflag(x-.8)}" y="${nflag(top-.8)}" width="${nflag(w+1.6)}" height="${nflag(h+1.6)}" rx="1.5" fill="#f0dfb8" opacity=".9"/><g>${parts.join("")}</g>`;
-}
-const nflag=v=>Math.round(v*10)/10;
-function starPath(cx,cy,r){const points=[];for(let i=0;i<10;i+=1){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r:r*.42;points.push(`${nflag(cx+Math.cos(a)*rr)},${nflag(cy+Math.sin(a)*rr)}`)}return`M${points.join("L")}Z`}
-function flagPatternMarkup(id,y,b,index){
-  const s=flagSpec(id,y),x=b.x,top=b.y,w=Math.max(2,b.width),h=Math.max(2,b.height),parts=[],clipId=`flagClip-${index}`;
-  if(s.vertical){const step=w/s.colors.length;s.colors.forEach((color,i)=>parts.push(`<rect x="${nflag(x+i*step)}" y="${nflag(top)}" width="${nflag(step+.2)}" height="${nflag(h)}" fill="${color}"/>`))}
-  else{const step=h/s.colors.length;s.colors.forEach((color,i)=>parts.push(`<rect x="${nflag(x)}" y="${nflag(top+i*step)}" width="${nflag(w)}" height="${nflag(step+.2)}" fill="${color}"/>`))}
-  if(s.hoist)parts.push(`<rect x="${nflag(x)}" y="${nflag(top)}" width="${nflag(w*.28)}" height="${nflag(h)}" fill="${s.hoist}"/>`);
-  const cx=x+w/2,cy=top+h/2,r=Math.max(1.8,Math.min(w,h)*.2);
-  if(s.emblem==="crescent")parts.push(`<circle cx="${nflag(cx)}" cy="${nflag(cy)}" r="${nflag(r)}" fill="#fff"/><circle cx="${nflag(cx+r*.38)}" cy="${nflag(cy-r*.18)}" r="${nflag(r*.82)}" fill="${s.colors[0]}"/>`);
-  if(s.emblem==="star"||s.emblem==="star-of-david")parts.push(`<path d="${starPath(cx,cy,r)}" fill="${s.emblem==="star"?"#178b55":"#174a9a"}"/>`);
-  if(s.emblem==="stars")parts.push(`<circle cx="${nflag(cx-r)}" cy="${nflag(cy)}" r="${nflag(r*.22)}" fill="#fff"/><circle cx="${nflag(cx+r)}" cy="${nflag(cy)}" r="${nflag(r*.22)}" fill="#fff"/>`);
-  if(s.emblem==="cedar")parts.push(`<path d="M${nflag(cx)} ${nflag(cy-r*1.2)}l${nflag(-r*.7)} ${nflag(r*1.9)}h${nflag(r*1.4)}z" fill="#178b55"/>`);
-  if(["eagle","lion","seal","sword","union"].includes(s.emblem))parts.push(`<circle cx="${nflag(cx)}" cy="${nflag(cy)}" r="${nflag(r*.7)}" fill="#e7c35b" opacity=".9"/>`);
-  return {clipId,content:parts.join("")};
+const FLAG_DIR="assets/flags/";
+const flagSources={
+  "ottoman-empire.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_Ottoman_Empire.svg",
+  "algeria.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Algeria.svg",
+  "bahrain.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Bahrain.svg",
+  "egypt-1882.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1882%E2%80%931922).svg",
+  "egypt-1826-1867.png":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1826%E2%80%931867_and_1881%E2%80%931914).png",
+  "egypt-muhammad-ali.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Muhammad_Ali.svg",
+  "egypt-1922.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1922%E2%80%931958).svg",
+  "egypt-1958.png":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1958%E2%80%931972).png",
+  "egypt-1972.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1972%E2%80%931984).svg",
+  "egypt.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt.svg",
+  "france.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_France.svg",
+  "hejaz-1917.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Hejaz_(1917).svg",
+  "iran-1933.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iran_(1933%E2%80%931964).svg",
+  "iran-1964.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iran_(1964%E2%80%931979).svg",
+  "iran.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iran.svg",
+  "iraq-1921.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq_(1921%E2%80%931924).svg",
+  "iraq-1924.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq_(1924%E2%80%931959).svg",
+  "iraq-1959.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq_(1959%E2%80%931963).svg",
+  "iraq-1963.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq_(1963%E2%80%931991).svg",
+  "iraq-1991.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq_(1991%E2%80%932004).svg",
+  "iraq.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Iraq.svg",
+  "israel.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Israel.svg",
+  "italy.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Italy.svg",
+  "jordan.png":"https://commons.wikimedia.org/wiki/File:Flag_of_Jordan_(official).svg",
+  "kuwait.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Kuwait.svg",
+  "lebanon-1920.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Lebanon_during_French_Mandate_(1920-1943).svg",
+  "lebanon.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Lebanon.svg",
+  "libya-1951.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Libya_(1951%E2%80%931969).svg",
+  "libya-1969.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Libya_(1969%E2%80%931972,_2-3).svg",
+  "libya-1977.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Libya_(1977%E2%80%932011).svg",
+  "morocco-alaouite.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Morocco_(Alaouite).svg",
+  "morocco.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Morocco.svg",
+  "oman-1954.png":"https://commons.wikimedia.org/wiki/File:Imamate_Of_Oman_1954-1959.png",
+  "oman.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Oman.svg",
+  "palestine-mandate.svg":"https://commons.wikimedia.org/wiki/File:Ensign_of_the_Palestine_Mandate_(1927%E2%80%931948).svg",
+  "palestine.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Palestine.svg",
+  "qajar-iran.svg":"https://commons.wikimedia.org/wiki/File:State_flag_of_Persia_(1907%E2%80%931933).svg",
+  "qatar.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Qatar.svg",
+  "saudi-1932.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia_(1932%E2%80%931934).svg",
+  "saudi-1934.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia_(1934%E2%80%931938).svg",
+  "saudi-1938.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia_(1938%E2%80%931973).svg",
+  "saudi-first-second.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_First_and_Second_Saudi_State_(1744-1891).svg",
+  "saudi.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia.svg",
+  "sudan-1956.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Sudan_(1956%E2%80%931970).svg",
+  "sudan.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Sudan.svg",
+  "syria-1930.svg":"https://commons.wikimedia.org/wiki/File:Syria-flag_1930-58_1961-63.svg",
+  "syria-1932.svg":"https://commons.wikimedia.org/wiki/File:Syria-flag_1932-58_1961-63.svg",
+  "syria-1963.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Syria_(1963%E2%80%931972).svg",
+  "syria-1972.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Syria_(1972%E2%80%931980).svg",
+  "syria.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Syria.svg",
+  "tunisia.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Tunisia.svg",
+  "turkey.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Turkey.svg",
+  "uae.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_United_Arab_Emirates.svg",
+  "uk.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_United_Kingdom.svg",
+  "united-arab-republic.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_United_Arab_Republic_(1958%E2%80%931971).svg",
+  "yemen-kingdom.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_Mutawakkilite_Kingdom_of_Yemen.svg",
+  "yemen-north.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_the_Yemen_Arab_Republic.svg",
+  "yemen-south.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_South_Yemen.svg",
+  "yemen.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Yemen.svg"
+};
+const flagAsset=(file,period)=>({path:`${FLAG_DIR}${file}`,file,period,source:flagSources[file]||"Wikimedia Commons"});
+function flagAssetFor(id,y){
+  if(id==="turkey")return y<=1922?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1922）"):flagAsset("turkey.svg","土耳其共和国（1923—）");
+  if(id==="morocco-spanish")return y<1956?flagAsset("spain.svg","西班牙保护地（至1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
+  if(id==="morocco")return y<1912?flagAsset("morocco-alaouite.svg","摩洛哥阿拉维苏丹国（至1912）"):y<1956?flagAsset("france.svg","法属摩洛哥保护国（1912—1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
+  if(id==="western-sahara")return y<1976?flagAsset("spain.svg","西属撒哈拉（至1975）"):flagAsset("morocco.svg","摩洛哥实际控制区（1976—）");
+  if(id==="algeria")return y<1830?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1830）"):y<1962?flagAsset("france.svg","法属阿尔及利亚（1830—1962）"):flagAsset("algeria.svg","阿尔及利亚共和国（1962—）");
+  if(id==="tunisia")return y<1881?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1881）"):y<1956?flagAsset("france.svg","法属突尼斯（1881—1956）"):flagAsset("tunisia.svg","突尼斯共和国（1956—）");
+  if(id==="libya")return y<1912?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1912）"):y<1943?flagAsset("italy.svg","意属利比亚（1912—1943）"):y<1951?flagAsset("uk.svg","英法军事管理（1943—1951）"):y<1969?flagAsset("libya-1951.svg","利比亚王国（1951—1969）"):y<1972?flagAsset("libya-1969.svg","利比亚共和国（1969—1972）"):y<1977?flagAsset("egypt-1972.svg","阿拉伯共和国联邦时期（1972—1977）"):y<2011?flagAsset("libya-1977.svg","大阿拉伯利比亚人民社会主义民众国（1977—2011）"):flagAsset("libya-1951.svg","利比亚国（2011—）");
+  if(id==="egypt")return y<1805?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1805）"):y<1826?flagAsset("ottoman-empire.svg","穆罕默德·阿里统治早期（1805—1826，奥斯曼旗制语境）"):y<1867?flagAsset("egypt-1826-1867.png","埃及赫迪夫领（1826—1867）"):y<1881?flagAsset("egypt-muhammad-ali.svg","埃及赫迪夫领（1867—1881）"):y<1922?flagAsset("egypt-1882.svg","埃及苏丹国（1881—1922）"):y<1958?flagAsset("egypt-1922.svg","埃及王国／共和国（1922—1958）"):y<1972?flagAsset("egypt-1958.png","阿拉伯联合共和国（1958—1971）"):y<1984?flagAsset("egypt-1972.svg","埃及（1972—1984）"):flagAsset("egypt.svg","埃及共和国（1984—）");
+  if(id==="sudan")return y<1821?flagAsset("ottoman-empire.svg","地方苏丹国（奥斯曼边疆）"):y<1826?flagAsset("ottoman-empire.svg","埃及征服初期（1821—1826，奥斯曼旗制语境）"):y<1867?flagAsset("egypt-1826-1867.png","埃及统治时期（1826—1867）"):y<1881?flagAsset("egypt-muhammad-ali.svg","埃及统治时期（1867—1881）"):y<1885?flagAsset("egypt-1826-1867.png","英埃统治早期（1881—1885）"):y<1956?flagAsset("uk.svg","英埃共管苏丹（历史旗帜未统一）"):y<1970?flagAsset("sudan-1956.svg","苏丹共和国（1956—1970）"):flagAsset("sudan.svg","苏丹共和国（1970—）");
+  if(id==="syria")return y<=1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<=1931?flagAsset("syria-1930.svg","叙利亚委任统治（1920—1931）"):y<=1957?flagAsset("syria-1932.svg","叙利亚共和国（1932—1957）"):y<=1960?flagAsset("united-arab-republic.svg","阿拉伯联合共和国（1958—1961）"):y<=1962?flagAsset("syria-1932.svg","叙利亚共和国（1961—1963）"):y<=1971?flagAsset("syria-1963.svg","叙利亚（1963—1972）"):y<=1979?flagAsset("syria-1972.svg","阿拉伯共和国联邦时期（1972—1980）"):y<=2024?flagAsset("united-arab-republic.svg","叙利亚（1980—2024）"):flagAsset("syria.svg","叙利亚（2025—）");
+  if(id==="lebanon")return y<1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<1943?flagAsset("lebanon-1920.svg","法属黎巴嫩委任统治（1920—1943）"):flagAsset("lebanon.svg","黎巴嫩共和国（1943—）");
+  if(id==="israel")return y<1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1927—1948海事旗）"):flagAsset("israel.svg","以色列（1948—）");
+  if(id==="palestine")return y<1917?flagAsset("ottoman-empire.svg","奥斯曼巴勒斯坦（至1917）"):y<1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1927—1948海事旗）"):flagAsset("palestine.svg","巴勒斯坦（1948—）");
+  if(id==="jordan")return y<1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<1928?flagAsset("uk.svg","英国委任／保护时期"):flagAsset("jordan.png","约旦（1928—）");
+  if(id==="iraq")return y<=1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<=1923?flagAsset("iraq-1921.svg","伊拉克王国（1921—1924）"):y<=1958?flagAsset("iraq-1924.svg","伊拉克王国（1924—1959）"):y<=1962?flagAsset("iraq-1959.svg","伊拉克共和国（1959—1963）"):y<=1990?flagAsset("iraq-1963.svg","伊拉克（1963—1991）"):y<=2003?flagAsset("iraq-1991.svg","伊拉克（1991—2004）"):flagAsset("iraq.svg","伊拉克共和国（2004—）");
+  if(id==="iran")return y<=1925?flagAsset("qajar-iran.svg","卡扎尔王朝（至1925）"):y<=1963?flagAsset("iran-1933.svg","巴列维王朝早期（1925—1964）"):y<=1978?flagAsset("iran-1964.svg","巴列维王朝（1964—1979）"):flagAsset("iran.svg","伊朗伊斯兰共和国（1979—）");
+  if(id==="kuwait")return y<1961?flagAsset("uk.svg","英国保护时期（历史旗帜未统一）"):flagAsset("kuwait.svg","科威特（1961—）");
+  if(id==="saudi")return y<1902?flagAsset("saudi-first-second.svg","第一／第二沙特国家（1744—1891）"):y<1932?flagAsset("saudi-1932.svg","内志与汉志王国前身（1902—1932）"):y<1934?flagAsset("saudi-1932.svg","沙特阿拉伯（1932—1934）"):y<1938?flagAsset("saudi-1934.svg","沙特阿拉伯（1934—1938）"):y<1973?flagAsset("saudi-1938.svg","沙特阿拉伯（1938—1973）"):flagAsset("saudi.svg","沙特阿拉伯（1973—）");
+  if(id==="qatar")return y<1971?flagAsset("uk.svg","英国保护时期（地方旗帜多样）"):flagAsset("qatar.svg","卡塔尔（1971—）");
+  if(id==="uae")return y<1971?flagAsset("uk.svg","特鲁西尔诸国保护时期"):flagAsset("uae.svg","阿拉伯联合酋长国（1971—）");
+  if(id==="oman")return y<1954?flagAsset("ottoman-empire.svg","阿曼内地／马斯喀特（历史旗帜版本多样）"):y<1970?flagAsset("oman-1954.png","阿曼伊玛目国（1954—1959旗帜）"):flagAsset("oman.svg","阿曼苏丹国（1970—）");
+  if(id==="yemen-north")return y<1918?flagAsset("ottoman-empire.svg","奥斯曼也门（至1918）"):y<1962?flagAsset("yemen-kingdom.svg","穆塔瓦基利特王国（1918—1962）"):y<1990?flagAsset("yemen-north.svg","也门阿拉伯共和国（1962—1990）"):flagAsset("yemen.svg","也门共和国（1990—）");
+  if(id==="yemen-south")return y<1967?flagAsset("uk.svg","亚丁殖民地／保护地（英国）"):y<1990?flagAsset("yemen-south.svg","南也门（1967—1990）"):flagAsset("yemen.svg","也门共和国（1990—）");
+  if(id==="yemen")return y<1990?flagAsset("yemen-north.svg","也门分裂时期示意"):flagAsset("yemen.svg","也门共和国（1990—）");
+  if(id==="bahrain")return flagAsset("bahrain.svg","巴林（1820年代确立红白旗制）");
+  return flagAsset("ottoman-empire.svg","奥斯曼帝国历史回退旗帜");
 }
 function syncFlags(y){
   const ns="http://www.w3.org/2000/svg",root=realMode?dom.realRoot:dom.schematicRoot,defs=dom.map.querySelector("defs");
   root.querySelectorAll(".country-flag").forEach(flag=>flag.remove());
   const oldPatterns=defs.querySelector("#flagPatterns");if(oldPatterns)oldPatterns.remove();
   const patterns=document.createElementNS(ns,"g");patterns.setAttribute("id","flagPatterns");defs.append(patterns);
-  activeCountries().forEach((path,index)=>{const b=path.getBBox();if(!Number.isFinite(b.x)||!Number.isFinite(b.y))return;const {clipId,content}=flagPatternMarkup(path.dataset.id,y,b,index);const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",path.getAttribute("d"));clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag");flag.dataset.for=path.dataset.id;flag.setAttribute("clip-path",`url(#${clipId})`);flag.setAttribute("aria-hidden","true");flag.insertAdjacentHTML("beforeend",content);root.append(flag);if(document.activeElement===path)setHoverState(path.dataset.id,true)})
+  activeCountries().forEach((path,index)=>{const b=path.getBBox();if(!Number.isFinite(b.x)||!Number.isFinite(b.y))return;const asset=flagAssetFor(path.dataset.id,y),clipId=`flagClip-${index}`;const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",path.getAttribute("d"));clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag");flag.dataset.for=path.dataset.id;flag.dataset.flagFile=asset.file;flag.dataset.flagPeriod=asset.period;flag.dataset.flagSource=asset.source;flag.setAttribute("clip-path",`url(#${clipId})`);flag.setAttribute("aria-hidden","true");const image=document.createElementNS(ns,"image");image.setAttribute("x",b.x);image.setAttribute("y",b.y);image.setAttribute("width",Math.max(2,b.width));image.setAttribute("height",Math.max(2,b.height));image.setAttribute("preserveAspectRatio","none");image.setAttribute("href",asset.path);image.setAttributeNS("http://www.w3.org/1999/xlink","href",asset.path);image.setAttribute("role","presentation");flag.append(image);root.append(flag);if(document.activeElement===path)setHoverState(path.dataset.id,true)})
 }
 function setHoverState(id,on){document.querySelectorAll(`.map-labels text[data-for="${id}"],.country-flag[data-for="${id}"]`).forEach(node=>{node.classList.toggle("hovered",on);node.style.transform=on?"translateY(-9px)":""})}
 function polityAt(id,y){

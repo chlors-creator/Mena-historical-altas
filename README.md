@@ -7,9 +7,11 @@
 - 1924—1999：使用 CShapes 2.0 的国家／属地几何及有效期区间，按所选年份的 1 月 1 日生成年度快照。CShapes 未覆盖的保护国或海湾属地，以标明来源的 Natural Earth 轮廓回退，避免把现代边界误称为历史边界。
 - 2000—2026：使用 Natural Earth 5.1.1 的 1:50m Cultural Vectors 现代国界参考图层。
 - 1797—1923：保留界面验证用的概略示意图，不作为领土主张或学术地图引用。
-- 悬浮或键盘聚焦国家时，国家名称同步上浮，国旗以裁剪到国家边界的本地矢量图形完整覆盖该区块。
+- 悬浮或键盘聚焦国家时，国家名称同步上浮，国旗以本地 Wikimedia Commons 历史 SVG/PNG 资源完整覆盖该区块，并按当年旗帜时段切换。
 
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）与 [Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)。
+
+国旗资源来自 Wikimedia Commons 各文件页，索引、时期映射和许可提示见 [`assets/flags/SOURCES.md`](assets/flags/SOURCES.md)。部分保护国／委任统治时期没有统一陆上国旗，项目会使用明确注明的宗主国或委任国旗帜作为历史语境回退；巴勒斯坦托管地使用海事旗（ensign），不表示主权判断。
 
 ## 本地预览
 
