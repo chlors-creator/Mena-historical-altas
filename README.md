@@ -7,6 +7,7 @@
 - 1924—1999：使用 CShapes 2.0 的国家／属地几何及有效期区间，按所选年份的 1 月 1 日生成年度快照。CShapes 未覆盖的保护国或海湾属地，以标明来源的 Natural Earth 轮廓回退，避免把现代边界误称为历史边界。
 - 2000—2026：使用 Natural Earth 5.1.1 的 1:50m Cultural Vectors 现代国界参考图层。
 - 1797—1923：保留界面验证用的概略示意图，不作为领土主张或学术地图引用。
+- 悬浮或键盘聚焦国家时，国家名称同步上浮，并在区块中心显示该年份的简化矢量国旗。
 
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）与 [Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)。
 
