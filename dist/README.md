@@ -9,9 +9,9 @@
 - 1797—1885：保留界面验证用的概略示意图，不作为领土主张或学术地图引用。
 - 1886—1938：单独恢复亚丁与东亚丁保护地；1886—1937 为 CShapes 几何的历史回补，1938 年起使用 CShapes 有效期区间。
 - 1918—1933：为北也门补入未并入沙特的历史领土上下文延伸（其中 1924—1933 覆盖用户指出的空白区域），图层标题会明确标注其 contextual 来源。
-- 悬浮或键盘聚焦国家时，国家名称同步上浮，国旗以本地 Wikimedia Commons 历史 SVG/PNG 资源在国境内居中裁切填充（`slice`，不拉伸），并叠加低密度、长褶皱的静态 SVG 布料效果；西属摩洛哥两个独立地块分别生成一面国旗。
+- 悬浮或键盘聚焦国家时，国家名称同步上浮，国旗直接使用本地 Wikimedia Commons 高清历史 SVG/PNG 资源，在国境内居中裁切填充（`slice`，不拉伸）；西属摩洛哥两个独立地块分别生成一面国旗，不再叠加褶皱或颜色滤镜。
 - 点击国家后，右侧标题显示该年份的正式国名；南也门独立前统一标为“亚丁保护国”，独立后地图标签为“南也门”，详情按时期显示正式国名。
-- 进入国家详情后，所选地块和国旗保持静止，其他地块仍可悬浮。顶部“国旗调试”面板可实时调整国旗缩放、平移和地图背景色，设置保存在浏览器 localStorage，并可导出 `mena-flag-debug.json`。
+- 进入国家详情后，所选地块和国旗保持静止，其他地块仍可悬浮。顶部“国旗调试”面板可实时调整国旗缩放、平移、地图背景色和国旗透明区域的填充色，设置保存在浏览器 localStorage，并可导出 `mena-flag-debug.json`；同一面板还提供仅当前会话有效的红海／地中海标注平移调试。
 - 1886—1931 年阿拉伯半岛补充汉志、舍迈尔和内志历史上下文图层；这些内部政权在 CShapes 中没有独立国家记录，因此在地图来源中明确标注，避免把现代沙特轮廓倒填到早期年份。
 
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）、[Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)，以及 [ArcGIS Kingdom of Hejaz FeatureServer 22](https://services6.arcgis.com/AZvnIky2AKQNH37M/ArcGIS/rest/services/KingdomofHejaz/FeatureServer/22) 的汉志历史几何。舍迈尔、内志等 CShapes 未编码的内部政权仍以明确标注的历史上下文图层展示。

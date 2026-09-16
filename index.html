@@ -40,26 +40,6 @@
             <filter id="liftShadow" x="-30%" y="-30%" width="160%" height="190%">
               <feDropShadow dx="0" dy="9" stdDeviation="6" flood-color="#080706" flood-opacity=".5"/>
             </filter>
-            <!-- A deliberately visible, static cloth fold: no animation, so every historical
-                 flag remains deterministic while still reading as a fabric-filled territory. -->
-            <filter id="flagWave" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency="0.002 0.009" numOctaves="1" seed="23" result="flagNoise"/>
-              <feDisplacementMap in="SourceGraphic" in2="flagNoise" scale="11" xChannelSelector="R" yChannelSelector="G" result="flagWarp"/>
-              <feGaussianBlur in="flagWarp" stdDeviation="0.48 0.16" result="flagSoft"/>
-              <feSpecularLighting in="flagNoise" surfaceScale="2.8" specularConstant="0.66" specularExponent="10" lighting-color="#fff7dc" result="flagLight">
-                <feDistantLight azimuth="225" elevation="38"/>
-              </feSpecularLighting>
-              <feComposite in="flagLight" in2="flagWarp" operator="in" result="flagLightMask"/>
-              <feBlend in="flagSoft" in2="flagLightMask" mode="screen"/>
-            </filter>
-            <linearGradient id="flagSheen" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-              <stop offset="0" stop-color="#fff7dc" stop-opacity="0"/>
-              <stop offset=".26" stop-color="#fff7dc" stop-opacity=".08"/>
-              <stop offset=".46" stop-color="#fff7dc" stop-opacity=".58"/>
-              <stop offset=".62" stop-color="#fff7dc" stop-opacity=".1"/>
-              <stop offset=".82" stop-color="#fff7dc" stop-opacity=".35"/>
-              <stop offset="1" stop-color="#fff7dc" stop-opacity="0"/>
-            </linearGradient>
             <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <line x1="0" y1="0" x2="0" y2="8" stroke="#f0d9a7" stroke-width="2" opacity=".5"/>
             </pattern>
@@ -154,14 +134,14 @@
     <h2>关于《沙海纪年》首版</h2>
     <p>这是一个从1797年延伸至2026年的中东与北非历史地图原型。每个年份都可独立选择，政权资料会随关键历史时期变化。</p>
     <p>1886—1999年接入 CShapes 2.0 历史有效期边界，按每年1月1日生成快照，并将同一年度的过渡记录裁决为唯一时间 cohort；2000—2026年使用 Natural Earth 1:50m 现代国界参考图层。西撒哈拉、巴勒斯坦及保护国／属地会按资料来源分别标示。</p>
-    <p>悬浮国家时，历史国旗会以不拉伸的裁切填充覆盖地块，并显示静态布料褶皱效果。</p>
+    <p>悬浮国家时，历史国旗会以不拉伸的居中裁切填充覆盖地块，直接显示本地高清原始旗帜资源。</p>
     <button class="primary-button" id="dialogConfirm" type="button">我知道了</button>
   </dialog>
   <dialog id="flagDebugDialog" aria-labelledby="flagDebugTitle">
     <button class="dialog-close" id="flagDebugClose" type="button" aria-label="关闭">×</button>
     <p class="eyebrow">FLAG / FILL DEBUGGER</p>
     <h2 id="flagDebugTitle">国旗与背景色调试</h2>
-    <p class="debug-intro">拖动滑块可实时调整当前年份实体的国旗位置、缩放与地图背景色。设置保存在本浏览器，也可导出 JSON。</p>
+    <p class="debug-intro">拖动滑块可实时调整当前年份实体的国旗位置与缩放；“国旗填充”只填补原图透明或未覆盖的剩余区域，“背景色”调整地图地块本身。设置保存在本浏览器，也可导出 JSON。</p>
     <div class="debug-grid">
       <label>实体<select id="flagDebugCountry"></select></label>
       <label>横向缩放<input id="flagDebugScaleX" type="range" min="0.5" max="2.5" step="0.01" value="1"><output id="flagDebugScaleXValue">1.00×</output></label>
@@ -169,7 +149,19 @@
       <label>水平平移<input id="flagDebugOffsetX" type="range" min="-80" max="80" step="1" value="0"><output id="flagDebugOffsetXValue">0</output></label>
       <label>垂直平移<input id="flagDebugOffsetY" type="range" min="-80" max="80" step="1" value="0"><output id="flagDebugOffsetYValue">0</output></label>
       <label>背景色<input id="flagDebugColor" type="color" value="#a44e3b"><output id="flagDebugColorValue">#a44e3b</output></label>
+      <label>国旗填充<input id="flagDebugFill" type="color" value="#a44e3b"><output id="flagDebugFillValue">#a44e3b</output></label>
     </div>
+    <section class="sea-debug" aria-labelledby="seaDebugTitle">
+      <h3 id="seaDebugTitle">海域标注临时调试</h3>
+      <p>仅在当前页面会话中生效；调整完成后记下数值，再让我永久写入地图。</p>
+      <div class="debug-sea-grid">
+        <label>地中海水平<input id="seaDebugMedX" type="range" min="-140" max="140" step="1" value="0"><output id="seaDebugMedXValue">0</output></label>
+        <label>地中海垂直<input id="seaDebugMedY" type="range" min="-140" max="140" step="1" value="0"><output id="seaDebugMedYValue">0</output></label>
+        <label>红海水平<input id="seaDebugRedX" type="range" min="-140" max="140" step="1" value="0"><output id="seaDebugRedXValue">0</output></label>
+        <label>红海垂直<input id="seaDebugRedY" type="range" min="-140" max="140" step="1" value="0"><output id="seaDebugRedYValue">0</output></label>
+      </div>
+      <button class="text-button" id="seaDebugReset" type="button">恢复海域默认位置</button>
+    </section>
     <div class="debug-actions">
       <button class="primary-button" id="flagDebugSave" type="button">保存到浏览器</button>
       <button class="text-button" id="flagDebugReset" type="button">恢复默认</button>
