@@ -73,7 +73,7 @@
             <path data-id="oman" d="M902 397L935 392 956 435 920 481 874 469 855 445Z"/>
             <path data-id="yemen" d="M740 483L812 500 874 469 861 516 797 545 747 526Z"/>
           </g>
-          <g id="realCountries2026" class="countries real-countries" aria-label="2026年国家边界"></g>
+          <g id="realCountries" class="countries real-countries" aria-label="按年份加载的国家边界"></g>
           <g id="regionLines" class="region-lines" aria-hidden="true"></g>
           <g id="labels" class="map-labels" aria-hidden="true"></g>
           <g class="compass" transform="translate(1010 520)" aria-hidden="true"><circle r="37"/><path d="M0-31 7 0 0 31-7 0Z"/><text x="0" y="-44">N</text></g>
@@ -84,6 +84,7 @@
           <span><i class="swatch sovereign"></i>颜色＝政权归属</span>
           <span><i class="swatch dependent"></i>虚线＝属地／附属政权</span>
           <span><i class="swatch contested"></i>争议或多重主张</span>
+          <span><i class="swatch fallback"></i>点划线＝资料回退</span>
         </div>
       </div>
 
@@ -131,10 +132,11 @@
     <p class="eyebrow">ABOUT THIS ATLAS</p>
     <h2>关于《沙海纪年》首版</h2>
     <p>这是一个从1797年延伸至2026年的中东与北非历史地图原型。每个年份都可独立选择，政权资料会随关键历史时期变化。</p>
-    <p>1991—2026年已接入 Natural Earth 1:50m GIS 国界参考图层，并单独标示西撒哈拉与巴勒斯坦；更早历史年份仍为界面验证用的概略示意。</p>
+    <p>1924—1999年接入 CShapes 2.0 历史有效期边界，按每年1月1日生成快照；2000—2026年使用 Natural Earth 1:50m 现代国界参考图层。西撒哈拉、巴勒斯坦及保护国／属地会按资料来源分别标示。</p>
     <button class="primary-button" id="dialogConfirm" type="button">我知道了</button>
   </dialog>
   <script src="mena-2026.js"></script>
+  <script src="mena-historical-1924-1999.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
