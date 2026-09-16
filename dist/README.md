@@ -10,6 +10,7 @@
 - 1886—1938：单独恢复亚丁与东亚丁保护地；1886—1937 为 CShapes 几何的历史回补，1938 年起使用 CShapes 有效期区间。
 - 1918—1933：为北也门补入未并入沙特的历史领土上下文延伸（其中 1924—1933 覆盖用户指出的空白区域），图层标题会明确标注其 contextual 来源。
 - 悬浮或键盘聚焦国家时，国家名称同步上浮，国旗以本地 Wikimedia Commons 历史 SVG/PNG 资源在国境内居中裁切填充（`slice`，不拉伸），并叠加明显的静态 SVG 布料位移、光泽褶皱效果。
+- 点击国家后，右侧标题显示该年份的正式国名；南也门独立前统一标为“亚丁保护国”，独立后地图标签为“南也门”，详情按时期显示正式国名。
 
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）与 [Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)。
 
