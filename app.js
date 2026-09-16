@@ -26,7 +26,7 @@ sudan:[[1797,1820,"丰吉苏丹国及地方政权","青尼罗河流域的森纳�
 palestine:[[1797,1917,"奥斯曼巴勒斯坦地区","该地区分属奥斯曼帝国多个行政单位，耶路撒冷后成为直接隶属中央的特殊区域。","耶路撒冷","奥斯曼属地"],[1918,1947,"英属巴勒斯坦托管地","英国依据国际联盟委任统治该地，阿拉伯与犹太民族运动矛盾加深。","耶路撒冷","委任统治"],[1948,2026,"以色列、巴勒斯坦领土与争议地区","1948年后形成多层次的国家、占领、自治与国际承认问题；展示需区分法理边界与实际控制。","耶路撒冷／拉姆安拉","多重政治地位"]]
 };
 const $=s=>document.querySelector(s),dom={year:$("#yearRange"),yearText:$("#yearText"),play:$("#playButton"),title:$("#mapTitle"),selectedLabel:$("#selectedLabel"),map:$("#menaMap"),schematicRoot:$("#countries"),realRoot:$("#realCountries"),schematicCountries:[...document.querySelectorAll("#countries path")],realCountries:[],labels:$("#labels"),regionLines:$("#regionLines"),frontierOverlays:$("#frontierOverlays"),historyConnectors:$("#historyConnectors"),panelKicker:$("#panelKicker"),polityName:$("#polityName"),polityNative:$("#polityNative"),badge:$("#eraBadge"),facts:$("#facts"),summaryHeading:$("#summaryHeading"),summary:$("#summary"),eventList:$("#eventList"),eventCount:$("#eventCount"),source:$("#boundarySource"),overview:$("#overviewButton"),brand:$("#brandButton"),about:$("#aboutButton"),dialog:$("#aboutDialog"),close:$("#dialogClose"),confirm:$("#dialogConfirm"),jump:$("#jumpButton"),flagDebugButton:$("#flagDebugButton"),flagDebugDialog:$("#flagDebugDialog"),flagDebugClose:$("#flagDebugClose"),flagDebugScaleX:$("#flagDebugScaleX"),flagDebugScaleY:$("#flagDebugScaleY"),flagDebugOffsetX:$("#flagDebugOffsetX"),flagDebugOffsetY:$("#flagDebugOffsetY"),flagDebugColor:$("#flagDebugColor"),flagDebugSave:$("#flagDebugSave"),flagDebugReset:$("#flagDebugReset"),flagDebugExport:$("#flagDebugExport"),flagDebugStatus:$("#flagDebugStatus"),flagDebugCurrent:$("#flagDebugCurrent")};
-Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill")});
+Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill"),seaDebugButton:$("#seaDebugButton"),seaDebugDialog:$("#seaDebugDialog"),seaDebugClose:$("#seaDebugClose"),seaDebugCloseAction:$("#seaDebugCloseAction"),seaDebugReset:$("#seaDebugReset"),seaDebugStatus:$("#seaDebugStatus"),seaMedX:$("#seaMedX"),seaMedY:$("#seaMedY"),seaMedRot:$("#seaMedRot"),seaRedX:$("#seaRedX"),seaRedY:$("#seaRedY"),seaRedRot:$("#seaRedRot")});
 let selected=null,timer=null,realMode=false,boundaryKey="";
 const eraFor=y=>eras.find(e=>y>=e.from&&y<=e.to)||eras.at(-1);const countryEra=(id,y)=>(overrides[id]||[]).find(([a,b])=>y>=a&&y<=b);
 const historicalBoundaryYear=y=>y>=1886&&y<=1999;
@@ -162,7 +162,6 @@ function readFlagDebug(){try{return JSON.parse(localStorage.getItem(FLAG_DEBUG_S
 function flagDebugSettings(id){return {...flagDebugDefaults,...(readFlagDebug()[id]||{})}}
 function flagPathParts(d){return (d.match(/M[^M]*/g)||[d]).map(part=>part.trim()).filter(Boolean)}
 function pathDataBox(d){const nums=[...d.matchAll(/-?\d+(?:\.\d+)?/g)].map(match=>Number(match[0]));if(nums.length<2)return null;const xs=nums.filter((_,i)=>i%2===0),ys=nums.filter((_,i)=>i%2===1);return{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)}}
-function translatePathData(d,dx=0,dy=0){let index=0;return(d||"").replace(/-?\d+(?:\.\d+)?/g,token=>{const n=Number(token),shift=index++%2===0?dx:dy;return String(Number((n+shift).toFixed(3)))})}
  function applyFlagDebugSettings(id){const settings={...flagDebugSettings(id),...(flagDebugDrafts[id]||{})};activeCountries().filter(path=>path.dataset.id===id).forEach(path=>{if(settings.color)path.style.setProperty("--polity-color",settings.color)});document.querySelectorAll(`.country-flag[data-for="${id}"] image`).forEach(image=>{const b={x:Number(image.dataset.baseX),y:Number(image.dataset.baseY),width:Number(image.dataset.baseWidth),height:Number(image.dataset.baseHeight)};const cx=b.x+b.width/2,cy=b.y+b.height/2,sx=Number(settings.scaleX)||1,sy=Number(settings.scaleY)||1,ox=Number(settings.offsetX)||0,oy=Number(settings.offsetY)||0;image.setAttribute("transform",`translate(${cx+ox} ${cy+oy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`)});document.querySelectorAll(`.country-flag[data-for="${id}"] .flag-fill`).forEach(fill=>{const color=settings.flagFill||"transparent";fill.setAttribute("fill",color);fill.style.setProperty("fill",color,"important")})}
 function syncFlags(y){
   const ns="http://www.w3.org/2000/svg",root=realMode?dom.realRoot:dom.schematicRoot,defs=dom.map.querySelector("defs");
@@ -214,7 +213,8 @@ function createLabels(){
   activeCountries().forEach(p=>{
     const b=p.getBBox();
     if(b.width<32||b.height<24)return;
-    const x=b.x+b.width/2,y=b.y+b.height/2+4;
+    const labelShift=p.dataset.id==="morocco-spanish"?-50:0;
+    const x=b.x+b.width/2+labelShift,y=b.y+b.height/2+4;
     const t=document.createElementNS("http://www.w3.org/2000/svg","text");
     t.classList.add("country-label");t.setAttribute("x",x);t.setAttribute("y",y);t.dataset.for=p.dataset.id;
     t.textContent=(meta[p.dataset.id]?.[0]||p.dataset.id).replace("／","·");
@@ -238,6 +238,11 @@ function createLabels(){
 }
 function regions(path){dom.regionLines.innerHTML="";const b=path.getBBox(),names=meta[path.dataset.id][1],lines=[[b.x+b.width*.36,b.y+5,b.x+b.width*.48,b.y+b.height-5],[b.x+4,b.y+b.height*.54,b.x+b.width-4,b.y+b.height*.42],[b.x+b.width*.68,b.y+5,b.x+b.width*.73,b.y+b.height-5]];lines.slice(0,Math.min(3,names.length-1)).forEach(v=>{const l=document.createElementNS("http://www.w3.org/2000/svg","line");["x1","y1","x2","y2"].forEach((k,i)=>l.setAttribute(k,v[i]));dom.regionLines.append(l)});names.slice(0,4).forEach((n,i)=>{const t=document.createElementNS("http://www.w3.org/2000/svg","text"),c=i%2,r=Math.floor(i/2);t.setAttribute("x",b.x+b.width*(c?.7:.3));t.setAttribute("y",b.y+b.height*(r?.7:.3));t.textContent=n;dom.regionLines.append(t)});dom.regionLines.classList.add("visible")}
 function choose(id){selected=id;const p=activeCountries().find(x=>x.dataset.id===id);if(!p)return;const b=p.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode)regions(p);render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+// A polity colour is shared across provinces, but selection is always a
+// single clicked geographic feature (for example Turkey must not select the
+// separate Hejaz or Libya overlays that are also Ottoman-coloured).
+const _chooseSingleFeature=choose;
+choose=function(id){_chooseSingleFeature(id);activeCountries().forEach(path=>path.classList.toggle("selected",path.dataset.id===id))};
 function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");render()}
 function stop(){if(timer)clearInterval(timer);timer=null;dom.play.classList.remove("playing");dom.play.setAttribute("aria-label","播放时间线")}
 function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;render()},120)}
@@ -260,11 +265,11 @@ const MENA_ARABIAN_CONTEXT_LEGACY=[
 // surveyed frontier rather than being drawn on top of one another. Kuwait is
 // left outside the Shammar polygon (the 1913 Anglo-Ottoman line).
 const MENA_ARABIAN_CONTEXT=[
-  {id:"hejaz",from:1886,to:1916,path:"M695,248L718,250L745,275L755,305L755,340L760,365L745,400L728,389L718,365L711,337L704,310L695,280Z",source:"OpenGulf Harita 93677 · Hejaz Vilayet historical GIS context",name:"Hejaz Vilayet"},
-  {id:"hejaz",from:1917,to:1925,path:"M695,248L718,250L745,275L755,305L755,340L760,365L745,400L728,389L718,365L711,337L704,310L695,280Z",source:"Arabia 1914 political map · LOC Arabia (1920) · Hejaz historical GIS context",name:"Kingdom of Hejaz"},
+  {id:"hejaz",from:1886,to:1916,path:"M703,248L720,250L745,275L755,305L755,340L760,365L745,400L736,389L726,365L719,337L712,310L703,280Z",source:"Arabia 1914 political map · OpenGulf Harita 93677 · Hejaz Vilayet historical GIS context",name:"Hejaz Vilayet"},
+  {id:"hejaz",from:1917,to:1925,path:"M703,248L720,250L745,275L755,305L755,340L760,365L745,400L736,389L726,365L719,337L712,310L703,280Z",source:"Arabia 1914 political map · LOC Arabia (1920) · Hejaz historical GIS context",name:"Kingdom of Hejaz"},
   {id:"shammar",from:1886,to:1921,path:"M738,252L744,232L770,216L802,208L829,214L832,232L832,250L820,264L806,270L785,273L759,270L745,260Z",source:"OpenGulf Harita 93677 QGIS · Arabia 1914 political map cross-check",name:"Jabal Shammar"},
-  {id:"najd",from:1886,to:1901,path:"M755,270L785,273L806,270L820,264L832,250L842,270L850,288L864,300L870,325L858,355L838,380L810,397L780,385L760,365L755,340L755,305Z",source:"OpenGulf Harita 93677 · Najd historical GIS context",name:"Najd"},
-  {id:"najd",from:1902,to:1931,path:"M755,270L785,273L806,270L820,264L832,250L842,270L850,288L864,300L870,325L858,355L838,380L810,397L780,385L760,365L755,340L755,305Z",source:"OpenGulf Harita 93677 · LOC Arabia (1920) · Najd historical GIS context",name:"Najd"}
+  {id:"najd",from:1886,to:1901,path:"M785,273L806,270L820,264L832,250L842,270L850,288L864,300L870,325L858,355L838,380L810,397L780,385L775,365L770,340L770,305Z",source:"Arabia 1914 political map · OpenGulf Harita 93677 · Najd historical GIS context",name:"Najd"},
+  {id:"najd",from:1902,to:1931,path:"M785,273L806,270L820,264L832,250L842,270L850,288L864,300L870,325L858,355L838,380L810,397L780,385L775,365L770,340L770,305Z",source:"Arabia 1914 political map · OpenGulf Harita 93677 · LOC Arabia (1920) · Najd historical GIS context",name:"Najd"}
 ];
 function annualCohortFeatures(features,y){
   const byId=new Map();
@@ -296,7 +301,18 @@ function boundaryFeaturesForYear(y){
   const present=new Set(selectedFeatures.map(feature=>(["yemen-north","yemen-south"].includes(feature.id)&&y>=1990)?"yemen":feature.id));
   const fallbackIds=["kuwait","bahrain","western-sahara"];
   if(y<1912)fallbackIds.push("libya");
-  fallbackIds.forEach(id=>{if(present.has(id))return;const fallback=(window.MENA_2026||[]).find(feature=>feature.id===id||(id==="yemen-north"&&feature.id==="yemen"));if(fallback){selectedFeatures.push({id,from:y,to:y,path:fallback.path,source:"Natural Earth fallback",name:fallback.name});present.add(id)}});
+  fallbackIds.forEach(id=>{
+    if(present.has(id))return;
+    // Before the Italian invasion, use the CShapes Tripolitania/Cyrenaica
+    // outline as the Ottoman provincial boundary instead of a modern Libya
+    // silhouette. The source geometry is reused only as a dated contextual
+    // extension for the years in which CShapes has no Libya record.
+    const ottomanLibya=id==="libya"&&y<1912
+      ? [...(window.MENA_HISTORICAL_1886_1923||[]),...(window.MENA_HISTORICAL_INTERVALS||[])].find(feature=>feature.id==="libya")
+      : null;
+    const fallback=ottomanLibya||(window.MENA_2026||[]).find(feature=>feature.id===id||(id==="yemen-north"&&feature.id==="yemen"));
+    if(fallback){selectedFeatures.push({id,from:y,to:y,path:fallback.path,source:ottomanLibya?"CShapes 2.0 contextual extension · Ottoman Tripolitania and Cyrenaica (pre-1911)":"Natural Earth fallback",name:fallback.name});present.add(id)}
+  });
   // The CShapes record for 1959—1975 omits the northern claim area. Union the
   // complete Western Sahara reference outline so no portion disappears between years.
   if(y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
@@ -322,23 +338,21 @@ function boundaryFeaturesForYear(y){
 function renderFrontierOverlays(y){
   if(!dom.frontierOverlays)return;
   dom.frontierOverlays.innerHTML="";
+  const ns="http://www.w3.org/2000/svg";
+  const appendOverlay=(d,titleText,kind="frontier-gap")=>{const p=document.createElementNS(ns,"path");p.classList.add(kind,"disputed");p.setAttribute("d",d);p.setAttribute("fill","url(#hatch)");p.setAttribute("fill-rule","evenodd");const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
+  // The 1914 reference labels the unclaimed belt between Hejaz and the
+  // Wahhabi/Najd polity as an “area of dispute”; retain it rather than invent
+  // a shared sovereign frontier. This also prevents a visual overlap.
+  if(y>=1886&&y<=1925)appendOverlay("M755,305L770,305L770,340L775,365L760,365L755,340Z","1886—1925 汉志与内志之间的争议区","arabian-dispute");
   // The Treaty of Taif was signed in 1934. In 1932 the Asir–Jizan–Najran
   // frontier was still unsettled, so the gap is shown as a hatched disputed
   // belt rather than silently assigning it to Saudi Arabia or Yemen.
-  if(y!==1932)return;
-  const ns="http://www.w3.org/2000/svg",p=document.createElementNS(ns,"path");
-  p.classList.add("frontier-gap","disputed");
-  p.setAttribute("d","M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z");
-  p.setAttribute("fill","url(#hatch)");
-  p.setAttribute("fill-rule","evenodd");
-  const title=document.createElementNS(ns,"title");
-  title.textContent="1932年沙特—也门未定界争议带（塔伊夫条约前）";
-  p.append(title);dom.frontierOverlays.append(p);
+  if(y===1932)appendOverlay("M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z","1932年沙特—也门未定界争议带（塔伊夫条约前）");
 }
 function buildBoundaryMap(y){
   const ns="http://www.w3.org/2000/svg";dom.realRoot.innerHTML="";
   boundaryFeaturesForYear(y).forEach(feature=>{
-    const p=document.createElementNS(ns,"path"),pathData=feature.id==="morocco-spanish"?translatePathData(feature.path,-50,0):feature.path;
+    const p=document.createElementNS(ns,"path"),pathData=feature.path;
     p.dataset.id=feature.id;p.dataset.source=feature.source||"";p.setAttribute("d",pathData);p.setAttribute("fill-rule",feature.source?.includes("extension")?"nonzero":"evenodd");
     if(["western-sahara","palestine"].includes(feature.id))p.classList.add("disputed");
     if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
@@ -365,4 +379,9 @@ const _renderWithFormalNames=render;render=()=>{_renderWithFormalNames();const y
  function saveDebugSettings(){const id=selected;if(!id)return;const saved=readFlagDebug();saved[id]={...flagDebugSettings(id),...debugFormValues()};try{localStorage.setItem(FLAG_DEBUG_STORAGE,JSON.stringify(saved,null,2));flagDebugDrafts[id]={...saved[id]};dom.flagDebugStatus.textContent="已保存到本浏览器。"}catch{dom.flagDebugStatus.textContent="浏览器存储不可用，请使用导出 JSON。"}applyFlagDebugSettings(id)}
  function resetDebugSettings(){const id=selected;if(!id)return;delete flagDebugDrafts[id];const saved=readFlagDebug();delete saved[id];try{localStorage.setItem(FLAG_DEBUG_STORAGE,JSON.stringify(saved))}catch{}historicalStyles(Number(dom.year.value));syncFlags(Number(dom.year.value));loadDebugForm(id);dom.flagDebugStatus.textContent="已恢复默认设置。"}
 function exportDebugSettings(){const payload=JSON.stringify(readFlagDebug(),null,2),blob=new Blob([payload],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="mena-flag-debug.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),0);dom.flagDebugStatus.textContent="已导出 mena-flag-debug.json。"}
+const SEA_DEBUG_BASE={med:[486,160,-5,486,180,-5],red:[691,325,72]};
+function seaDebugValues(){return{medX:Number(dom.seaMedX?.value)||0,medY:Number(dom.seaMedY?.value)||0,medRot:Number(dom.seaMedRot?.value)||0,redX:Number(dom.seaRedX?.value)||0,redY:Number(dom.seaRedY?.value)||0,redRot:Number(dom.seaRedRot?.value)||0}}
+function applySeaDebug(){const v=seaDebugValues(),med=dom.map.querySelectorAll(".sea-med"),red=dom.map.querySelector(".sea-red");med.forEach((node,index)=>{const baseX=SEA_DEBUG_BASE.med[index*3],baseY=SEA_DEBUG_BASE.med[index*3+1],baseRot=SEA_DEBUG_BASE.med[index*3+2],x=baseX+v.medX,y=baseY+v.medY;node.setAttribute("x",x);node.setAttribute("y",y);node.setAttribute("transform",`rotate(${baseRot+v.medRot} ${x} ${y})`)});if(red){const x=SEA_DEBUG_BASE.red[0]+v.redX,y=SEA_DEBUG_BASE.red[1]+v.redY;red.setAttribute("x",x);red.setAttribute("y",y);red.setAttribute("transform",`rotate(${SEA_DEBUG_BASE.red[2]+v.redRot} ${x} ${y})`)};[[dom.seaMedX,"#seaMedXValue"],[dom.seaMedY,"#seaMedYValue"],[dom.seaMedRot,"#seaMedRotValue"],[dom.seaRedX,"#seaRedXValue"],[dom.seaRedY,"#seaRedYValue"],[dom.seaRedRot,"#seaRedRotValue"]].forEach(([input,selector])=>{const out=document.querySelector(selector);if(out&&input)out.textContent=input.id.endsWith("Rot")?`${input.value}°`:input.value});if(dom.seaDebugStatus)dom.seaDebugStatus.textContent=`临时偏移：地中海 (${v.medX}, ${v.medY}) · 红海 (${v.redX}, ${v.redY})`}
+function resetSeaDebug(){[dom.seaMedX,dom.seaMedY,dom.seaMedRot,dom.seaRedX,dom.seaRedY,dom.seaRedRot].forEach(input=>{if(input)input.value="0"});applySeaDebug()}
+if(dom.seaDebugButton){dom.seaDebugButton.addEventListener("click",()=>{applySeaDebug();dom.seaDebugDialog.showModal()});dom.seaDebugClose.addEventListener("click",()=>dom.seaDebugDialog.close());dom.seaDebugCloseAction.addEventListener("click",()=>dom.seaDebugDialog.close());dom.seaDebugReset.addEventListener("click",resetSeaDebug);dom.seaDebugDialog.addEventListener("click",e=>{if(e.target===dom.seaDebugDialog)dom.seaDebugDialog.close()});[dom.seaMedX,dom.seaMedY,dom.seaMedRot,dom.seaRedX,dom.seaRedY,dom.seaRedRot].forEach(input=>input?.addEventListener("input",applySeaDebug))}
  if(dom.flagDebugButton){dom.flagDebugButton.addEventListener("click",()=>{if(!selected)return;loadDebugForm(selected);dom.flagDebugDialog.showModal()});dom.flagDebugClose.addEventListener("click",()=>dom.flagDebugDialog.close());dom.flagDebugDialog.addEventListener("click",e=>{if(e.target===dom.flagDebugDialog)dom.flagDebugDialog.close()});[dom.flagDebugScaleX,dom.flagDebugScaleY,dom.flagDebugOffsetX,dom.flagDebugOffsetY,dom.flagDebugColor,dom.flagDebugFill].forEach(input=>input.addEventListener("input",refreshDebugDraft));dom.flagDebugSave.addEventListener("click",saveDebugSettings);dom.flagDebugReset.addEventListener("click",resetDebugSettings);dom.flagDebugExport.addEventListener("click",exportDebugSettings)}

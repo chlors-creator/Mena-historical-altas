@@ -61,9 +61,18 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
    so suppress internal seams between touching source subpaths. */
 .countries path.merged-feature{stroke:none!important}
 .frontier-overlays,.history-connectors{pointer-events:none;overflow:visible}
-.frontier-overlays .frontier-gap{fill:url(#hatch)!important;stroke:#5d3925;stroke-width:1.25;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;opacity:.9}
+.frontier-overlays .frontier-gap,.frontier-overlays .arabian-dispute{fill:url(#hatch)!important;stroke:#5d3925;stroke-width:1.25;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;opacity:.9}
 .history-connectors line{stroke:#17130f;stroke-width:1;vector-effect:non-scaling-stroke;opacity:.88}
 .frontier-note{color:var(--red-dark);font-weight:700}
 /* Hover reveals the flag only; the country geometry and its label stay put. */
 .countries path:hover:not(.detail-static),.countries path.keyboard-focus:not(.detail-static){transform:none!important;filter:brightness(1.14)!important}
+.sea-debug-button{padding:.35rem .55rem;font-size:.7rem;letter-spacing:.04em;white-space:nowrap}
+.sea-debug-grid{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:560px){.sea-debug-grid{grid-template-columns:1fr}}
+/* Keep the map viewport width invariant across schematic and real-boundary
+   eras; long period titles must never enlarge the grid item. */
+@media(min-width:781px){
+  .atlas,.map-header,.map-stage{min-width:0;width:100%;max-width:100%}
+  #menaMap{display:block;width:100%;max-width:100%;min-width:0}
+}
 @media(max-width:560px){.panel-title-row{gap:.65rem}}

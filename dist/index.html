@@ -28,7 +28,7 @@
           <p class="eyebrow">HISTORICAL ATLAS · 历史地图</p>
           <h1 id="mapTitle">奥斯曼时代的中东与北非</h1>
         </div>
-        <div class="map-status"><span id="selectedLabel">区域总览</span><i></i><span>年度快照</span></div>
+        <div class="map-status"><span id="selectedLabel">区域总览</span><i></i><span>年度快照</span><button class="text-button sea-debug-button" id="seaDebugButton" type="button">海域调试</button></div>
       </div>
 
       <div class="map-stage" id="mapStage">
@@ -164,6 +164,25 @@
       <button class="text-button" id="flagDebugExport" type="button">导出 JSON</button>
     </div>
     <p class="debug-status" id="flagDebugStatus" role="status"></p>
+  </dialog>
+  <dialog id="seaDebugDialog" aria-labelledby="seaDebugTitle">
+    <button class="dialog-close" id="seaDebugClose" type="button" aria-label="关闭">×</button>
+    <p class="eyebrow">SEA LABEL DEBUGGER</p>
+    <h2 id="seaDebugTitle">海域名临时位置调试</h2>
+    <p class="debug-intro">仅用于本次校对，不写入地图数据。调整完成后把地中海与红海的偏移值告诉我，我再永久固化。</p>
+    <div class="debug-grid sea-debug-grid">
+      <label>地中海 X<input id="seaMedX" type="range" min="-120" max="120" step="1" value="0"><output id="seaMedXValue">0</output></label>
+      <label>地中海 Y<input id="seaMedY" type="range" min="-120" max="120" step="1" value="0"><output id="seaMedYValue">0</output></label>
+      <label>地中海旋转<input id="seaMedRot" type="range" min="-30" max="30" step="1" value="0"><output id="seaMedRotValue">0°</output></label>
+      <label>红海 X<input id="seaRedX" type="range" min="-120" max="120" step="1" value="0"><output id="seaRedXValue">0</output></label>
+      <label>红海 Y<input id="seaRedY" type="range" min="-120" max="120" step="1" value="0"><output id="seaRedYValue">0</output></label>
+      <label>红海旋转<input id="seaRedRot" type="range" min="-30" max="30" step="1" value="0"><output id="seaRedRotValue">0°</output></label>
+    </div>
+    <div class="debug-actions">
+      <button class="text-button" id="seaDebugReset" type="button">恢复临时默认</button>
+      <button class="primary-button" id="seaDebugCloseAction" type="button">完成校对</button>
+    </div>
+    <p class="debug-status" id="seaDebugStatus" role="status"></p>
   </dialog>
   <script src="mena-2026.js"></script>
   <script src="mena-historical-1886-1923.js"></script>
