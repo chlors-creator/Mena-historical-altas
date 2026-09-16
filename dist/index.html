@@ -73,6 +73,7 @@
             <path data-id="oman" d="M902 397L935 392 956 435 920 481 874 469 855 445Z"/>
             <path data-id="yemen" d="M740 483L812 500 874 469 861 516 797 545 747 526Z"/>
           </g>
+          <g id="realCountries2026" class="countries real-countries" aria-label="2026年国家边界"></g>
           <g id="regionLines" class="region-lines" aria-hidden="true"></g>
           <g id="labels" class="map-labels" aria-hidden="true"></g>
           <g class="compass" transform="translate(1010 520)" aria-hidden="true"><circle r="37"/><path d="M0-31 7 0 0 31-7 0Z"/><text x="0" y="-44">N</text></g>
@@ -80,18 +81,26 @@
 
         <div class="map-hint"><span class="mouse-icon"></span>悬浮查看 · 点击进入</div>
         <div class="legend" aria-label="地图图例">
-          <span><i class="swatch sovereign"></i>主权政权</span>
-          <span><i class="swatch dependent"></i>属地／附属政权</span>
+          <span><i class="swatch sovereign"></i>颜色＝政权归属</span>
+          <span><i class="swatch dependent"></i>虚线＝属地／附属政权</span>
           <span><i class="swatch contested"></i>争议或多重主张</span>
         </div>
       </div>
 
       <div class="timeline" aria-label="年份控制器">
-        <div class="year-display"><strong id="yearText">1797</strong><span>公元</span></div>
+        <div class="year-display"><strong id="yearText">1797</strong></div>
         <button class="play-button" id="playButton" type="button" aria-label="播放时间线"><span></span></button>
         <div class="range-wrap">
           <input id="yearRange" type="range" min="1797" max="2026" value="1797" step="1" aria-label="选择年份">
-          <div class="range-marks" aria-hidden="true"><span>1797</span><span>1830</span><span>1914</span><span>1948</span><span>1979</span><span>2011</span><span>2026</span></div>
+          <div class="range-marks" aria-hidden="true">
+            <span style="--position:0">1797</span>
+            <span style="--position:14.4105">1830</span>
+            <span style="--position:51.0917">1914</span>
+            <span style="--position:65.9389">1948</span>
+            <span style="--position:79.4760">1979</span>
+            <span style="--position:93.4498">2011</span>
+            <span style="--position:100">2026</span>
+          </div>
         </div>
         <button class="jump-button" id="jumpButton" type="button">跳转年份</button>
       </div>
@@ -113,7 +122,7 @@
         <div class="section-heading"><h3>重要历史事件 <span>EVENTS</span></h3><span id="eventCount">3 项</span></div>
         <div class="event-list" id="eventList"></div>
       </section>
-      <div class="source-note"><strong>资料说明</strong>首版用于验证交互和内容结构；边界为概略示意，不作为领土主张或学术地图引用。</div>
+      <div class="source-note"><strong>资料说明</strong><span id="boundarySource">历史年份边界为概略示意，不作为领土主张或学术地图引用。</span></div>
     </aside>
   </main>
 
@@ -122,9 +131,10 @@
     <p class="eyebrow">ABOUT THIS ATLAS</p>
     <h2>关于《沙海纪年》首版</h2>
     <p>这是一个从1797年延伸至2026年的中东与北非历史地图原型。每个年份都可独立选择，政权资料会随关键历史时期变化。</p>
-    <p>为避免制造虚假的精确性，首版轮廓只用于界面验证。正式版本需要接入经过来源审核的逐年GIS边界、行政区和争议地区数据。</p>
+    <p>2026年已接入 Natural Earth 1:50m GIS 国界数据，并单独标示西撒哈拉与巴勒斯坦；其余历史年份仍为界面验证用的概略示意。</p>
     <button class="primary-button" id="dialogConfirm" type="button">我知道了</button>
   </dialog>
+  <script src="mena-2026.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
