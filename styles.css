@@ -18,3 +18,5 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
 .countries path:focus{outline:none}
 #menaMap{position:relative;z-index:0}
 #mapStage .mediterranean,#mapStage .red-sea{background:rgba(239,225,194,.72);padding:.16rem .25rem;border:1px solid rgba(67,50,31,.2);border-radius:2px}
+/* Sidebar follows the document height; scrolling belongs to the page, not a nested panel. */
+.story-panel{overflow:visible;max-height:none}
