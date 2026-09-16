@@ -17,7 +17,6 @@
     </button>
     <div class="top-actions">
       <button class="text-button" id="overviewButton" type="button">区域总览</button>
-      <button class="text-button" id="flagDebugButton" type="button">国旗调试</button>
       <button class="round-button" id="aboutButton" type="button" aria-label="关于本项目">i</button>
     </div>
   </header>
@@ -116,7 +115,10 @@
       <p class="panel-kicker" id="panelKicker">1797 · REGIONAL OVERVIEW</p>
       <div class="panel-title-row">
         <div><h2 id="polityName">奥斯曼帝国与周边诸政权</h2><p id="polityNative">الدولة العثمانية · دولت قاجار</p></div>
-        <span class="era-badge" id="eraBadge">近代早期</span>
+        <div class="panel-title-tools">
+          <span class="era-badge" id="eraBadge">近代早期</span>
+          <button class="text-button panel-debug-button" id="flagDebugButton" type="button" hidden>国旗调试</button>
+        </div>
       </div>
       <div class="facts" id="facts"></div>
       <section class="panel-section">
@@ -143,10 +145,10 @@
   <dialog id="flagDebugDialog" aria-labelledby="flagDebugTitle">
     <button class="dialog-close" id="flagDebugClose" type="button" aria-label="关闭">×</button>
     <p class="eyebrow">FLAG / FILL DEBUGGER</p>
-    <h2 id="flagDebugTitle">国旗与背景色调试</h2>
-    <p class="debug-intro">拖动滑块可实时调整当前年份实体的国旗位置与缩放；“国旗填充”只填补原图透明或未覆盖的剩余区域，“背景色”调整地图地块本身。设置保存在本浏览器，也可导出 JSON。</p>
+    <h2 id="flagDebugTitle">当前国家国旗与背景色调试</h2>
+    <p class="debug-intro">此面板只调整当前选中的国家。拖动滑块可实时调整当前年份国旗的位置与缩放；“国旗填充”填补原图未覆盖的剩余区域，“背景色”调整地图地块本身。设置保存在本浏览器，也可导出 JSON。</p>
+    <p class="debug-current" id="flagDebugCurrent">当前国家：—</p>
     <div class="debug-grid">
-      <label>实体<select id="flagDebugCountry"></select></label>
       <label>横向缩放<input id="flagDebugScaleX" type="range" min="0.5" max="2.5" step="0.01" value="1"><output id="flagDebugScaleXValue">1.00×</output></label>
       <label>纵向缩放<input id="flagDebugScaleY" type="range" min="0.5" max="2.5" step="0.01" value="1"><output id="flagDebugScaleYValue">1.00×</output></label>
       <label>水平平移<input id="flagDebugOffsetX" type="range" min="-80" max="80" step="1" value="0"><output id="flagDebugOffsetXValue">0</output></label>

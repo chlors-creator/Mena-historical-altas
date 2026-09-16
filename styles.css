@@ -48,3 +48,12 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
 .sea-labels .sea-sub{font:700 11px Georgia,serif;letter-spacing:2px}
 .sea-labels .sea-red{letter-spacing:.28em;font-size:15px;font-weight:900}
 #menaMap:has(.countries path.selected) .sea-labels{display:none}
+/* Country-only flag debugger sits in the detail header, beside the era badge. */
+.panel-title-tools{display:flex;flex:none;flex-direction:column;align-items:flex-end;gap:.55rem}
+.panel-debug-button{padding:.42rem .65rem;font-size:.72rem;letter-spacing:.05em;white-space:nowrap}
+.panel-debug-button[hidden]{display:none}
+.debug-current{margin:.75rem 0 0!important;color:var(--red-dark)!important;font-size:.82rem!important;font-weight:700}
+/* A fill path is deliberately above the country CSS fill; the important
+   inline value is updated by the debugger so the selected colour is visible. */
+.country-flag .flag-fill{fill:transparent!important;pointer-events:none}
+@media(max-width:560px){.panel-title-row{gap:.65rem}}
