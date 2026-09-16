@@ -41,3 +41,10 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
 #mapStage .mediterranean{left:45%!important;top:25%!important;transform:translate(-50%,-50%) rotate(-5deg)!important}
 #mapStage .red-sea{left:64%!important;top:50%!important;bottom:auto!important;transform:translate(-50%,-50%) rotate(72deg)!important}
 @media(max-width:780px){.workspace{height:auto;min-height:0;display:block}.atlas{height:auto;min-height:0;display:flex}.map-stage,#menaMap{min-height:390px;height:auto}}
+/* Sea names live inside the SVG so they share the country layer and viewBox. */
+.sea-labels{pointer-events:none;overflow:visible}
+.sea-labels .sea-label{position:static;display:block;fill:rgba(60,77,74,.82);color:rgba(60,77,74,.82);text-anchor:middle;letter-spacing:.5em;font-weight:800;text-shadow:0 1px 0 rgba(245,232,202,.78);paint-order:stroke;stroke:rgba(245,232,202,.72);stroke-width:2px;vector-effect:non-scaling-stroke}
+.sea-labels .sea-main{font-size:16px}
+.sea-labels .sea-sub{font:700 11px Georgia,serif;letter-spacing:2px}
+.sea-labels .sea-red{letter-spacing:.28em;font-size:15px;font-weight:900}
+#menaMap:has(.countries path.selected) .sea-labels{display:none}
