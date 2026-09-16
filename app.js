@@ -215,7 +215,7 @@ function pathDataBox(d){const nums=[...d.matchAll(/-?\d+(?:\.\d+)?/g)].map(match
  function applyFlagDebugSettings(id){const settings={...flagDebugSettings(id),...(flagDebugDrafts[id]||{})};const shared=new Set(["ottoman","british-empire","french-empire","spanish-empire","italian-empire"]);activeCountries().filter(path=>path.dataset.id===id).forEach(path=>{const polity=path.dataset.polity||id;const base=path.dataset.basePolityColor||stablePolityColor(polity);path.style.setProperty("--polity-color",shared.has(polity)?base:(settings.color||base))});document.querySelectorAll(`.country-flag[data-for="${id}"] image`).forEach(image=>{const b={x:Number(image.dataset.baseX),y:Number(image.dataset.baseY),width:Number(image.dataset.baseWidth),height:Number(image.dataset.baseHeight)};const cx=b.x+b.width/2,cy=b.y+b.height/2,sx=Number(settings.scaleX)||1,sy=Number(settings.scaleY)||1,ox=Number(settings.offsetX)||0,oy=Number(settings.offsetY)||0;image.setAttribute("transform",`translate(${cx+ox} ${cy+oy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`)});document.querySelectorAll(`.country-flag[data-for="${id}"] .flag-fill`).forEach(fill=>{const color=settings.flagFill||"transparent";fill.setAttribute("fill",color);fill.style.setProperty("fill",color,"important")})}
 function clearFlagLayer(){document.querySelectorAll(".flag-layer").forEach(layer=>layer.remove());const defs=dom.map.querySelector("defs"),oldPatterns=defs?.querySelector("#flagPatterns");if(oldPatterns)oldPatterns.remove()}
 function flagGeometryFor(path){const d=path.getAttribute("d")||"",cutoutCount=Number(path.dataset.cutoutCount)||0;if(cutoutCount){const b=path.getBBox();return b.width&&b.height?[{d,box:b,fillRule:"evenodd"}]:[]}return flagPathParts(d).map(part=>({d:part,box:pathDataBox(part),fillRule:"nonzero"})).filter(item=>item.box&&item.box.width>0&&item.box.height>0)}
-function createFlagLayer(id,y){const path=activeCountries().find(candidate=>candidate.dataset.id===id);if(!path)return;const ns="http://www.w3.org/2000/svg",root=realMode?dom.realRoot:dom.schematicRoot,defs=dom.map.querySelector("defs"),patterns=document.createElementNS(ns,"g");patterns.setAttribute("id","flagPatterns");defs.append(patterns);const layer=document.createElementNS(ns,"g");layer.classList.add("flag-layer");layer.dataset.for=id;layer.setAttribute("aria-hidden","true");const asset=flagAssetFor(id,y);flagGeometryFor(path).forEach((geometry,index)=>{const clipId=`activeFlagClip-${id}-${index}`;const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",geometry.d);clipPath.setAttribute("fill-rule",geometry.fillRule);clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag","active-flag");flag.dataset.for=id;flag.dataset.part=String(index);flag.dataset.flagFile=asset.file;flag.dataset.flagPeriod=asset.period;flag.dataset.flagSource=asset.source;flag.setAttribute("clip-path",`url(#${clipId})`);const fill=document.createElementNS(ns,"path");fill.classList.add("flag-fill");fill.setAttribute("d",geometry.d);fill.setAttribute("fill-rule",geometry.fillRule);fill.setAttribute("fill","transparent");fill.style.setProperty("fill","transparent","important");fill.setAttribute("pointer-events","none");flag.append(fill);const image=document.createElementNS(ns,"image"),b=geometry.box;image.setAttribute("x",b.x);image.setAttribute("y",b.y);image.setAttribute("width",Math.max(2,b.width));image.setAttribute("height",Math.max(2,b.height));image.dataset.baseX=String(b.x);image.dataset.baseY=String(b.y);image.dataset.baseWidth=String(Math.max(2,b.width));image.dataset.baseHeight=String(Math.max(2,b.height));image.setAttribute("preserveAspectRatio","xMidYMid slice");image.setAttribute("href",asset.path);image.setAttributeNS("http://www.w3.org/1999/xlink","href",asset.path);image.setAttribute("role","presentation");flag.append(image);layer.append(flag)});root.append(layer);applyFlagDebugSettings(id)}
+function createFlagLayer(id,y){const path=activeCountries().find(candidate=>candidate.dataset.id===id);if(!path)return;const ns="http://www.w3.org/2000/svg",root=realMode?dom.realRoot:dom.schematicRoot,defs=dom.map.querySelector("defs"),patterns=document.createElementNS(ns,"g");patterns.setAttribute("id","flagPatterns");defs.append(patterns);const layer=document.createElementNS(ns,"g");layer.classList.add("flag-layer");layer.dataset.for=id;layer.setAttribute("aria-hidden","true");if(id==="ottoman"&&path.dataset.cutoutPaths)layer.setAttribute("mask","url(#ottomanCutoutMask)");const asset=flagAssetFor(id,y);flagGeometryFor(path).forEach((geometry,index)=>{const clipId=`activeFlagClip-${id}-${index}`;const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",geometry.d);clipPath.setAttribute("fill-rule",geometry.fillRule);clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag","active-flag");flag.dataset.for=id;flag.dataset.part=String(index);flag.dataset.flagFile=asset.file;flag.dataset.flagPeriod=asset.period;flag.dataset.flagSource=asset.source;flag.setAttribute("clip-path",`url(#${clipId})`);const fill=document.createElementNS(ns,"path");fill.classList.add("flag-fill");fill.setAttribute("d",geometry.d);fill.setAttribute("fill-rule",geometry.fillRule);fill.setAttribute("fill","transparent");fill.style.setProperty("fill","transparent","important");fill.setAttribute("pointer-events","none");flag.append(fill);const image=document.createElementNS(ns,"image"),b=geometry.box;image.setAttribute("x",b.x);image.setAttribute("y",b.y);image.setAttribute("width",Math.max(2,b.width));image.setAttribute("height",Math.max(2,b.height));image.dataset.baseX=String(b.x);image.dataset.baseY=String(b.y);image.dataset.baseWidth=String(Math.max(2,b.width));image.dataset.baseHeight=String(Math.max(2,b.height));image.setAttribute("preserveAspectRatio","xMidYMid slice");image.setAttribute("href",asset.path);image.setAttributeNS("http://www.w3.org/1999/xlink","href",asset.path);image.setAttribute("role","presentation");flag.append(image);layer.append(flag)});root.append(layer);applyFlagDebugSettings(id)}
 function syncFlags(y){clearFlagLayer();if(activeFlagId&&selected!==activeFlagId&&activeCountries().some(path=>path.dataset.id===activeFlagId))createFlagLayer(activeFlagId,y)}
 function clearHoverVisuals(){activeFlagId=null;clearFlagLayer();document.querySelectorAll(".map-labels text.hovered").forEach(node=>{node.classList.remove("hovered");node.style.transform=""})}
 function setHoverState(id,on){const locked=selected===id,path=activeCountries().find(candidate=>candidate.dataset.id===id);if(on&&!locked){activeFlagId=id;clearFlagLayer();createFlagLayer(id,Number(dom.year.value));}else if(!on&&activeFlagId===id){activeFlagId=null;clearFlagLayer()}if(path&&locked)path.classList.add("detail-static")}
@@ -366,19 +366,26 @@ function boundaryFeaturesForYear(y){
   if(y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
   if(y>=1886&&window.MENA_HISTORICAL_ADEN)selectedFeatures.push(...window.MENA_HISTORICAL_ADEN.filter(feature=>feature.from<=y&&feature.to>=y));
   // Until the post-war settlements, the Ottoman imperial polygon contains
-  // Tripolitania/Cyrenaica and the Hejaz record as internal regions. Carve
-  // those historical overlays out of the Ottoman feature so the visible
-  // borders do not double-paint the same territory.
+  // Tripolitania/Cyrenaica and the Hejaz record as internal regions. Keep
+  // those paths as explicit cutouts; buildBoundaryMap applies an SVG mask so
+  // the Ottoman body (and its flag) can never paint over the separate region.
   if(y<=1919){
     const ottoman=selectedFeatures.find(feature=>feature.id==="turkey");
     const cuts=selectedFeatures.filter(feature=>feature.id==="libya"||feature.id==="hejaz");
-    if(ottoman&&cuts.length){ottoman.basePath=ottoman.path;ottoman.path+=cuts.map(feature=>feature.path).join("");ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutouts for ${cuts.map(feature=>feature.id).join("/")}`}
+    if(ottoman&&cuts.length){
+      const cutParts=new Set(cuts.flatMap(feature=>flagPathParts(feature.path))),cleaned=flagPathParts(ottoman.path).filter(part=>!cutParts.has(part)).join("");
+      // CShapes stores Tripolitania/Cyrenaica as an exact Ottoman subpath in
+      // the early cohort. Remove that subpath from the body itself when it is
+      // available; the mask below remains the fallback for partial overlaps.
+      ottoman.basePath=cleaned;ottoman.path=cleaned;ottoman.cutoutPaths=cuts.map(feature=>feature.path);ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutout mask for ${cuts.map(feature=>feature.id).join("/")}`
+    }
   }
   selectedFeatures.forEach(feature=>{
     const id=["yemen-north","yemen-south"].includes(feature.id)&&y>=1990?"yemen":feature.id;
-    const current=grouped.get(id)||{id,name:feature.name,path:"",source:feature.source,cutoutCount:0,basePath:feature.basePath||""};
+    const current=grouped.get(id)||{id,name:feature.name,path:"",source:feature.source,cutoutCount:0,basePath:feature.basePath||"",cutoutPaths:[]};
     current.path+=feature.path;
     current.cutoutCount+=(feature.cutoutCount||0);
+    if(feature.cutoutPaths?.length)current.cutoutPaths.push(...feature.cutoutPaths);
     current.source=current.source===feature.source?current.source:[...new Set([current.source,feature.source].filter(Boolean).flatMap(source=>source.split(" + ")))].join(" + ");
     grouped.set(id,current);
   });
@@ -399,13 +406,25 @@ function renderFrontierOverlays(y){
   if(y===1932)appendOverlay("M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z","1932年沙特—也门未定界争议带（塔伊夫条约前）");
 }
 function buildBoundaryMap(y){
-  const ns="http://www.w3.org/2000/svg";dom.realRoot.innerHTML="";
+  const ns="http://www.w3.org/2000/svg",defs=dom.map.querySelector("defs");dom.realRoot.innerHTML="";
+  // Rebuild the cutout mask with each annual boundary snapshot. A mask is
+  // used instead of relying on path winding/evenodd, because CShapes' Ottoman
+  // record is a multi-polygon and its Libya overlap is not a guaranteed hole.
+  defs?.querySelector("#ottomanCutoutMask")?.remove();
   boundaryFeaturesForYear(y).forEach(feature=>{
     const p=document.createElementNS(ns,"path"),pathData=feature.path;
     // CShapes calls the pre-1923 imperial polygon `turkey`; expose it as its
     // own Ottoman tag so it can never be confused with the Turkish republic.
     const logicalId=feature.id==="turkey"&&y<=1922?"ottoman":feature.id;
-    p.dataset.id=logicalId;p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||pathData;p.setAttribute("d",pathData);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":feature.source?.includes("extension")?"nonzero":"evenodd");
+    p.dataset.id=logicalId;p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||pathData;if(feature.cutoutPaths?.length)p.dataset.cutoutPaths=JSON.stringify(feature.cutoutPaths);p.setAttribute("d",pathData);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":feature.source?.includes("extension")?"nonzero":"evenodd");
+    if(logicalId==="ottoman"&&feature.cutoutPaths?.length){
+      let mask=defs?.querySelector("#ottomanCutoutMask");
+      if(!mask&&defs){
+        mask=document.createElementNS(ns,"mask");mask.id="ottomanCutoutMask";mask.setAttribute("mask-type","luminance");mask.setAttribute("maskUnits","userSpaceOnUse");mask.setAttribute("maskContentUnits","userSpaceOnUse");mask.setAttribute("x","0");mask.setAttribute("y","0");mask.setAttribute("width","1080");mask.setAttribute("height","650");
+        const white=document.createElementNS(ns,"rect");white.setAttribute("x","0");white.setAttribute("y","0");white.setAttribute("width","1080");white.setAttribute("height","650");white.setAttribute("fill","white");mask.append(white);defs.append(mask)
+      }
+      if(mask){feature.cutoutPaths.forEach(cutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
+    }
     // The mandate is a British colonial/League of Nations territory through
     // the 1948 annual snapshot. Only post-mandate Palestine remains styled as
     // disputed; otherwise 1920—1948 would look like an unfilled state claim.
