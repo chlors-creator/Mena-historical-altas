@@ -20,3 +20,6 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
 #mapStage .mediterranean,#mapStage .red-sea{background:rgba(239,225,194,.72);padding:.16rem .25rem;border:1px solid rgba(67,50,31,.2);border-radius:2px}
 /* Sidebar follows the document height; scrolling belongs to the page, not a nested panel. */
 .story-panel{overflow:visible;max-height:none}
+/* Sea names sit on the water area without a label box; positions follow the map projection. */
+#mapStage .mediterranean{left:45%!important;top:25%!important;transform:translate(-50%,-50%) rotate(-5deg)!important;background:transparent!important;border:0!important;padding:0!important;border-radius:0!important}
+#mapStage .red-sea{left:64%!important;top:50%!important;bottom:auto!important;transform:translate(-50%,-50%) rotate(72deg)!important;background:transparent!important;border:0!important;padding:0!important;border-radius:0!important}

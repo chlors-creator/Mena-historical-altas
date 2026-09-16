@@ -39,6 +39,10 @@
             <filter id="liftShadow" x="-30%" y="-30%" width="160%" height="190%">
               <feDropShadow dx="0" dy="9" stdDeviation="6" flood-color="#080706" flood-opacity=".5"/>
             </filter>
+            <filter id="flagWave" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.06" numOctaves="2" seed="17" result="flagNoise"/>
+              <feDisplacementMap in="SourceGraphic" in2="flagNoise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
             <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <line x1="0" y1="0" x2="0" y2="8" stroke="#f0d9a7" stroke-width="2" opacity=".5"/>
             </pattern>
@@ -132,10 +136,13 @@
     <p class="eyebrow">ABOUT THIS ATLAS</p>
     <h2>关于《沙海纪年》首版</h2>
     <p>这是一个从1797年延伸至2026年的中东与北非历史地图原型。每个年份都可独立选择，政权资料会随关键历史时期变化。</p>
-    <p>1924—1999年接入 CShapes 2.0 历史有效期边界，按每年1月1日生成快照；2000—2026年使用 Natural Earth 1:50m 现代国界参考图层。西撒哈拉、巴勒斯坦及保护国／属地会按资料来源分别标示。</p>
+    <p>1886—1999年接入 CShapes 2.0 历史有效期边界，按每年1月1日生成快照；2000—2026年使用 Natural Earth 1:50m 现代国界参考图层。西撒哈拉、巴勒斯坦及保护国／属地会按资料来源分别标示。</p>
     <button class="primary-button" id="dialogConfirm" type="button">我知道了</button>
   </dialog>
   <script src="mena-2026.js"></script>
+  <script src="mena-historical-1886-1923.js"></script>
+  <script src="mena-historical-aden.js"></script>
+  <script src="mena-historical-yemen-extension.js"></script>
   <script src="mena-historical-1924-1999.js"></script>
   <script src="app.js"></script>
 </body>
