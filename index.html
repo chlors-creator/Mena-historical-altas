@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="探索1797至2026年的中东与北非政权更替、历史事件与地区格局。">
+  <title>沙海纪年｜1797—2026 中东与北非历史地图</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%231a1713'/%3E%3Cpath d='M11 42c10-17 27-25 42-18-12 1-23 8-30 22z' fill='%23c84b38'/%3E%3Ccircle cx='43' cy='18' r='5' fill='%23e9c981'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar">
+    <button class="brand" id="brandButton" type="button" aria-label="返回区域总览">
+      <span class="brand-cn">沙海纪年</span>
+      <span class="brand-en">MENA HISTORICAL ATLAS · 1797—2026</span>
+    </button>
+    <div class="top-actions">
+      <button class="text-button" id="overviewButton" type="button">区域总览</button>
+      <button class="round-button" id="aboutButton" type="button" aria-label="关于本项目">i</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="atlas" aria-label="历史地图工作区">
+      <div class="map-header">
+        <div>
+          <p class="eyebrow">HISTORICAL ATLAS · 历史地图</p>
+          <h1 id="mapTitle">奥斯曼时代的中东与北非</h1>
+        </div>
+        <div class="map-status"><span id="selectedLabel">区域总览</span><i></i><span>年度快照</span></div>
+      </div>
+
+      <div class="map-stage" id="mapStage">
+        <div class="sea-label mediterranean">地 中 海<small>MEDITERRANEAN SEA</small></div>
+        <div class="sea-label red-sea">红海</div>
+        <svg id="menaMap" viewBox="0 0 1080 650" role="img" aria-labelledby="mapSvgTitle mapSvgDesc">
+          <title id="mapSvgTitle">中东与北非历史地图</title>
+          <desc id="mapSvgDesc">选择年份并点击地图上的国家或地区，查看政权和历史事件。</desc>
+          <defs>
+            <filter id="liftShadow" x="-30%" y="-30%" width="160%" height="190%">
+              <feDropShadow dx="0" dy="9" stdDeviation="6" flood-color="#080706" flood-opacity=".5"/>
+            </filter>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#f0d9a7" stroke-width="2" opacity=".5"/>
+            </pattern>
+          </defs>
+          <g class="land-shadow" aria-hidden="true">
+            <path d="M80 253L158 220 231 226 286 254 351 257 404 242 456 255 483 307 455 365 401 393 329 397 282 377 212 382 142 365 93 320Z"/>
+            <path d="M488 178L548 144 612 151 665 178 724 173 755 205 722 242 651 239 602 258 539 242 493 214Z"/>
+            <path d="M655 281L696 250 752 257 786 291 840 295 887 330 917 385 893 469 840 522 770 508 735 451 691 407Z"/>
+            <path d="M795 213L851 193 925 218 982 281 961 350 899 351 866 309 810 293Z"/>
+          </g>
+          <g id="countries" class="countries">
+            <path data-id="morocco" d="M80 253L158 220 183 244 174 298 140 331 93 320Z"/>
+            <path data-id="western-sahara" class="disputed" d="M93 320L140 331 165 356 142 402 87 397 63 362Z"/>
+            <path data-id="algeria" d="M183 244L286 254 302 316 282 377 212 382 165 356 140 331 174 298Z"/>
+            <path data-id="tunisia" d="M286 254L319 244 336 269 325 310 302 316Z"/>
+            <path data-id="libya" d="M325 310L351 257 404 242 456 255 483 307 455 365 401 393 329 397 302 316Z"/>
+            <path data-id="egypt" d="M456 255L519 260 550 307 532 383 455 365 483 307Z"/>
+            <path data-id="sudan" d="M455 365L532 383 552 463 512 530 422 502 401 393Z"/>
+            <path data-id="turkey" d="M488 178L548 144 612 151 665 178 724 173 755 205 722 242 651 239 602 258 539 242 493 214Z"/>
+            <path data-id="syria" d="M602 258L651 239 681 257 674 301 624 310Z"/>
+            <path data-id="lebanon" d="M602 258L612 274 607 304 598 301Z"/>
+            <path data-id="palestine" class="disputed" d="M598 301L607 304 612 342 601 363 592 331Z"/>
+            <path data-id="jordan" d="M612 304L674 301 692 339 642 367 612 342Z"/>
+            <path data-id="iraq" d="M681 257L735 247 774 276 752 337 692 339 674 301Z"/>
+            <path data-id="iran" d="M755 205L851 193 925 218 982 281 961 350 899 351 866 309 810 293 774 276 735 247Z"/>
+            <path data-id="kuwait" d="M752 337L770 334 781 349 767 364 750 357Z"/>
+            <path data-id="saudi" d="M642 367L692 339 750 357 781 349 840 377 855 445 812 500 740 483 691 407Z"/>
+            <path data-id="qatar" d="M834 371L843 358 850 371 845 386Z"/>
+            <path data-id="uae" d="M840 377L887 370 902 397 855 414Z"/>
+            <path data-id="oman" d="M902 397L935 392 956 435 920 481 874 469 855 445Z"/>
+            <path data-id="yemen" d="M740 483L812 500 874 469 861 516 797 545 747 526Z"/>
+          </g>
+          <g id="realCountries2026" class="countries real-countries" aria-label="2026年国家边界"></g>
+          <g id="regionLines" class="region-lines" aria-hidden="true"></g>
+          <g id="labels" class="map-labels" aria-hidden="true"></g>
+          <g class="compass" transform="translate(1010 520)" aria-hidden="true"><circle r="37"/><path d="M0-31 7 0 0 31-7 0Z"/><text x="0" y="-44">N</text></g>
+        </svg>
+
+        <div class="map-hint"><span class="mouse-icon"></span>悬浮查看 · 点击进入</div>
+        <div class="legend" aria-label="地图图例">
+          <span><i class="swatch sovereign"></i>颜色＝政权归属</span>
+          <span><i class="swatch dependent"></i>虚线＝属地／附属政权</span>
+          <span><i class="swatch contested"></i>争议或多重主张</span>
+        </div>
+      </div>
+
+      <div class="timeline" aria-label="年份控制器">
+        <div class="year-display"><strong id="yearText">1797</strong></div>
+        <button class="play-button" id="playButton" type="button" aria-label="播放时间线"><span></span></button>
+        <div class="range-wrap">
+          <input id="yearRange" type="range" min="1797" max="2026" value="1797" step="1" aria-label="选择年份">
+          <div class="range-marks" aria-hidden="true">
+            <span style="--position:0">1797</span>
+            <span style="--position:14.4105">1830</span>
+            <span style="--position:51.0917">1914</span>
+            <span style="--position:65.9389">1948</span>
+            <span style="--position:79.4760">1979</span>
+            <span style="--position:93.4498">2011</span>
+            <span style="--position:100">2026</span>
+          </div>
+        </div>
+        <button class="jump-button" id="jumpButton" type="button">跳转年份</button>
+      </div>
+    </section>
+
+    <aside class="story-panel" id="storyPanel" aria-live="polite">
+      <div class="red-rule"></div>
+      <p class="panel-kicker" id="panelKicker">1797 · REGIONAL OVERVIEW</p>
+      <div class="panel-title-row">
+        <div><h2 id="polityName">奥斯曼帝国与周边诸政权</h2><p id="polityNative">الدولة العثمانية · دولت قاجار</p></div>
+        <span class="era-badge" id="eraBadge">近代早期</span>
+      </div>
+      <div class="facts" id="facts"></div>
+      <section class="panel-section">
+        <h3 id="summaryHeading">历史概述</h3>
+        <p id="summary"></p>
+      </section>
+      <section class="panel-section events-section">
+        <div class="section-heading"><h3>重要历史事件 <span>EVENTS</span></h3><span id="eventCount">3 项</span></div>
+        <div class="event-list" id="eventList"></div>
+      </section>
+      <div class="source-note"><strong>资料说明</strong><span id="boundarySource">历史年份边界为概略示意，不作为领土主张或学术地图引用。</span></div>
+    </aside>
+  </main>
+
+  <dialog id="aboutDialog">
+    <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭">×</button>
+    <p class="eyebrow">ABOUT THIS ATLAS</p>
+    <h2>关于《沙海纪年》首版</h2>
+    <p>这是一个从1797年延伸至2026年的中东与北非历史地图原型。每个年份都可独立选择，政权资料会随关键历史时期变化。</p>
+    <p>2026年已接入 Natural Earth 1:50m GIS 国界数据，并单独标示西撒哈拉与巴勒斯坦；其余历史年份仍为界面验证用的概略示意。</p>
+    <button class="primary-button" id="dialogConfirm" type="button">我知道了</button>
+  </dialog>
+  <script src="mena-2026.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
