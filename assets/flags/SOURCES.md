@@ -34,6 +34,7 @@
 | `palestine-mandate.svg` | 英属巴勒斯坦托管地（1927—1948；海事旗） | [Ensign of the Palestine Mandate](https://commons.wikimedia.org/wiki/File:Ensign_of_the_Palestine_Mandate_(1927%E2%80%931948).svg) |
 | `jordan.png` | 约旦（1928—现行） | [Flag of Jordan (official)](https://commons.wikimedia.org/wiki/File:Flag_of_Jordan_(official).svg) |
 | `hejaz-1917.svg` | 汉志王国（1917） | [Flag of Hejaz (1917)](https://commons.wikimedia.org/wiki/File:Flag_of_Hejaz_(1917).svg) |
+| `shammar.svg` | 贾巴尔·舍迈尔／海勒酋长国（1836—1921） | [Hail flag](https://commons.wikimedia.org/wiki/File:Hail_flag.svg) |
 | `saudi-first-second.svg` | 第一／第二沙特国家的历史旗帜语境 | [Flag of the First and Second Saudi State](https://commons.wikimedia.org/wiki/File:Flag_of_the_First_and_Second_Saudi_State_(1744-1891).svg) |
 | `saudi-1932.svg` | 沙特（1932—1934） | [Flag of Saudi Arabia (1932–1934)](https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia_(1932%E2%80%931934).svg) |
 | `saudi-1934.svg` | 沙特（1934—1938） | [Flag of Saudi Arabia (1934–1938)](https://commons.wikimedia.org/wiki/File:Flag_of_Saudi_Arabia_(1934%E2%80%931938).svg) |
