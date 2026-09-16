@@ -56,4 +56,14 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
 /* A fill path is deliberately above the country CSS fill; the important
    inline value is updated by the debugger so the selected colour is visible. */
 .country-flag .flag-fill{fill:transparent!important;pointer-events:none}
+/* Historical compound records (Aden Protectorate and Ottoman/Turkish core)
+   are a single polity. Neighboring paths still provide the external frontier,
+   so suppress internal seams between touching source subpaths. */
+.countries path.merged-feature{stroke:none!important}
+.frontier-overlays,.history-connectors{pointer-events:none;overflow:visible}
+.frontier-overlays .frontier-gap{fill:url(#hatch)!important;stroke:#5d3925;stroke-width:1.25;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;opacity:.9}
+.history-connectors line{stroke:#17130f;stroke-width:1;vector-effect:non-scaling-stroke;opacity:.88}
+.frontier-note{color:var(--red-dark);font-weight:700}
+/* Hover reveals the flag only; the country geometry and its label stay put. */
+.countries path:hover:not(.detail-static),.countries path.keyboard-focus:not(.detail-static){transform:none!important;filter:brightness(1.14)!important}
 @media(max-width:560px){.panel-title-row{gap:.65rem}}
