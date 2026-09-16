@@ -1,50 +1,22 @@
 {
-  "saudi": {
-    "scaleX": 1,
-    "scaleY": 1.42,
-    "offsetX": -18,
-    "offsetY": 0,
-    "color": "#9b713e",
-    "flagFill": "#9b713e"
-  },
-  "turkey": {
-    "scaleX": 1,
-    "scaleY": 1,
-    "offsetX": 0,
-    "offsetY": 0,
-    "color": "#fe8b4d",
-    "flagFill": "#f05a19"
-  },
-  "bahrain": {
-    "scaleX": 1,
-    "scaleY": 1,
-    "offsetX": 0,
-    "offsetY": 0,
-    "color": "#9d4035",
-    "flagFill": "#cc3e2e"
-  },
-  "algeria": {
-    "scaleX": 1.42,
-    "scaleY": 1,
-    "offsetX": 0,
-    "offsetY": 0,
-    "color": "#8d653d",
-    "flagFill": "#8d653d"
-  },
-  "libya": {
-    "scaleX": 1.6,
-    "scaleY": 1,
-    "offsetX": 0,
-    "offsetY": 0,
-    "color": "#35678a",
-    "flagFill": "#35678a"
-  },
-  "iran": {
-    "scaleX": 1.96,
-    "scaleY": 1,
-    "offsetX": 0,
-    "offsetY": 0,
-    "color": "#54637b",
-    "flagFill": "#54637b"
-  }
+  "saudi::saudi-1932.svg": {"scaleX": 1, "scaleY": 1.42, "offsetX": -18, "offsetY": 0, "color": "#9b713e", "flagFill": "#9b713e"},
+  "saudi::saudi-1934.svg": {"scaleX": 1, "scaleY": 1.42, "offsetX": -18, "offsetY": 0, "color": "#9b713e", "flagFill": "#9b713e"},
+  "saudi::saudi-1938.svg": {"scaleX": 1, "scaleY": 1.42, "offsetX": -18, "offsetY": 0, "color": "#9b713e", "flagFill": "#9b713e"},
+  "saudi::saudi.svg": {"scaleX": 1, "scaleY": 1.42, "offsetX": -18, "offsetY": 0, "color": "#9b713e", "flagFill": "#9b713e"},
+  "turkey::turkey.svg": {"scaleX": 1, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#fe8b4d", "flagFill": "#f05a19"},
+  "bahrain::bahrain.svg": {"scaleX": 1, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#9d4035", "flagFill": "#cc3e2e"},
+  "algeria::ottoman-empire.svg": {"scaleX": 1.42, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#8d653d", "flagFill": "#8d653d"},
+  "algeria::france.svg": {"scaleX": 1.42, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#8d653d", "flagFill": "#8d653d"},
+  "algeria::algeria.svg": {"scaleX": 1.42, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#8d653d", "flagFill": "#8d653d"},
+  "libya::ottoman-empire.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::italy.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::uk.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::libya-1951.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::libya-1969.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::egypt-1972.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "libya::libya-1977.svg": {"scaleX": 1.6, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#35678a", "flagFill": "#35678a"},
+  "iran::qajar-iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
+  "iran::iran-1933.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
+  "iran::iran-1964.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
+  "iran::iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"}
 }
