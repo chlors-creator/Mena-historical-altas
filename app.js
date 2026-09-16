@@ -25,7 +25,7 @@ shammar:[[1886,1921,"舍迈尔酋长国","以海勒为中心的贾巴尔·舍迈
 najd:[[1886,1901,"内志部落与绿洲酋长国","利雅得、卡西姆与东部绿洲由多个部落和城镇政权控制，尚不存在沙特阿拉伯王国。","利雅得","部落／酋长国"],[1902,1931,"内志苏丹国与汉志—内志王国","伊本·沙特自1902年重建利雅得政权，随后扩张并在1927年改称汉志与内志王国。","利雅得","苏丹国／王国"]],
 libya:[[1797,1911,"奥斯曼的黎波里塔尼亚","卡拉曼里王朝和其后的奥斯曼直接统治覆盖沿海，内陆控制程度不一。","的黎波里","奥斯曼属地"],[1912,1950,"意属利比亚及战后托管","意大利殖民统治遭长期抵抗，第二次世界大战后由英法分别管理。","的黎波里","殖民地／托管地"],[1951,1968,"利比亚联合王国","昔兰尼加、的黎波里塔尼亚和费赞联合组成独立王国。","的黎波里／班加西","君主制"],[1969,2026,"利比亚共和国及其后继政权","卡扎菲政权于1969年建立；2011年后国家进入政治分裂和重建进程。","的黎波里","共和国"]],
 sudan:[[1797,1820,"丰吉苏丹国及地方政权","青尼罗河流域的森纳苏丹国与西部达尔富尔苏丹国等并存。","森纳","苏丹国"],[1821,1955,"埃及—英国统治时期","埃及征服后经历马赫迪国家和英埃共管苏丹。","喀土穆","共管／殖民统治"],[1956,2026,"苏丹共和国","独立后多次经历军政更替和内战；2011年南苏丹独立。","喀土穆","共和国"]],
-palestine:[[1797,1917,"奥斯曼巴勒斯坦地区","该地区分属奥斯曼帝国多个行政单位，耶路撒冷后成为直接隶属中央的特殊区域。","耶路撒冷","奥斯曼属地"],[1918,1947,"英属巴勒斯坦托管地","英国依据国际联盟委任统治该地，阿拉伯与犹太民族运动矛盾加深。","耶路撒冷","委任统治"],[1948,2026,"以色列、巴勒斯坦领土与争议地区","1948年后形成多层次的国家、占领、自治与国际承认问题；展示需区分法理边界与实际控制。","耶路撒冷／拉姆安拉","多重政治地位"]]
+  palestine:[[1797,1917,"奥斯曼巴勒斯坦地区","该地区分属奥斯曼帝国多个行政单位，耶路撒冷后成为直接隶属中央的特殊区域。","耶路撒冷","奥斯曼属地"],[1918,1948,"英属巴勒斯坦托管地","英国依据国际联盟委任统治该地；年度快照中的 1920—1948 年仍按英国殖民／委任统治标注，不使用巴勒斯坦国或争议地区标签。","耶路撒冷","英国委任统治地"],[1949,2026,"以色列、巴勒斯坦领土与争议地区","1949年后形成多层次的国家、占领、自治与国际承认问题；展示需区分法理边界与实际控制。","耶路撒冷／拉姆安拉","多重政治地位"]]
 };
 
 // Reuse the historical regime prose/capital under the distinct Ottoman tag.
@@ -53,16 +53,16 @@ const rulingGroups={
   syria:[[1797,1917,"奥斯曼总督与地方精英"],[1918,1945,"法国委任统治当局"],[1946,1957,"民族党／人民党议会联盟"],[1958,1961,"阿拉伯社会主义联盟（阿联）"],[1961,1963,"无党派过渡政府／复兴党崛起"],[1963,2024,"阿拉伯复兴社会党（叙利亚）"],[2025,2026,"叙利亚过渡政府"]],
   lebanon:[[1797,1917,"奥斯曼地方精英"],[1920,1943,"法国委任统治当局"],[1943,1975,"黎巴嫩民族集团／教派政治联盟"],[1975,1990,"内战时期的教派武装联盟"],[1990,2005,"叙利亚支持的议会联盟"],[2005,2026,"3·14／8·14联盟与真主党—阿迈勒联盟"]],
   israel:[[1948,1968,"以色列地工人党（马派，Mapai）"],[1969,1977,"工党联盟（Alignment）"],[1977,1984,"利库德集团（Likud）"],[1984,1988,"利库德集团／以色列工党（民族团结轮换政府）"],[1988,1992,"利库德集团（Likud）"],[1992,1996,"以色列工党／一以色列联盟（One Israel）"],[1996,1999,"利库德集团（Likud）"],[1999,2001,"以色列工党／一以色列联盟（One Israel）"],[2001,2005,"利库德集团（Likud）"],[2005,2006,"前进党（Kadima）／过渡政府"],[2006,2009,"前进党（Kadima）"],[2009,2021,"利库德集团（Likud）"],[2021,2022,"有未来党／亚米娜党（轮换联合政府）"],[2022,2026,"利库德集团（Likud）"]],
-  palestine:[[1797,1917,"奥斯曼总督"],[1918,1947,"英国委任统治当局"],[1948,1993,"巴解组织／法塔赫"],[1994,2005,"法塔赫／巴勒斯坦民族权力机构"],[2006,2026,"法塔赫（西岸）／哈马斯（加沙）分治"]],jordan:[[1797,1917,"奥斯曼总督"],[1918,2026,"哈希姆王室"]],
+  palestine:[[1797,1917,"奥斯曼总督"],[1918,1948,"英国委任统治当局"],[1949,1993,"巴解组织／法塔赫"],[1994,2005,"法塔赫／巴勒斯坦民族权力机构"],[2006,2026,"法塔赫（西岸）／哈马斯（加沙）分治"]],jordan:[[1797,1917,"奥斯曼总督"],[1918,2026,"哈希姆王室"]],
   iraq:[[1797,1917,"奥斯曼总督与地方贵族"],[1918,1958,"哈希姆王室"],[1958,1963,"自由军官组织／共和国政府"],[1963,1968,"阿拉伯复兴社会党（伊拉克）／军政委员会"],[1968,2003,"阿拉伯复兴社会党（伊拉克）"],[2003,2026,"议会联盟与总理内阁"]],
   iran:[[1797,1905,"卡扎尔王室"],[1906,1925,"立宪派／卡扎尔王室"],[1925,1979,"巴列维王室"],[1979,1989,"伊斯兰共和党／教士集团"],[1989,2026,"保守派与改革派总统联盟／最高领袖办公室"]],
-  kuwait:[[1797,2026,"萨巴赫王室"]],saudi:[[1797,1817,"沙特家族"],[1818,1931,"内志部落联盟与地方酋长"],[1932,2026,"沙特王室"]],hejaz:[[1886,1916,"麦加谢里夫与奥斯曼宗主权"],[1917,1925,"哈希姆王室"]],shammar:[[1886,1921,"拉希德王室（贾巴尔·舍迈尔）"]],najd:[[1886,1901,"内志部落与绿洲酋长"],[1902,1931,"沙特家族／伊本·沙特王室"]],qatar:[[1797,2026,"阿勒萨尼王室"]],uae:[[1797,1970,"特鲁西尔酋长家族"],[1971,2026,"阿布扎比与迪拜等酋长家族"]],oman:[[1797,2026,"阿勒赛义德王室与伊玛目集团"]],
+  kuwait:[[1797,1898,"萨巴赫酋长家族（奥斯曼宗主权下）"],[1899,1960,"萨巴赫酋长家族／英国保护关系"],[1961,2026,"萨巴赫王室"]],saudi:[[1797,1817,"沙特家族"],[1818,1931,"内志部落联盟与地方酋长"],[1932,2026,"沙特王室"]],hejaz:[[1886,1916,"麦加谢里夫与奥斯曼宗主权"],[1917,1925,"哈希姆王室"]],shammar:[[1886,1921,"拉希德王室（贾巴尔·舍迈尔）"]],najd:[[1886,1901,"内志部落与绿洲酋长"],[1902,1931,"沙特家族／伊本·沙特王室"]],qatar:[[1797,2026,"阿勒萨尼王室"]],uae:[[1797,1970,"特鲁西尔酋长家族"],[1971,2026,"阿布扎比与迪拜等酋长家族"]],oman:[[1797,2026,"阿勒赛义德王室与伊玛目集团"]],
   "yemen-north":[[1797,1918,"扎伊迪伊玛目／卡西姆王朝"],[1918,1962,"穆塔瓦基利特王室"],[1962,1978,"共和指挥委员会"],[1978,1990,"全国人民大会（GPC）／总统联盟"]],"yemen-south":[[1886,1967,"英国殖民当局"],[1967,1978,"民族解放阵线（NLF）"],[1978,1990,"也门社会党"]],yemen:[[1990,1993,"全国人民大会（GPC）／伊斯兰改革集团（JMP）联合"],[1994,2011,"全国人民大会（GPC）"],[2012,2014,"过渡政府与全国对话联盟"],[2015,2026,"总统领导委员会／国际承认政府与胡塞当局分治"]],bahrain:[[1797,2026,"阿勒哈利法王室"]]
 };
 const rulingGroupAt=(id,y)=>{const hit=(rulingGroups[id]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||"地方统治集团"};
 const $=s=>document.querySelector(s),dom={year:$("#yearRange"),yearText:$("#yearText"),play:$("#playButton"),title:$("#mapTitle"),selectedLabel:$("#selectedLabel"),map:$("#menaMap"),schematicRoot:$("#countries"),realRoot:$("#realCountries"),schematicCountries:[...document.querySelectorAll("#countries path")],realCountries:[],labels:$("#labels"),regionLines:$("#regionLines"),frontierOverlays:$("#frontierOverlays"),historyConnectors:$("#historyConnectors"),panelKicker:$("#panelKicker"),polityName:$("#polityName"),polityNative:$("#polityNative"),badge:$("#eraBadge"),facts:$("#facts"),summaryHeading:$("#summaryHeading"),summary:$("#summary"),eventList:$("#eventList"),eventCount:$("#eventCount"),source:$("#boundarySource"),overview:$("#overviewButton"),brand:$("#brandButton"),about:$("#aboutButton"),dialog:$("#aboutDialog"),close:$("#dialogClose"),confirm:$("#dialogConfirm"),jump:$("#jumpButton"),flagDebugButton:$("#flagDebugButton"),flagDebugDialog:$("#flagDebugDialog"),flagDebugClose:$("#flagDebugClose"),flagDebugScaleX:$("#flagDebugScaleX"),flagDebugScaleY:$("#flagDebugScaleY"),flagDebugOffsetX:$("#flagDebugOffsetX"),flagDebugOffsetY:$("#flagDebugOffsetY"),flagDebugColor:$("#flagDebugColor"),flagDebugSave:$("#flagDebugSave"),flagDebugReset:$("#flagDebugReset"),flagDebugExport:$("#flagDebugExport"),flagDebugStatus:$("#flagDebugStatus"),flagDebugCurrent:$("#flagDebugCurrent")};
 Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill")});
-let selected=null,timer=null,realMode=false,boundaryKey="";
+let selected=null,hoveredCountry=null,timer=null,realMode=false,boundaryKey="";
 const eraFor=y=>eras.find(e=>y>=e.from&&y<=e.to)||eras.at(-1);const countryEra=(id,y)=>(overrides[id]||[]).find(([a,b])=>y>=a&&y<=b);
 const historicalBoundaryYear=y=>y>=1886&&y<=1999;
 const realBoundaryYear=y=>y>=1886;
@@ -72,7 +72,7 @@ const realBoundaryYear=y=>y>=1886;
 const boundaryKeyFor=y=>historicalBoundaryYear(y)?`historical-${y}`:y>=2000?"modern":`schematic-${eraFor(y).from}`;
 function eventCards(events){return events.map(([y,n,d,p])=>`<a class="event-card" href="${wiki(p)}" target="_blank" rel="noopener noreferrer"><span class="event-year">${y}</span><span><h4>${n}</h4><p>${d}</p></span><span class="event-arrow" aria-hidden="true">↗</span></a>`).join("")}
 function activeCountries(){return realMode?dom.realCountries:dom.schematicCountries}
-function clearMapState(){dom.map.setAttribute("viewBox","0 0 1080 650");[...dom.schematicCountries,...dom.realCountries].forEach(p=>p.classList.remove("selected","dimmed","detail-static"));document.querySelectorAll(".map-labels text.hovered,.country-flag.hovered").forEach(node=>{node.classList.remove("hovered");node.style.transform=""});dom.regionLines.classList.remove("visible");dom.regionLines.innerHTML="";if(dom.frontierOverlays)dom.frontierOverlays.innerHTML="";if(dom.historyConnectors)dom.historyConnectors.innerHTML=""}
+function clearMapState(){hoveredCountry=null;dom.map.setAttribute("viewBox","0 0 1080 650");[...dom.schematicCountries,...dom.realCountries].forEach(p=>p.classList.remove("selected","dimmed","detail-static"));clearHoverVisuals();dom.regionLines.classList.remove("visible");dom.regionLines.innerHTML="";if(dom.frontierOverlays)dom.frontierOverlays.innerHTML="";if(dom.historyConnectors)dom.historyConnectors.innerHTML=""}
  function setMapMode(y){const next=realBoundaryYear(y),key=boundaryKeyFor(y),changed=next!==realMode,boundaryChanged=key!==boundaryKey;if(changed||boundaryChanged){selected=null;clearMapState();if(next&&boundaryChanged)dom.realRoot.classList.add("updating");else dom.realRoot.classList.remove("updating")}realMode=next;if(next&&boundaryChanged)buildBoundaryMap(y);boundaryKey=key;dom.map.classList.toggle("real-mode",next);dom.schematicRoot.style.display=next?"none":"";dom.realRoot.style.display=next?"":"none";dom.source.innerHTML=historicalBoundaryYear(y)?'1886—1999年边界采用 <a href="https://icr.ethz.ch/data/cshapes/" target="_blank" rel="noopener noreferrer">CShapes 2.0</a> 的历史有效期区间，并按每年1月1日生成年度快照；同一年份的过渡记录已裁决为唯一 cohort，同一 cohort 的多块合法领土合并；西属摩洛哥、北也门与西撒哈拉缺口采用明确标注的历史上下文补全；1886—1931年阿拉伯半岛改用 <a href="https://github.com/opengulf/ottoman-map" target="_blank" rel="noopener noreferrer">OpenGulf Harita 93677 QGIS 图层</a>，并以 <a href="https://commons.wikimedia.org/wiki/File:Arabia_1914.png" target="_blank" rel="noopener noreferrer">1914 年阿拉伯半岛政治地图</a> 与 <a href="https://www.loc.gov/item/a22000920/" target="_blank" rel="noopener noreferrer">《Arabia》（1920）</a> 交叉校核汉志、舍迈尔和内志，替代现代沙特轮廓。':y>=2000?'2000—2026年地图采用 <a href="https://www.naturalearthdata.com/downloads/50m-cultural-vectors/" target="_blank" rel="noopener noreferrer">Natural Earth 5.1.1</a> 的1:50m现代国界参考图层；西撒哈拉与巴勒斯坦单独标示。':'1797—1885年为历史时期概略示意，不作为领土主张或学术地图引用。';if(y===1932&&historicalBoundaryYear(y))dom.source.insertAdjacentHTML("beforeend",' <span class="frontier-note">1932年沙特—也门边界在塔伊夫条约前尚未完成法理划定，阴影带表示阿西尔、吉赞与纳季兰相关争议区。</span>');if(changed||boundaryChanged||!dom.labels.children.length)createLabels()}
 const _setMapModeWithFrontierOverlay=setMapMode;
 setMapMode=function(y){_setMapModeWithFrontierOverlay(y);renderFrontierOverlays(y)};
@@ -176,11 +176,11 @@ function flagAssetFor(id,y){
   if(id==="syria")return y<=1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<=1931?flagAsset("syria-1930.svg","叙利亚委任统治（1920—1931）"):y<=1957?flagAsset("syria-1932.svg","叙利亚共和国（1932—1957）"):y<=1960?flagAsset("united-arab-republic.svg","阿拉伯联合共和国（1958—1961）"):y<=1962?flagAsset("syria-1932.svg","叙利亚共和国（1961—1963）"):y<=1971?flagAsset("syria-1963.svg","叙利亚（1963—1972）"):y<=1979?flagAsset("syria-1972.svg","阿拉伯共和国联邦时期（1972—1980）"):y<=2024?flagAsset("united-arab-republic.svg","叙利亚（1980—2024）"):flagAsset("syria.svg","叙利亚（2025—）");
   if(id==="lebanon")return y<1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<1943?flagAsset("lebanon-1920.svg","法属黎巴嫩委任统治（1920—1943）"):flagAsset("lebanon.svg","黎巴嫩共和国（1943—）");
   if(id==="israel")return y<1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1927—1948海事旗）"):flagAsset("israel.svg","以色列（1948—）");
-  if(id==="palestine")return y<1917?flagAsset("ottoman-empire.svg","奥斯曼巴勒斯坦（至1917）"):y<1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1927—1948海事旗）"):flagAsset("palestine.svg","巴勒斯坦（1948—）");
+  if(id==="palestine")return y<1917?flagAsset("ottoman-empire.svg","奥斯曼巴勒斯坦（至1917）"):y<=1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1920—1948海事旗）"):flagAsset("palestine.svg","巴勒斯坦（1949—）");
   if(id==="jordan")return y<1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<1928?flagAsset("uk.svg","英国委任／保护时期"):flagAsset("jordan.png","约旦（1928—）");
   if(id==="iraq")return y<=1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<=1923?flagAsset("iraq-1921.svg","伊拉克王国（1921—1924）"):y<=1958?flagAsset("iraq-1924.svg","伊拉克王国（1924—1959）"):y<=1962?flagAsset("iraq-1959.svg","伊拉克共和国（1959—1963）"):y<=1990?flagAsset("iraq-1963.svg","伊拉克（1963—1991）"):y<=2003?flagAsset("iraq-1991.svg","伊拉克（1991—2004）"):flagAsset("iraq.svg","伊拉克共和国（2004—）");
   if(id==="iran")return y<=1925?flagAsset("qajar-iran.svg","卡扎尔王朝（至1925）"):y<=1963?flagAsset("iran-1933.svg","巴列维王朝早期（1925—1964）"):y<=1978?flagAsset("iran-1964.svg","巴列维王朝（1964—1979）"):flagAsset("iran.svg","伊朗伊斯兰共和国（1979—）");
-  if(id==="kuwait")return y<1961?flagAsset("uk.svg","英国保护时期（历史旗帜未统一）"):flagAsset("kuwait.svg","科威特（1961—）");
+  if(id==="kuwait")return y<1899?flagAsset("ottoman-empire.svg","科威特酋长国（奥斯曼宗主权下，至1899）"):y<1961?flagAsset("uk.svg","科威特保护国（英科协定，1899—1961）"):flagAsset("kuwait.svg","科威特国（1961—）");
   if(id==="saudi")return y<1932?flagAsset("saudi-1932.svg","内志与汉志王国前身（1902—1932）"):y<1934?flagAsset("saudi-1932.svg","沙特阿拉伯（1932—1934）"):y<1938?flagAsset("saudi-1934.svg","沙特阿拉伯（1934—1938）"):y<1973?flagAsset("saudi-1938.svg","沙特阿拉伯（1938—1973）"):flagAsset("saudi.svg","沙特阿拉伯（1973—）");
   if(id==="hejaz")return y<=1916?flagAsset("ottoman-empire.svg","奥斯曼汉志（至1916）"):flagAsset("hejaz-1917.svg","汉志王国（1917—1925）");
   if(id==="shammar")return flagAsset("shammar.svg","舍迈尔酋长国（1836—1921）");
@@ -196,32 +196,43 @@ function flagAssetFor(id,y){
 }
 const FLAG_DEBUG_STORAGE="menaFlagDebugV1";
 const flagDebugDefaults={scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"",flagFill:""};
+// The supplied mena-flag-debug.json is part of the static build. Browser
+// localStorage remains an optional per-user override, while these values are
+// available immediately on GitHub Pages without a fetch race.
+const flagDebugBuiltIn={
+  saudi:{scaleX:1,scaleY:1.42,offsetX:-18,offsetY:0,color:"#9b713e",flagFill:"#9b713e"},
+  turkey:{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#fe8b4d",flagFill:"#f05a19"},
+  bahrain:{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#9d4035",flagFill:"#cc3e2e"},
+  algeria:{scaleX:1.42,scaleY:1,offsetX:0,offsetY:0,color:"#8d653d",flagFill:"#8d653d"},
+  libya:{scaleX:1.6,scaleY:1,offsetX:0,offsetY:0,color:"#35678a",flagFill:"#35678a"},
+  iran:{scaleX:1.96,scaleY:1,offsetX:0,offsetY:0,color:"#54637b",flagFill:"#54637b"}
+};
 let flagDebugDrafts={};
 function readFlagDebug(){try{return JSON.parse(localStorage.getItem(FLAG_DEBUG_STORAGE)||"{}")}catch{return{}}}
-function flagDebugSettings(id){return {...flagDebugDefaults,...(readFlagDebug()[id]||{})}}
+function flagDebugSettings(id){return {...flagDebugDefaults,...(flagDebugBuiltIn[id]||{}),...(readFlagDebug()[id]||{})}}
 function flagPathParts(d){return (d.match(/M[^M]*/g)||[d]).map(part=>part.trim()).filter(Boolean)}
 function pathDataBox(d){const nums=[...d.matchAll(/-?\d+(?:\.\d+)?/g)].map(match=>Number(match[0]));if(nums.length<2)return null;const xs=nums.filter((_,i)=>i%2===0),ys=nums.filter((_,i)=>i%2===1);return{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)}}
- function applyFlagDebugSettings(id){const settings={...flagDebugSettings(id),...(flagDebugDrafts[id]||{})};activeCountries().filter(path=>path.dataset.id===id).forEach(path=>{if(settings.color)path.style.setProperty("--polity-color",settings.color)});document.querySelectorAll(`.country-flag[data-for="${id}"] image`).forEach(image=>{const b={x:Number(image.dataset.baseX),y:Number(image.dataset.baseY),width:Number(image.dataset.baseWidth),height:Number(image.dataset.baseHeight)};const cx=b.x+b.width/2,cy=b.y+b.height/2,sx=Number(settings.scaleX)||1,sy=Number(settings.scaleY)||1,ox=Number(settings.offsetX)||0,oy=Number(settings.offsetY)||0;image.setAttribute("transform",`translate(${cx+ox} ${cy+oy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`)});document.querySelectorAll(`.country-flag[data-for="${id}"] .flag-fill`).forEach(fill=>{const color=settings.flagFill||"transparent";fill.setAttribute("fill",color);fill.style.setProperty("fill",color,"important")})}
+ function applyFlagDebugSettings(id){const settings={...flagDebugSettings(id),...(flagDebugDrafts[id]||{})};const shared=new Set(["ottoman","british-empire","french-empire","spanish-empire","italian-empire"]);activeCountries().filter(path=>path.dataset.id===id).forEach(path=>{const polity=path.dataset.polity||id;const base=path.dataset.basePolityColor||stablePolityColor(polity);path.style.setProperty("--polity-color",shared.has(polity)?base:(settings.color||base))});document.querySelectorAll(`.country-flag[data-for="${id}"] image`).forEach(image=>{const b={x:Number(image.dataset.baseX),y:Number(image.dataset.baseY),width:Number(image.dataset.baseWidth),height:Number(image.dataset.baseHeight)};const cx=b.x+b.width/2,cy=b.y+b.height/2,sx=Number(settings.scaleX)||1,sy=Number(settings.scaleY)||1,ox=Number(settings.offsetX)||0,oy=Number(settings.offsetY)||0;image.setAttribute("transform",`translate(${cx+ox} ${cy+oy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`)});document.querySelectorAll(`.country-flag[data-for="${id}"] .flag-fill`).forEach(fill=>{const color=settings.flagFill||"transparent";fill.setAttribute("fill",color);fill.style.setProperty("fill",color,"important")})}
 function syncFlags(y){
   const ns="http://www.w3.org/2000/svg",root=realMode?dom.realRoot:dom.schematicRoot,defs=dom.map.querySelector("defs");
   root.querySelectorAll(".country-flag").forEach(flag=>flag.remove());
   const oldPatterns=defs.querySelector("#flagPatterns");if(oldPatterns)oldPatterns.remove();
   const patterns=document.createElementNS(ns,"g");patterns.setAttribute("id","flagPatterns");defs.append(patterns);
-  activeCountries().forEach((path,index)=>{const asset=flagAssetFor(path.dataset.id,y),parts=flagPathParts(path.getAttribute("d"));parts.forEach((part,partIndex)=>{const b=pathDataBox(part);if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y))return;const clipId=`flagClip-${index}-${partIndex}`;const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",part);clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag");flag.dataset.for=path.dataset.id;flag.dataset.part=String(partIndex);flag.dataset.flagFile=asset.file;flag.dataset.flagPeriod=asset.period;flag.dataset.flagSource=asset.source;flag.setAttribute("clip-path",`url(#${clipId})`);flag.setAttribute("aria-hidden","true");const fill=document.createElementNS(ns,"path");fill.classList.add("flag-fill");fill.setAttribute("d",part);fill.setAttribute("fill","transparent");fill.style.setProperty("fill","transparent","important");fill.setAttribute("pointer-events","none");flag.append(fill);const image=document.createElementNS(ns,"image");image.setAttribute("x",b.x);image.setAttribute("y",b.y);image.setAttribute("width",Math.max(2,b.width));image.setAttribute("height",Math.max(2,b.height));image.dataset.baseX=String(b.x);image.dataset.baseY=String(b.y);image.dataset.baseWidth=String(Math.max(2,b.width));image.dataset.baseHeight=String(Math.max(2,b.height));image.setAttribute("preserveAspectRatio","xMidYMid slice");image.setAttribute("href",asset.path);image.setAttributeNS("http://www.w3.org/1999/xlink","href",asset.path);image.setAttribute("role","presentation");flag.append(image);root.append(flag)});applyFlagDebugSettings(path.dataset.id);if(document.activeElement===path)setHoverState(path.dataset.id,true)})
+  activeCountries().forEach((path,index)=>{const asset=flagAssetFor(path.dataset.id,y),allParts=flagPathParts(path.getAttribute("d")),cutoutCount=Number(path.dataset.cutoutCount)||0,parts=cutoutCount?allParts.slice(0,Math.max(0,allParts.length-cutoutCount)):allParts;parts.forEach((part,partIndex)=>{const b=pathDataBox(part);if(!b||!Number.isFinite(b.x)||!Number.isFinite(b.y))return;const clipId=`flagClip-${index}-${partIndex}`;const clip=document.createElementNS(ns,"clipPath");clip.setAttribute("id",clipId);clip.setAttribute("clipPathUnits","userSpaceOnUse");const clipPath=document.createElementNS(ns,"path");clipPath.setAttribute("d",part);clip.append(clipPath);patterns.append(clip);const flag=document.createElementNS(ns,"g");flag.classList.add("country-flag");flag.dataset.for=path.dataset.id;flag.dataset.part=String(partIndex);flag.dataset.flagFile=asset.file;flag.dataset.flagPeriod=asset.period;flag.dataset.flagSource=asset.source;flag.setAttribute("clip-path",`url(#${clipId})`);flag.setAttribute("aria-hidden","true");const fill=document.createElementNS(ns,"path");fill.classList.add("flag-fill");fill.setAttribute("d",part);fill.setAttribute("fill","transparent");fill.style.setProperty("fill","transparent","important");fill.setAttribute("pointer-events","none");flag.append(fill);const image=document.createElementNS(ns,"image");image.setAttribute("x",b.x);image.setAttribute("y",b.y);image.setAttribute("width",Math.max(2,b.width));image.setAttribute("height",Math.max(2,b.height));image.dataset.baseX=String(b.x);image.dataset.baseY=String(b.y);image.dataset.baseWidth=String(Math.max(2,b.width));image.dataset.baseHeight=String(Math.max(2,b.height));image.setAttribute("preserveAspectRatio","xMidYMid slice");image.setAttribute("href",asset.path);image.setAttributeNS("http://www.w3.org/1999/xlink","href",asset.path);image.setAttribute("role","presentation");flag.append(image);root.append(flag)});applyFlagDebugSettings(path.dataset.id)});
+  // Reattach only the one hover state that is still valid after rebuilding
+  // the yearly SVG. No DOM focus heuristic can resurrect a stale Ottoman,
+  // Hejaz or Libya flag after a click.
+  if(hoveredCountry&&selected!==hoveredCountry&&activeCountries().some(path=>path.dataset.id===hoveredCountry))setHoverState(hoveredCountry,true)
 }
- // The Ottoman path carries explicit Hejaz/Libya cutout subpaths for its fill.
- // Those subpaths must not receive an Ottoman flag image; otherwise hovering
- // the imperial core paints a flag over the very regions we just removed.
- const _syncFlagsWithCutoutGuard=syncFlags;
- syncFlags=(y)=>{_syncFlagsWithCutoutGuard(y);const ottoman=activeCountries().find(path=>path.dataset.id==="ottoman");const count=Number(ottoman?.dataset.cutoutCount)||0;if(!count)return;const flags=[...document.querySelectorAll('.country-flag[data-for="ottoman"]')];flags.filter(flag=>Number(flag.dataset.part)>=flags.length-count).forEach(flag=>flag.remove())};
- function setHoverState(id,on){const locked=selected===id;document.querySelectorAll(`.map-labels text[data-for="${id}"],.country-flag[data-for="${id}"]`).forEach(node=>{const active=on&&!locked;node.classList.toggle("hovered",active);node.style.transform=""});const path=activeCountries().find(candidate=>candidate.dataset.id===id);if(path&&locked)path.classList.add("detail-static")}
+function clearHoverVisuals(keepId=null){document.querySelectorAll(".map-labels text.hovered,.country-flag.hovered").forEach(node=>{if(keepId===null||node.dataset.for!==keepId){node.classList.remove("hovered");node.style.transform=""}})}
+function setHoverState(id,on){const locked=selected===id;if(on&&!locked){hoveredCountry=id;clearHoverVisuals(id)}else if(!on&&hoveredCountry===id)hoveredCountry=null;const active=on&&!locked&&hoveredCountry===id;document.querySelectorAll(`.map-labels text[data-for="${id}"],.country-flag[data-for="${id}"]`).forEach(node=>{node.classList.toggle("hovered",active);node.style.transform=""});const path=activeCountries().find(candidate=>candidate.dataset.id===id);if(path&&locked)path.classList.add("detail-static")}
 function polityAt(id,y){
   if(id==="ottoman")return "ottoman";
   if(id==="turkey")return "turkey";
   if(id==="morocco-spanish")return y<1956?"spanish-empire":"morocco";
   if(["syria","lebanon","palestine","jordan","iraq"].includes(id)&&y<=1917)return"ottoman";
   if(id==="syria"||id==="lebanon")return y<=1945?"french-empire":id;
-  if(id==="palestine"||id==="jordan")return y<=1947?"british-empire":id;
+  if(id==="palestine"||id==="jordan")return y<=1948?"british-empire":id;
   if(id==="iraq")return y<=1931?"british-empire":"iraq";
   if(id==="algeria")return y<1830?"ottoman":y<1962?"french-empire":"algeria";
   if(id==="tunisia")return y<1881?"ottoman":y<1956?"french-empire":"tunisia";
@@ -235,11 +246,11 @@ function polityAt(id,y){
   if(id==="hejaz")return y<=1916?"ottoman":y<=1925?"hejaz":"arabian-polities";
   if(id==="shammar")return"shammar";
   if(id==="najd")return y<1902?"najd-tribal":"najd";
-  if(id==="kuwait")return y>=1899&&y<1961?"british-empire":"kuwait";
+  if(id==="kuwait")return y<1899?"ottoman":y<1961?"british-empire":"kuwait";
   if(id==="qatar")return y>=1916&&y<1971?"british-empire":"qatar";
   if(id==="uae")return y>=1892&&y<1971?"british-empire":"uae";
-  if(id==="yemen-north")return y<1990?"yemen-north":"yemen";
-  if(id==="yemen-south")return y<1990?"yemen-south":"yemen";
+  if(id==="yemen-north")return y<1918?"ottoman":y<1990?"yemen-north":"yemen";
+  if(id==="yemen-south")return y<1967?"british-empire":y<1990?"yemen-south":"yemen";
   if(id==="yemen")return y<1990?"yemen-divided":"yemen";
   return id;
 }
@@ -250,7 +261,7 @@ function historicalStyles(y){
   // made every transition reshuffle the palette.  A stable polity key keeps
   // shared regimes (for example Ottoman provinces) visually unified across
   // years while preserving separate Ottoman and Turkish republican colours.
-  countries.forEach((path,index)=>{const polity=polities[index];path.dataset.polity=polity;path.style.setProperty("--polity-color",stablePolityColor(polity));path.classList.toggle("dependent",dependentIds.includes(path.dataset.id));path.classList.toggle("context",["hejaz","shammar","najd"].includes(path.dataset.id))});
+  countries.forEach((path,index)=>{const polity=polities[index],baseColor=stablePolityColor(polity);path.dataset.polity=polity;path.dataset.basePolityColor=baseColor;path.style.setProperty("--polity-color",baseColor);path.classList.toggle("dependent",dependentIds.includes(path.dataset.id));path.classList.toggle("context",["hejaz","shammar","najd"].includes(path.dataset.id))});
 }
 function createLabels(){
   dom.labels.innerHTML="";
@@ -286,12 +297,7 @@ function createLabels(){
   });
 }
 function regions(path){dom.regionLines.innerHTML="";const b=path.getBBox(),names=meta[path.dataset.id][1],lines=[[b.x+b.width*.36,b.y+5,b.x+b.width*.48,b.y+b.height-5],[b.x+4,b.y+b.height*.54,b.x+b.width-4,b.y+b.height*.42],[b.x+b.width*.68,b.y+5,b.x+b.width*.73,b.y+b.height-5]];lines.slice(0,Math.min(3,names.length-1)).forEach(v=>{const l=document.createElementNS("http://www.w3.org/2000/svg","line");["x1","y1","x2","y2"].forEach((k,i)=>l.setAttribute(k,v[i]));dom.regionLines.append(l)});names.slice(0,4).forEach((n,i)=>{const t=document.createElementNS("http://www.w3.org/2000/svg","text"),c=i%2,r=Math.floor(i/2);t.setAttribute("x",b.x+b.width*(c?.7:.3));t.setAttribute("y",b.y+b.height*(r?.7:.3));t.textContent=n;dom.regionLines.append(t)});dom.regionLines.classList.add("visible")}
-function choose(id){selected=id;const p=activeCountries().find(x=>x.dataset.id===id);if(!p)return;const b=p.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode)regions(p);render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
-// A polity colour is shared across provinces, but selection is always a
-// single clicked geographic feature (for example Turkey must not select the
-// separate Hejaz or Libya overlays that are also Ottoman-coloured).
-const _chooseSingleFeature=choose;
-choose=function(id){_chooseSingleFeature(id);activeCountries().forEach(path=>path.classList.toggle("selected",path.dataset.id===id));document.querySelectorAll(".country-flag.hovered,.map-labels text.hovered").forEach(node=>{node.classList.remove("hovered");node.style.transform=""});const selectedPath=activeCountries().find(path=>path.dataset.id===id);if(selectedPath)selectedPath.classList.add("detail-static")};
+function choose(id){hoveredCountry=null;clearHoverVisuals();selected=id;const p=activeCountries().find(x=>x.dataset.id===id);if(!p)return;const b=p.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode)regions(p);render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
 function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");render()}
 function stop(){if(timer)clearInterval(timer);timer=null;dom.play.classList.remove("playing");dom.play.setAttribute("aria-label","播放时间线")}
 function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;render()},120)}
@@ -407,7 +413,10 @@ function buildBoundaryMap(y){
     // own Ottoman tag so it can never be confused with the Turkish republic.
     const logicalId=feature.id==="turkey"&&y<=1922?"ottoman":feature.id;
     p.dataset.id=logicalId;p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||pathData;p.setAttribute("d",pathData);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":feature.source?.includes("extension")?"nonzero":"evenodd");
-    if(["western-sahara","palestine"].includes(logicalId))p.classList.add("disputed");
+    // The mandate is a British colonial/League of Nations territory through
+    // the 1948 annual snapshot. Only post-mandate Palestine remains styled as
+    // disputed; otherwise 1920—1948 would look like an unfilled state claim.
+    if(logicalId==="western-sahara"||(logicalId==="palestine"&&y>=1949))p.classList.add("disputed");
     if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
     if(feature.source?.includes("context"))p.classList.add("context");
     // Compound historical records for Aden and the Ottoman/Turkish core are

@@ -1,0 +1,50 @@
+{
+  "saudi": {
+    "scaleX": 1,
+    "scaleY": 1.42,
+    "offsetX": -18,
+    "offsetY": 0,
+    "color": "#9b713e",
+    "flagFill": "#9b713e"
+  },
+  "turkey": {
+    "scaleX": 1,
+    "scaleY": 1,
+    "offsetX": 0,
+    "offsetY": 0,
+    "color": "#fe8b4d",
+    "flagFill": "#f05a19"
+  },
+  "bahrain": {
+    "scaleX": 1,
+    "scaleY": 1,
+    "offsetX": 0,
+    "offsetY": 0,
+    "color": "#9d4035",
+    "flagFill": "#cc3e2e"
+  },
+  "algeria": {
+    "scaleX": 1.42,
+    "scaleY": 1,
+    "offsetX": 0,
+    "offsetY": 0,
+    "color": "#8d653d",
+    "flagFill": "#8d653d"
+  },
+  "libya": {
+    "scaleX": 1.6,
+    "scaleY": 1,
+    "offsetX": 0,
+    "offsetY": 0,
+    "color": "#35678a",
+    "flagFill": "#35678a"
+  },
+  "iran": {
+    "scaleX": 1.96,
+    "scaleY": 1,
+    "offsetX": 0,
+    "offsetY": 0,
+    "color": "#54637b",
+    "flagFill": "#54637b"
+  }
+}
