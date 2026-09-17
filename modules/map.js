@@ -7,7 +7,7 @@ function historicalStyles(y){
   // made every transition reshuffle the palette.  A stable polity key keeps
   // shared regimes (for example Ottoman provinces) visually unified across
   // years while preserving separate Ottoman and Turkish republican colours.
-  countries.forEach((path,index)=>{const polity=polities[index],baseColor=stablePolityColor(polity);path.dataset.polity=polity;path.dataset.basePolityColor=baseColor;path.style.setProperty("--polity-color",sharedColorFor(polity)||baseColor);path.classList.toggle("dependent",dependentIds.includes(path.dataset.id));path.classList.toggle("context",["hejaz","shammar","najd"].includes(path.dataset.id))});
+  countries.forEach((path,index)=>{const polity=polities[index],baseColor=stablePolityColor(polity);path.dataset.polity=polity;path.dataset.basePolityColor=baseColor;path.style.setProperty("--polity-color",sharedColorFor(polity)||baseColor);path.classList.toggle("dependent",dependentIds.includes(path.dataset.id));path.classList.toggle("context",["shammar","najd"].includes(path.dataset.id))});
 }
 function createLabels(){
   dom.labels.innerHTML="";
@@ -49,7 +49,7 @@ function regions(path){dom.regionLines.innerHTML="";const b=path.getBBox(),names
 function choose(id){activeFlagId=null;clearHoverVisuals();const p=activeCountries().find(x=>x.dataset.id===id),selectedPaths=activeCountries().filter(x=>x.dataset.id===id),disputePath=dom.frontierOverlays?.querySelector(`.dispute-hit[data-dispute-id="${id}"]`);if(!p&&!disputePath)return;selected=id;const target=p||disputePath,b=target.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{const belongs=selectedPaths.includes(x);x.classList.toggle("selected",belongs);x.classList.toggle("dimmed",!belongs);x.classList.toggle("detail-static",belongs)});document.querySelectorAll(".dispute-hit").forEach(x=>{x.classList.toggle("selected",x===disputePath);x.classList.toggle("dimmed",x!==disputePath)});if(p)setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode&&p)regions(p);if(typeof requestRender==="function")requestRender();else render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
 function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");if(typeof requestRender==="function")requestRender();else render()}
 function stop(){if(timer)clearInterval(timer);timer=null;dom.play.classList.remove("playing");dom.play.setAttribute("aria-label","播放时间线")}
-function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;if(typeof requestRender==="function")requestRender();else if(typeof renderYear==="function")renderYear(Number(dom.year.value));else render()},120)}
+function toggle(){if(timer)return stop();if(+dom.year.value>=2026)return;dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{const current=+dom.year.value;if(current>=2026){stop();return}dom.year.value=current+1;if(typeof requestRender==="function")requestRender();else if(typeof renderYear==="function")renderYear(Number(dom.year.value));else render()},120)}
 function bindCountry(p){const label=meta[p.dataset.id]?.[0]||p.dataset.id;p.setAttribute("tabindex","0");p.setAttribute("role","button");p.setAttribute("aria-label",`查看${label}`);p.addEventListener("click",()=>choose(p.dataset.id));p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose(p.dataset.id)}});p.addEventListener("mouseenter",()=>setHoverState(p.dataset.id,true));p.addEventListener("mouseleave",()=>setHoverState(p.dataset.id,false));p.addEventListener("focus",()=>{p.classList.add("keyboard-focus");setHoverState(p.dataset.id,true)});p.addEventListener("blur",()=>{p.classList.remove("keyboard-focus");setHoverState(p.dataset.id,false)})}
 // CShapes models states and dependencies, not every emirate or protectorate inside
 // the Arabian Peninsula. These contextual polygons are digitized against the
@@ -149,6 +149,15 @@ function boundaryFeaturesForYear(y){
     const index=selectedFeatures.findIndex(feature=>feature.id==="western-sahara");
     if(index>=0)selectedFeatures[index]=full;else selectedFeatures.push(full)
   }
+  // Use the user-updated Hejaz SVG for both Ottoman Hejaz and the short-lived
+  // Kingdom of Hejaz period. The source SVG has a root translation, so keep
+  // that transform with the feature instead of flattening its coordinates.
+  const hejazReference=window.MENA_HEJAZ_REFERENCE;
+  if(y>=1886&&y<=1925&&hejazReference?.path){
+    const full={...hejazReference,from:y,to:y,source:`${hejazReference.source} · historical Hejaz binding`};
+    for(let index=selectedFeatures.length-1;index>=0;index--)if(selectedFeatures[index].id==="hejaz")selectedFeatures.splice(index,1);
+    selectedFeatures.push(full)
+  }
   // CShapes stops carrying a separate Palestine record after 1967 because
   // the area was under Israeli military occupation. Keep the two geographic
   // pieces selectable by reusing the modern reference outline as a dated
@@ -170,16 +179,17 @@ function boundaryFeaturesForYear(y){
       // CShapes stores Tripolitania/Cyrenaica as an exact Ottoman subpath in
       // the early cohort. Remove that subpath from the body itself when it is
       // available; the mask below remains the fallback for partial overlaps.
-      ottoman.basePath=cleaned;ottoman.path=cleaned;ottoman.cutoutPaths=cuts.map(feature=>feature.path);ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutout mask for ${cuts.map(feature=>feature.id).join("/")}`
+      ottoman.basePath=cleaned;ottoman.path=cleaned;ottoman.cutoutPaths=cuts.map(feature=>feature.path);ottoman.cutoutTransforms=cuts.map(feature=>feature.transform||"");ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutout mask for ${cuts.map(feature=>feature.id).join("/")}`
     }
   }
   const splitFeatures=selectedFeatures.flatMap(feature=>feature.id==="palestine"&&y>=1949?splitPalestineFeature(feature):[feature]);
   splitFeatures.forEach(feature=>{
     const id=["yemen-north","yemen-south"].includes(feature.id)&&y>=1990?"yemen":feature.id;
-    const current=grouped.get(id)||{id,name:feature.name,path:"",source:feature.source,cutoutCount:0,basePath:feature.basePath||"",cutoutPaths:[]};
+    const current=grouped.get(id)||{id,name:feature.name,path:"",source:feature.source,transform:feature.transform||"",cutoutCount:0,basePath:feature.basePath||"",cutoutPaths:[],cutoutTransforms:[]};
     current.path+=feature.path;
     current.cutoutCount+=(feature.cutoutCount||0);
     if(feature.cutoutPaths?.length)current.cutoutPaths.push(...feature.cutoutPaths);
+    if(feature.cutoutTransforms?.length)current.cutoutTransforms.push(...feature.cutoutTransforms);
     current.source=current.source===feature.source?current.source:[...new Set([current.source,feature.source].filter(Boolean).flatMap(source=>source.split(" + ")))].join(" + ");
     grouped.set(id,current);
   });
@@ -188,7 +198,6 @@ function boundaryFeaturesForYear(y){
   return [...features.filter(feature=>!["gaza-strip","west-bank"].includes(feature.id)),...overlays];
 }
 const DISPUTE_REGION_DEFINITIONS={
-  "arabian-dispute":{from:1886,to:1925,path:"M755,305L770,305L770,340L775,365L760,365L755,340Z",title:"1886—1925 汉志与内志之间的争议区"},
   "saudi-yemen-dispute":{from:1932,to:1932,path:"M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z",title:"1932年沙特—也门未定界争议带"},
   "golan-heights":{from:1967,to:2026,path:"M699,182L701,182L701,188L700,193L697,193L697,187Z",title:"戈兰高地：以色列实际控制、叙利亚声索"},
   "sinai-peninsula":{from:1968,to:1979,path:"M666,232L682,232L685,238L684,246L682,252L682,256L678,254L672,248L670,240Z",title:"西奈半岛：以色列占领、埃及声索"}
@@ -209,10 +218,6 @@ function renderFrontierOverlays(y){
   };
   const appendActualControlOverlay=(d,titleText,info)=>{const p=document.createElementNS(ns,"path");p.classList.add("actual-control");p.setAttribute("d",d);p.setAttribute("fill",stablePolityColor("israel"));p.setAttribute("fill-rule","evenodd");configureOverlay(p,info?.id,info||{});const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
   const appendDisputeHit=info=>{const p=document.createElementNS(ns,"path");p.classList.add("dispute-hit");p.dataset.id=info.id;p.dataset.disputeId=info.id;p.setAttribute("d",info.d);p.setAttribute("fill","transparent");p.setAttribute("fill-rule","evenodd");p.setAttribute("tabindex","0");p.setAttribute("role","button");p.setAttribute("aria-label",`查看${info.title}`);if(info.transform)p.setAttribute("transform",info.transform);const title=document.createElementNS(ns,"title");title.textContent=`点击查看${info.title}`;p.append(title);p.addEventListener("click",()=>choose(info.id));p.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();choose(info.id)}});dom.frontierOverlays.append(p)};
-  // The 1914 reference labels the unclaimed belt between Hejaz and the
-  // Wahhabi/Najd polity as an “area of dispute”; retain it rather than invent
-  // a shared sovereign frontier. This also prevents a visual overlap.
-  if(y>=1886&&y<=1925){const info=disputePathDataForYear("arabian-dispute",y);appendOverlay(info.d,info.title,"arabian-dispute");appendDisputeHit(info)}
   // The Treaty of Taif was signed in 1934. In 1932 the Asir–Jizan–Najran
   // frontier was still unsettled, so the gap is shown as a hatched disputed
   // belt rather than silently assigning it to Saudi Arabia or Yemen.
@@ -229,6 +234,13 @@ function buildBoundaryMap(y){
   // record is a multi-polygon and its Libya overlap is not a guaranteed hole.
   defs?.querySelector("#ottomanCutoutMask")?.remove();
   const replacements=boundaryDebugReplacementEntriesForYear(y),replacementIds=new Set(replacements.map(entry=>entry.id));
+  const appendBoundaryPath=(path,transform="")=>{
+    if(!transform){dom.realRoot.append(path);return}
+    const wrapper=document.createElementNS(ns,"g");
+    wrapper.setAttribute("transform",transform);
+    wrapper.append(path);
+    dom.realRoot.append(wrapper)
+  };
   boundaryFeaturesForYear(y).forEach(feature=>{
     const pathData=feature.path;
     // CShapes calls the pre-1923 imperial polygon `turkey`; expose it as its
@@ -241,7 +253,7 @@ function buildBoundaryMap(y){
     const pathParts=logicalId==="western-sahara"?flagPathParts(pathData):[pathData];
     pathParts.forEach((part,partIndex)=>{
       const p=document.createElementNS(ns,"path");
-      p.dataset.id=logicalId;p.dataset.part=String(partIndex);p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||part;if(feature.cutoutPaths?.length)p.dataset.cutoutPaths=JSON.stringify(feature.cutoutPaths);p.setAttribute("d",part);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":logicalId==="western-sahara"?"nonzero":feature.source?.includes("extension")?"nonzero":"evenodd");
+      p.dataset.id=logicalId;p.dataset.part=String(partIndex);p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||part;p.dataset.transform=feature.transform||"";p.style.setProperty("--source-transform","none");if(feature.cutoutPaths?.length)p.dataset.cutoutPaths=JSON.stringify(feature.cutoutPaths);p.setAttribute("d",part);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":logicalId==="western-sahara"?"nonzero":feature.source?.includes("extension")?"nonzero":"evenodd");
       if(logicalId==="western-sahara"&&y>=1886&&y<=1958){
         // The Spanish colonial area must be an ordinary opaque country fill.
         // Set the colour on each split source path itself; an overlay would
@@ -256,19 +268,19 @@ function buildBoundaryMap(y){
           mask=document.createElementNS(ns,"mask");mask.id="ottomanCutoutMask";mask.setAttribute("mask-type","luminance");mask.setAttribute("maskUnits","userSpaceOnUse");mask.setAttribute("maskContentUnits","userSpaceOnUse");mask.setAttribute("x","0");mask.setAttribute("y","0");mask.setAttribute("width","1080");mask.setAttribute("height","650");
           const white=document.createElementNS(ns,"rect");white.setAttribute("x","0");white.setAttribute("y","0");white.setAttribute("width","1080");white.setAttribute("height","650");white.setAttribute("fill","white");mask.append(white);defs.append(mask)
         }
-        if(mask){feature.cutoutPaths.forEach(cutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
+        if(mask){feature.cutoutPaths.forEach((cutPath,index)=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);if(feature.cutoutTransforms?.[index])cut.setAttribute("transform",feature.cutoutTransforms[index]);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
       }
       // Western Sahara and the post-1948 Palestinian pieces are disputed in
       // status, but still receive ordinary opaque polity fills. Claim hatching
       // is reserved for the explicit control/claim overlays below.
       if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
-      if(feature.source?.includes("context"))p.classList.add("context");
+      if(logicalId!=="hejaz"&&feature.source?.includes("context"))p.classList.add("context");
       // Compound historical records for Aden and the Ottoman/Turkish core are
       // one polity even when the source geometry contains touching subpaths.
       if((feature.id==="yemen-south"&&y<=1967)||(feature.id==="turkey"&&y<=1922))p.classList.add("merged-feature");
       const title=document.createElementNS(ns,"title");
       const label=logicalId==="ottoman"?"奥斯曼帝国":logicalId==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):(meta[logicalId]?.[0]||feature.name||logicalId);
-      title.textContent=`${label} · ${feature.source||"地图数据"}`;p.append(title);dom.realRoot.append(p)
+      title.textContent=`${label} · ${feature.source||"地图数据"}`;p.append(title);appendBoundaryPath(p,feature.transform||"")
     })
   });
   replacements.forEach(({id,item})=>{
@@ -277,9 +289,9 @@ function buildBoundaryMap(y){
     const p=document.createElementNS(ns,"path"),fillRule=paths.some(record=>record.fillRule==="evenodd")?"evenodd":"nonzero";
     p.dataset.id=id;p.dataset.source=`导入 SVG 替换 · ${item.name||item.id||id}`;p.dataset.sourceId=id;p.dataset.cutoutCount=String(paths.reduce((count,record)=>count+(record.cutoutPaths?.length||0),0));p.dataset.flagPath=pathData;
     const cutoutPaths=paths.flatMap(record=>record.cutoutPaths||[]);if(cutoutPaths.length)p.dataset.cutoutPaths=JSON.stringify(cutoutPaths);
-    p.setAttribute("d",pathData);p.setAttribute("fill-rule",fillRule);const replacementTarget={type:"current",id,value:`current:${id}`},replacementSettings=boundaryDebugSettings(replacementTarget,y);p.setAttribute("transform",boundaryDebugTransform(boundaryDebugPathRecordsBounds(paths),replacementSettings));p.classList.add("boundary-debug-replacement");
+    p.setAttribute("d",pathData);p.setAttribute("fill-rule",fillRule);const replacementTarget={type:"current",id,value:`current:${id}`},replacementSettings=boundaryDebugSettings(replacementTarget,y),replacementTransform=boundaryDebugTransform(boundaryDebugPathRecordsBounds(paths),replacementSettings);p.dataset.transform=replacementTransform||"";p.style.setProperty("--source-transform","none");p.classList.add("boundary-debug-replacement");
     if(cutoutPaths.length&&defs){const mask=document.createElementNS(ns,"mask"),maskId=`boundaryDebugReplacementMask-${y}-${id}`.replace(/[^A-Za-z0-9_-]/g,"-");mask.id=maskId;mask.setAttribute("mask-type","luminance");mask.setAttribute("maskUnits","userSpaceOnUse");mask.setAttribute("maskContentUnits","userSpaceOnUse");mask.setAttribute("x","0");mask.setAttribute("y","0");mask.setAttribute("width","1080");mask.setAttribute("height","650");const white=document.createElementNS(ns,"rect");white.setAttribute("x","0");white.setAttribute("y","0");white.setAttribute("width","1080");white.setAttribute("height","650");white.setAttribute("fill","white");mask.append(white);cutoutPaths.forEach(cutoutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutoutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});defs.append(mask);p.setAttribute("mask",`url(#${maskId})`)}
-    const title=document.createElementNS(ns,"title"),label=id==="ottoman"?"奥斯曼帝国":id==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):(meta[id]?.[0]||id);title.textContent=`${label} · ${p.dataset.source}`;p.append(title);dom.realRoot.append(p)
+    const title=document.createElementNS(ns,"title"),label=id==="ottoman"?"奥斯曼帝国":id==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):(meta[id]?.[0]||id);title.textContent=`${label} · ${p.dataset.source}`;p.append(title);appendBoundaryPath(p,replacementTransform||"")
   });
   dom.realCountries=[...dom.realRoot.querySelectorAll("path")];dom.realCountries.forEach(bindCountry);renderFrontierOverlays(y)
 }

@@ -4,9 +4,14 @@ import path from "node:path";
 import {spawnSync} from "node:child_process";
 
 const root=process.cwd();
+const boundaryDirectory="assets/boundaries";
+const boundaryFiles=fs.existsSync(path.join(root,boundaryDirectory))
+  ? fs.readdirSync(path.join(root,boundaryDirectory)).filter(file=>file.toLowerCase().endsWith(".svg")).map(file=>path.join(boundaryDirectory,file))
+  : [];
 const mirrorFiles=[
   "app.js","formal-names.js","index.html","mena-2026.js",
-  "mena-western-sahara-reference.js",
+  "mena-western-sahara-reference.js","mena-hejaz-reference.js",
+  ...boundaryFiles,
   "mena-flag-debug.json","mena-historical-1886-1923.js",
   "mena-historical-1924-1999.js","mena-historical-aden.js",
   "mena-historical-yemen-extension.js","PROJECT_CONTEXT.md","README.md",
