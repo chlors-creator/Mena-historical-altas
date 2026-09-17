@@ -73,7 +73,7 @@ const realBoundaryYear=y=>y>=1886;
 // Keep each historical period's viewport lifecycle independent.  The old
 // `schematic` key reused one DOM/viewBox for 1797—1885, so a preceding zoom or
 // a long title could make the next period appear wider than its peers.
-const boundaryKeyFor=y=>{const replacement=typeof boundaryDebugReplacements!=="undefined"&&Object.keys(boundaryDebugReplacements).some(key=>key.startsWith(`${y}::`));return historicalBoundaryYear(y)?`historical-${y}`:y>=2000?`modern${replacement?`-replacement-${y}`:""}`:`schematic-${eraFor(y).from}`};
+const boundaryKeyFor=y=>{const replacement=typeof boundaryDebugHasReplacementForYear==="function"&&boundaryDebugHasReplacementForYear(y);return historicalBoundaryYear(y)?`historical-${y}`:y>=2000?`modern${replacement?`-replacement-${y}`:""}`:`schematic-${eraFor(y).from}`};
 function eventCards(events){return events.map(([y,n,d,p])=>`<a class="event-card" href="${wiki(p)}" target="_blank" rel="noopener noreferrer"><span class="event-year">${y}</span><span><h4>${n}</h4><p>${d}</p></span><span class="event-arrow" aria-hidden="true">↗</span></a>`).join("")}
 function activeCountries(){return realMode?dom.realCountries:dom.schematicCountries}
 function clearMapState(){activeFlagId=null;dom.map.setAttribute("viewBox","0 0 1080 650");[...dom.schematicCountries,...dom.realCountries].forEach(p=>p.classList.remove("selected","dimmed","detail-static"));clearHoverVisuals();dom.regionLines.classList.remove("visible");dom.regionLines.innerHTML="";if(dom.frontierOverlays)dom.frontierOverlays.innerHTML="";if(dom.historyConnectors)dom.historyConnectors.innerHTML=""}

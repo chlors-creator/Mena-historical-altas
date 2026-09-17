@@ -171,7 +171,7 @@
     <button class="dialog-close" id="boundaryDebugClose" type="button" aria-label="关闭">×</button>
     <p class="eyebrow">BOUNDARY / GEOMETRY DEBUGGER</p>
     <h2 id="boundaryDebugTitle">疆域导入与平移缩放调试</h2>
-    <p class="debug-intro">原始地图疆域始终保留不变。先选择“调试对象”，再点击“导入并预览”即可直接替换该对象的 SVG；没有选中对象时才会新建导入对象。保存当前疆域后，会生成可独立平移、缩放和旋转的调试副本；导出 SVG 或路径 JSON 会直接下载疆域几何文件，不只是保存浏览器配置。共享文件只在连续年份的 SVG 路径、填充规则和挖空路径完全一致时合并；正式国名只是文件名的一部分，不能覆盖真实疆域变化。</p>
+    <p class="debug-intro">原始地图疆域始终保留不变。先选择“调试对象”，再点击“导入并预览”即可直接替换该对象的 SVG；没有选中对象时才会新建导入对象。系统会按原始疆域几何计算相同时间段，让同一段内的年份共用一个 SVG；路径、填充规则和挖空路径完全相同的导入文件只保留一份，文件名按“正式名称+起止年份”生成，例如“伊朗伊斯兰共和国1979-2026”。保存当前疆域后，会生成可独立平移、缩放和旋转的调试副本；导出 SVG 或路径 JSON 会直接下载疆域几何文件。</p>
     <div class="boundary-debug-import">
       <label class="debug-file-label">导入疆域文件
         <input id="boundaryDebugFile" type="file" accept=".geojson,.json,.svg,.js,application/geo+json,application/json,image/svg+xml,text/javascript">
