@@ -20,6 +20,12 @@ if(Test-Path -LiteralPath $boundarySourceDir){
     Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $boundaryTargetDir $_.Name) -Force
   }
 }
+$flagSource=Join-Path $root 'assets/flags/egypt-1952.svg'
+$flagTargetDir=Join-Path $root 'dist/assets/flags'
+if(Test-Path -LiteralPath $flagSource){
+  if(!(Test-Path -LiteralPath $flagTargetDir)){New-Item -ItemType Directory -Path $flagTargetDir -Force | Out-Null}
+  Copy-Item -LiteralPath $flagSource -Destination (Join-Path $flagTargetDir 'egypt-1952.svg') -Force
+}
 Push-Location $root
 try { Get-Content -LiteralPath (Join-Path $root 'scripts/verify.mjs') -Raw | node --input-type=module - }
 finally { Pop-Location }

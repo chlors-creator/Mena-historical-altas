@@ -7,6 +7,7 @@ const flagSources={
   "egypt-1826-1867.png":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1826%E2%80%931867_and_1881%E2%80%931914).png",
   "egypt-muhammad-ali.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Muhammad_Ali.svg",
   "egypt-1922.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1922%E2%80%931958).svg",
+  "egypt-1952.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1953-1958).svg",
   "egypt-1958.png":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1958%E2%80%931972).png",
   "egypt-1972.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt_(1972%E2%80%931984).svg",
   "egypt.svg":"https://commons.wikimedia.org/wiki/File:Flag_of_Egypt.svg",
@@ -74,7 +75,7 @@ function flagAssetFor(id,y){
   if(id==="algeria")return y<1830?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1830）"):y<1962?flagAsset("france.svg","法属阿尔及利亚（1830—1962）"):flagAsset("algeria.svg","阿尔及利亚共和国（1962—）");
   if(id==="tunisia")return y<1881?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1881）"):y<1956?flagAsset("france.svg","法属突尼斯（1881—1956）"):flagAsset("tunisia.svg","突尼斯共和国（1956—）");
   if(id==="libya")return y<1912?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1912）"):y<1943?flagAsset("italy.svg","意属利比亚（1912—1943）"):y<1951?flagAsset("uk.svg","英法军事管理（1943—1951）"):y<1969?flagAsset("libya-1951.svg","利比亚王国（1951—1969）"):y<1972?flagAsset("libya-1969.svg","利比亚共和国（1969—1972）"):y<1977?flagAsset("egypt-1972.svg","阿拉伯共和国联邦时期（1972—1977）"):y<2011?flagAsset("libya-1977.svg","大阿拉伯利比亚人民社会主义民众国（1977—2011）"):flagAsset("libya-1951.svg","利比亚国（2011—）");
-  if(id==="egypt")return y<1805?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1805）"):y<1826?flagAsset("ottoman-empire.svg","穆罕默德·阿里统治早期（1805—1826，奥斯曼旗制语境）"):y<1867?flagAsset("egypt-1826-1867.png","埃及赫迪夫领（1826—1867）"):y<1881?flagAsset("egypt-muhammad-ali.svg","埃及赫迪夫领（1867—1881）"):y<1922?flagAsset("egypt-1882.svg","埃及苏丹国（1881—1922）"):y<1958?flagAsset("egypt-1922.svg","埃及王国／共和国（1922—1958）"):y<1972?flagAsset("egypt-1958.png","阿拉伯联合共和国（1958—1971）"):y<1984?flagAsset("egypt-1972.svg","埃及（1972—1984）"):flagAsset("egypt.svg","埃及共和国（1984—）");
+  if(id==="egypt")return y<1805?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1805）"):y<1826?flagAsset("ottoman-empire.svg","穆罕默德·阿里统治早期（1805—1826，奥斯曼旗制语境）"):y<1867?flagAsset("egypt-1826-1867.png","埃及赫迪夫领（1826—1867）"):y<1881?flagAsset("egypt-muhammad-ali.svg","埃及赫迪夫领（1867—1881）"):y<1923?flagAsset("egypt-1882.svg","埃及苏丹国／保护国（1882—1922）"):y<1953?flagAsset("egypt-1922.svg","埃及王国（1923—1952）"):y<1958?flagAsset("egypt-1952.svg","埃及共和国／革命旗（1953—1958）"):y<1972?flagAsset("egypt-1958.png","阿拉伯联合共和国（1958—1971）"):y<1984?flagAsset("egypt-1972.svg","埃及（1972—1984）"):flagAsset("egypt.svg","埃及共和国（1984—）");
   if(id==="sudan")return y<1821?flagAsset("ottoman-empire.svg","地方苏丹国（奥斯曼边疆）"):y<1826?flagAsset("ottoman-empire.svg","埃及征服初期（1821—1826，奥斯曼旗制语境）"):y<1867?flagAsset("egypt-1826-1867.png","埃及统治时期（1826—1867）"):y<1881?flagAsset("egypt-muhammad-ali.svg","埃及统治时期（1867—1881）"):y<1885?flagAsset("egypt-1826-1867.png","英埃统治早期（1881—1885）"):y<1956?flagAsset("uk.svg","英埃共管苏丹（历史旗帜未统一）"):y<1970?flagAsset("sudan-1956.svg","苏丹共和国（1956—1970）"):flagAsset("sudan.svg","苏丹共和国（1970—）");
   if(id==="syria")return y<=1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<=1931?flagAsset("syria-1930.svg","叙利亚委任统治（1920—1931）"):y<=1957?flagAsset("syria-1932.svg","叙利亚共和国（1932—1957）"):y<=1960?flagAsset("united-arab-republic.svg","阿拉伯联合共和国（1958—1961）"):y<=1962?flagAsset("syria-1932.svg","叙利亚共和国（1961—1963）"):y<=1971?flagAsset("syria-1963.svg","叙利亚（1963—1972）"):y<=1979?flagAsset("syria-1972.svg","阿拉伯共和国联邦时期（1972—1980）"):y<=2024?flagAsset("united-arab-republic.svg","叙利亚（1980—2024）"):flagAsset("syria.svg","叙利亚（2025—）");
   if(id==="lebanon")return y<1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<1943?flagAsset("lebanon-1920.svg","法属黎巴嫩委任统治（1920—1943）"):flagAsset("lebanon.svg","黎巴嫩共和国（1943—）");
@@ -118,7 +119,7 @@ const flagDebugAssetVariants={
   algeria:["ottoman-empire.svg","france.svg","algeria.svg"],
   libya:["ottoman-empire.svg","italy.svg","uk.svg","libya-1951.svg","libya-1969.svg","egypt-1972.svg","libya-1977.svg"],
   iran:["qajar-iran.svg","iran-1933.svg","iran-1964.svg","iran.svg"],
-  egypt:["egypt-1882.svg"],ottoman:["ottoman-empire.svg"],iraq:["iraq-1963.svg"],
+  egypt:["egypt-1882.svg","egypt-1922.svg","egypt-1952.svg"],ottoman:["ottoman-empire.svg"],iraq:["iraq-1963.svg"],
   morocco:["morocco.svg"],tunisia:["tunisia.svg"],israel:["israel.svg"]
 };
 const flagDebugBuiltIn={};Object.entries(flagDebugAssetVariants).forEach(([id,files])=>files.forEach(file=>{flagDebugBuiltIn[`${id}::${file}`]={...flagDebugCountryDefaults[id]}}));
@@ -127,6 +128,7 @@ const flagDebugBuiltIn={};Object.entries(flagDebugAssetVariants).forEach(([id,fi
 Object.assign(flagDebugBuiltIn,{
   "egypt::egypt-1882.svg":{scaleX:.93,scaleY:1.09,offsetX:20,offsetY:0,color:"#bf7d87",flagFill:"#ce1127"},
   "egypt::egypt-1922.svg":{scaleX:.99,scaleY:.79,offsetX:0,offsetY:0,rotation:0,color:"#a65d37",flagFill:"#00672b"},
+  "egypt::egypt-1952.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,rotation:0,color:"#a65d37",flagFill:"#00672b"},
   "ottoman::ottoman-empire.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#8eb785",flagFill:"#6b4a3a"},
   "turkey::turkey.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#d07a01",flagFill:"#e30a17"},
   "algeria::france.svg":{scaleX:1.11,scaleY:1,offsetX:0,offsetY:0,color:"#5b69b9",flagFill:"#ffffff"},
