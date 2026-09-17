@@ -79,7 +79,7 @@
             <text class="sea-label sea-main sea-red" x="713" y="325" text-anchor="middle" transform="rotate(67 713 325)">红海</text>
           </g>
           <g id="regionLines" class="region-lines" aria-hidden="true"></g>
-          <g id="frontierOverlays" class="frontier-overlays" aria-hidden="true"></g>
+          <g id="frontierOverlays" class="frontier-overlays" aria-label="可选择的争议地区"></g>
           <g id="boundaryDebugLayer" class="boundary-debug-layer" aria-hidden="true"></g>
           <g id="historyConnectors" class="history-connectors" aria-hidden="true"></g>
           <g id="labels" class="map-labels" aria-hidden="true"></g>
@@ -208,14 +208,11 @@
     <p class="debug-status" id="boundaryDebugStatus" role="status"></p>
   </dialog>
   <script src="mena-2026.js"></script>
-  <script src="mena-historical-1886-1923.js"></script>
-  <script src="mena-historical-aden.js"></script>
-  <script src="mena-historical-1924-1999.js"></script>
+  <script src="modules/lazy-loader.js"></script>
   <script src="formal-names.js"></script>
   <script src="modules/core.js"></script>
   <script src="modules/flags.js"></script>
   <script src="modules/map.js"></script>
-  <script src="modules/boundary-debug.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

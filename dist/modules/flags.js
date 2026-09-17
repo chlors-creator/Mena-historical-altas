@@ -67,6 +67,9 @@ function flagAssetFor(id,y){
   if(id==="turkey")return flagAsset("turkey.svg","土耳其共和国（1923—）");
   if(id==="morocco-spanish")return y<1956?flagAsset("spain.svg","西班牙保护地（至1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
   if(id==="morocco")return y<1912?flagAsset("morocco-alaouite.svg","摩洛哥阿拉维苏丹国（至1912）"):y<1956?flagAsset("france.svg","法属摩洛哥保护国（1912—1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
+  if(id==="golan-heights")return y<1967?flagAsset(y<1946?"syria-1932.svg":"syria.svg","叙利亚戈兰高地（至1966）"):flagAsset("israel.svg","以色列实际控制戈兰高地（1967—）");
+  if(id==="sinai-peninsula")return y>=1968&&y<=1979?flagAsset("israel.svg","以色列占领西奈半岛（1968—1979）"):flagAsset("egypt.svg","埃及西奈半岛");
+  if(id==="arabian-dispute"||id==="saudi-yemen-dispute")return flagAsset("saudi-1932.svg","阿拉伯半岛争议区（历史旗帜语境）");
   if(id==="western-sahara")return y<1976?flagAsset("spain.svg","西属撒哈拉（至1975）"):flagAsset("morocco.svg","摩洛哥实际控制区（1976—）");
   if(id==="algeria")return y<1830?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1830）"):y<1962?flagAsset("france.svg","法属阿尔及利亚（1830—1962）"):flagAsset("algeria.svg","阿尔及利亚共和国（1962—）");
   if(id==="tunisia")return y<1881?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1881）"):y<1956?flagAsset("france.svg","法属突尼斯（1881—1956）"):flagAsset("tunisia.svg","突尼斯共和国（1956—）");
@@ -168,6 +171,9 @@ function polityAt(id,y){
   if(id==="egypt")return y<1805?"ottoman":y<1882?"muhammad-ali":y<1922?"british-empire":"egypt";
   if(id==="sudan")return y<1821?"sudan-sultanates":y<1885?"muhammad-ali":y<1899?"mahdi":y<1956?"british-empire":"sudan";
   if(id==="morocco")return y<1912?"morocco":y<1956?"french-empire":"morocco";
+  if(id==="golan-heights")return y<1918?"ottoman":y<1946?"french-empire":y<1967?"syria":"israel";
+  if(id==="sinai-peninsula")return y<1882?"ottoman":y<1956?"egypt":y<=1957?"israel":y<1967?"egypt":y<=1979?"israel":"egypt";
+  if(id==="arabian-dispute"||id==="saudi-yemen-dispute")return"arabian-polities";
   if(id==="western-sahara")return y<1884?"sahrawi-polities":y<1976?"spanish-empire":"western-sahara";
   if(id==="iran")return y<=1924?"qajar":y<=1978?"pahlavi":"iran";
   if(id==="saudi")return y>=1932?"saudi":"arabian-polities";

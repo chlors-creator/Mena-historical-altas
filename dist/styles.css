@@ -60,7 +60,7 @@ dialog{width:min(530px,calc(100% - 2rem));padding:2.4rem;border:1px solid var(--
    are a single polity. Neighboring paths still provide the external frontier,
    so suppress internal seams between touching source subpaths. */
 .countries path.merged-feature{stroke:none!important}
-.frontier-overlays,.history-connectors{pointer-events:none;overflow:visible}
+.frontier-overlays,.history-connectors{pointer-events:none;overflow:visible}.frontier-overlays .dispute-hit{fill:transparent;stroke:transparent;pointer-events:all;cursor:pointer;outline:none}.frontier-overlays .dispute-hit:hover,.frontier-overlays .dispute-hit.selected,.frontier-overlays .dispute-hit:focus{fill:rgba(164,59,47,.22);stroke:#54231d;stroke-width:1.5;opacity:.82;vector-effect:non-scaling-stroke}.frontier-overlays .dispute-hit.dimmed{opacity:.28}
 .frontier-overlays .frontier-gap,.frontier-overlays .arabian-dispute{fill:url(#hatch)!important;stroke:#5d3925;stroke-width:1.25;stroke-dasharray:5 3;vector-effect:non-scaling-stroke;opacity:.9}.frontier-overlays .actual-control{stroke:#f0dfb8;stroke-width:1.25;vector-effect:non-scaling-stroke;opacity:.96;pointer-events:none}.frontier-overlays .claim-overlay{stroke:#5d3925;stroke-width:1.1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke;opacity:.92;pointer-events:none}
 .history-connectors line{stroke:#17130f;stroke-width:1;vector-effect:non-scaling-stroke;opacity:.88}
 .frontier-note{color:var(--red-dark);font-weight:700}

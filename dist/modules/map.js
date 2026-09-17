@@ -43,10 +43,10 @@ function createLabels(){
   });
 }
 function regions(path){dom.regionLines.innerHTML="";const b=path.getBBox(),names=meta[path.dataset.id][1],lines=[[b.x+b.width*.36,b.y+5,b.x+b.width*.48,b.y+b.height-5],[b.x+4,b.y+b.height*.54,b.x+b.width-4,b.y+b.height*.42],[b.x+b.width*.68,b.y+5,b.x+b.width*.73,b.y+b.height-5]];lines.slice(0,Math.min(3,names.length-1)).forEach(v=>{const l=document.createElementNS("http://www.w3.org/2000/svg","line");["x1","y1","x2","y2"].forEach((k,i)=>l.setAttribute(k,v[i]));dom.regionLines.append(l)});names.slice(0,4).forEach((n,i)=>{const t=document.createElementNS("http://www.w3.org/2000/svg","text"),c=i%2,r=Math.floor(i/2);t.setAttribute("x",b.x+b.width*(c?.7:.3));t.setAttribute("y",b.y+b.height*(r?.7:.3));t.textContent=n;dom.regionLines.append(t)});dom.regionLines.classList.add("visible")}
-function choose(id){activeFlagId=null;clearHoverVisuals();selected=id;const p=activeCountries().find(x=>x.dataset.id===id);if(!p)return;const b=p.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode)regions(p);render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
-function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");render()}
+function choose(id){activeFlagId=null;clearHoverVisuals();const p=activeCountries().find(x=>x.dataset.id===id),disputePath=dom.frontierOverlays?.querySelector(`.dispute-hit[data-dispute-id="${id}"]`);if(!p&&!disputePath)return;selected=id;const target=p||disputePath,b=target.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});document.querySelectorAll(".dispute-hit").forEach(x=>{x.classList.toggle("selected",x===disputePath);x.classList.toggle("dimmed",x!==disputePath)});if(p)setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode&&p)regions(p);if(typeof requestRender==="function")requestRender();else render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");if(typeof requestRender==="function")requestRender();else render()}
 function stop(){if(timer)clearInterval(timer);timer=null;dom.play.classList.remove("playing");dom.play.setAttribute("aria-label","播放时间线")}
-function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;render()},120)}
+function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;if(typeof requestRender==="function")requestRender();else if(typeof renderYear==="function")renderYear(Number(dom.year.value));else render()},120)}
 function bindCountry(p){const label=meta[p.dataset.id]?.[0]||p.dataset.id;p.setAttribute("tabindex","0");p.setAttribute("role","button");p.setAttribute("aria-label",`查看${label}`);p.addEventListener("click",()=>choose(p.dataset.id));p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose(p.dataset.id)}});p.addEventListener("mouseenter",()=>setHoverState(p.dataset.id,true));p.addEventListener("mouseleave",()=>setHoverState(p.dataset.id,false));p.addEventListener("focus",()=>{p.classList.add("keyboard-focus");setHoverState(p.dataset.id,true)});p.addEventListener("blur",()=>{p.classList.remove("keyboard-focus");setHoverState(p.dataset.id,false)})}
 // CShapes models states and dependencies, not every emirate or protectorate inside
 // the Arabian Peninsula. These contextual polygons are digitized against the
@@ -170,29 +170,40 @@ function boundaryFeaturesForYear(y){
   const overlays=features.filter(feature=>["gaza-strip","west-bank"].includes(feature.id));
   return [...features.filter(feature=>!["gaza-strip","west-bank"].includes(feature.id)),...overlays];
 }
+const DISPUTE_REGION_DEFINITIONS={
+  "arabian-dispute":{from:1886,to:1925,path:"M755,305L770,305L770,340L775,365L760,365L755,340Z",title:"1886—1925 汉志与内志之间的争议区"},
+  "saudi-yemen-dispute":{from:1932,to:1932,path:"M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z",title:"1932年沙特—也门未定界争议带"},
+  "golan-heights":{from:1967,to:2026,path:"M699,182L701,182L701,188L700,193L697,193L697,187Z",title:"戈兰高地：以色列实际控制、叙利亚声索"},
+  "sinai-peninsula":{from:1968,to:1979,path:"M666,232L682,232L685,238L684,246L682,252L682,256L678,254L672,248L670,240Z",title:"西奈半岛：以色列占领、埃及声索"}
+};
+function disputeRegionForYear(id,y){const definition=DISPUTE_REGION_DEFINITIONS[id],year=Number(y);return definition&&year>=definition.from&&year<=definition.to?{id,...definition}:null}
+function disputeRegionIdsForYear(y){return Object.keys(DISPUTE_REGION_DEFINITIONS).filter(id=>disputeRegionForYear(id,y))}
+function disputePathDataForYear(id,y){const definition=disputeRegionForYear(id,y);if(!definition)return null;const replacement=typeof boundaryDebugReplacementEntriesForYear==="function"?boundaryDebugReplacementEntriesForYear(y).find(entry=>entry.id===id):null,item=replacement?.item,paths=item?.paths?.filter(record=>record?.d)||[];if(!paths.length)return{...definition,d:definition.path,transform:""};const d=paths.map(record=>record.d).join(""),transform=typeof boundaryDebugTransform==="function"&&typeof boundaryDebugPathRecordsBounds==="function"?boundaryDebugTransform(boundaryDebugPathRecordsBounds(paths),boundaryDebugSettings({type:"current",id,value:`current:${id}`},y)):"";return{...definition,d,transform}}
 function renderFrontierOverlays(y){
   if(!dom.frontierOverlays)return;
   dom.frontierOverlays.innerHTML="";
   const ns="http://www.w3.org/2000/svg";
+  const configureOverlay=(path,id,info)=>{if(!id)return;path.dataset.id=id;path.dataset.disputeId=id;path.setAttribute("role","button");path.setAttribute("aria-label",info.title);if(info.transform)path.setAttribute("transform",info.transform)};
   const appendOverlay=(d,titleText,kind="frontier-gap")=>{const p=document.createElementNS(ns,"path");p.classList.add(kind,"disputed");p.setAttribute("d",d);p.setAttribute("fill","url(#hatch)");p.setAttribute("fill-rule","evenodd");const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
-  const appendClaimOverlay=(d,titleText,color,id)=>{
+  const appendClaimOverlay=(d,titleText,color,id,info)=>{
     const defs=dom.map.querySelector("defs");let pattern=defs?.querySelector(`#${id}`);
     if(!pattern&&defs){pattern=document.createElementNS(ns,"pattern");pattern.id=id;pattern.setAttribute("width","8");pattern.setAttribute("height","8");pattern.setAttribute("patternUnits","userSpaceOnUse");pattern.setAttribute("patternTransform","rotate(45)");const line=document.createElementNS(ns,"line");line.setAttribute("x1","0");line.setAttribute("y1","0");line.setAttribute("x2","0");line.setAttribute("y2","8");line.setAttribute("stroke",color);line.setAttribute("stroke-width","2.2");line.setAttribute("opacity",".88");pattern.append(line);defs.append(pattern)}
-    const p=document.createElementNS(ns,"path");p.classList.add("claim-overlay");p.setAttribute("d",d);p.setAttribute("fill",`url(#${id})`);p.setAttribute("fill-rule","evenodd");p.setAttribute("data-claim-color",color);const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)
+    const p=document.createElementNS(ns,"path");p.classList.add("claim-overlay");p.setAttribute("d",d);p.setAttribute("fill",`url(#${id})`);p.setAttribute("fill-rule","evenodd");p.setAttribute("data-claim-color",color);configureOverlay(p,info?.id,info||{});const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)
   };
-  const appendActualControlOverlay=(d,titleText)=>{const p=document.createElementNS(ns,"path");p.classList.add("actual-control");p.setAttribute("d",d);p.setAttribute("fill",stablePolityColor("israel"));p.setAttribute("fill-rule","evenodd");const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
+  const appendActualControlOverlay=(d,titleText,info)=>{const p=document.createElementNS(ns,"path");p.classList.add("actual-control");p.setAttribute("d",d);p.setAttribute("fill",stablePolityColor("israel"));p.setAttribute("fill-rule","evenodd");configureOverlay(p,info?.id,info||{});const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
+  const appendDisputeHit=info=>{const p=document.createElementNS(ns,"path");p.classList.add("dispute-hit");p.dataset.id=info.id;p.dataset.disputeId=info.id;p.setAttribute("d",info.d);p.setAttribute("fill","transparent");p.setAttribute("fill-rule","evenodd");p.setAttribute("tabindex","0");p.setAttribute("role","button");p.setAttribute("aria-label",`查看${info.title}`);if(info.transform)p.setAttribute("transform",info.transform);const title=document.createElementNS(ns,"title");title.textContent=`点击查看${info.title}`;p.append(title);p.addEventListener("click",()=>choose(info.id));p.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();choose(info.id)}});dom.frontierOverlays.append(p)};
   // The 1914 reference labels the unclaimed belt between Hejaz and the
   // Wahhabi/Najd polity as an “area of dispute”; retain it rather than invent
   // a shared sovereign frontier. This also prevents a visual overlap.
-  if(y>=1886&&y<=1925)appendOverlay("M755,305L770,305L770,340L775,365L760,365L755,340Z","1886—1925 汉志与内志之间的争议区","arabian-dispute");
+  if(y>=1886&&y<=1925){const info=disputePathDataForYear("arabian-dispute",y);appendOverlay(info.d,info.title,"arabian-dispute");appendDisputeHit(info)}
   // The Treaty of Taif was signed in 1934. In 1932 the Asir–Jizan–Najran
   // frontier was still unsettled, so the gap is shown as a hatched disputed
   // belt rather than silently assigning it to Saudi Arabia or Yemen.
-  if(y===1932)appendOverlay("M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z","1932年沙特—也门未定界争议带（塔伊夫条约前）");
+  if(y===1932){const info=disputePathDataForYear("saudi-yemen-dispute",y);appendOverlay(info.d,info.title);appendDisputeHit(info)}
   // Keep the controlled area inside the Israeli boundary fill and use the
   // claimant's polity colour only for the diagonal claim hatch.
-  if(y>=1967){const golan="M699,182L701,182L701,188L700,193L697,193L697,187Z";appendActualControlOverlay(golan,"1967年至今：以色列实际控制的戈兰高地");appendClaimOverlay(golan,"1967年至今：以色列实际控制的戈兰高地；叙利亚声索","#9b713e","claim-hatch-syria")}
-  if(y>=1968&&y<=1979){const sinai="M666,232L682,232L685,238L684,246L682,252L682,256L678,254L672,248L670,240Z";appendActualControlOverlay(sinai,"1968—1979：以色列占领西奈半岛");appendClaimOverlay(sinai,"1968—1979：以色列占领西奈半岛；埃及声索","#a65d37","claim-hatch-egypt")}
+  if(y>=1967){const info=disputePathDataForYear("golan-heights",y);appendActualControlOverlay(info.d,info.title,info);appendClaimOverlay(info.d,info.title+"；叙利亚声索","#9b713e","claim-hatch-syria",info);appendDisputeHit(info)}
+  if(y>=1968&&y<=1979){const info=disputePathDataForYear("sinai-peninsula",y);appendActualControlOverlay(info.d,info.title,info);appendClaimOverlay(info.d,info.title+"；埃及声索","#a65d37","claim-hatch-egypt",info);appendDisputeHit(info)}
 }
 function buildBoundaryMap(y){
   const ns="http://www.w3.org/2000/svg",defs=dom.map.querySelector("defs");dom.realRoot.innerHTML="";

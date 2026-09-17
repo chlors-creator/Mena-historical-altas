@@ -22,6 +22,12 @@
 - 西撒哈拉与巴勒斯坦争议地块使用正常不透明政权填色；戈兰高地自 1967 年起保留在以色列实际控制边界内，并以叙利亚色斜线覆盖声索；西奈半岛在 1968—1979 年以同样方式保留在以色列控制图层内、叠加埃及色斜线。戈兰高地的法理标注参照[联合国安理会第 497 号决议](https://www.un.org/unispal/document/auto-insert-180751/)，西奈撤军时间参照 [1979 年《埃以和平条约》](https://peacemaker.un.org/sites/default/files/document/files/2024/05/eg20il790326egypt20and20israel20treaty20of%20peace.pdf)。
 - `mena-flag-debug.json` 是本次提供的国旗调试参数固化副本；参数按“国家 + 具体历史国旗资源”唯一绑定（例如 `libya::italy.svg`），应用启动时内置同一组参数，浏览器 localStorage 仅作为后续个人覆盖。共享的奥斯曼、英国、法国、意大利和西班牙政权在地图着色时使用统一变量；任一成员国调试器修改“背景色”都会写入 `__sharedColors` 并同步该组所有成员。
 
+## 加载与维护
+
+- `app.js` 负责事件编排和单一 `render` 入口；核心状态、地图、旗帜和疆域调试分别位于 `modules/`。
+- 首屏只加载现代疆域；切换到 1886—1999 年时，`modules/lazy-loader.js` 才加载对应历史 GIS 文件；疆域调试器也只在首次打开时加载。
+- 根目录是正式工作副本，`dist/` 是发布副本。修改后运行 `powershell -File scripts/sync-dist.ps1`，再运行 `node scripts/verify.mjs`。
+
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）、[Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)，以及 [ArcGIS Kingdom of Hejaz FeatureServer 22](https://services6.arcgis.com/AZvnIky2AKQNH37M/ArcGIS/rest/services/KingdomofHejaz/FeatureServer/22) 和 [1910 年 Hejaz Vilayet 行政图](https://commons.wikimedia.org/wiki/File:Hejaz_Vilayet.png) 的汉志历史几何。1932 年未定界说明参照 [联合国《塔伊夫条约》登记记录](https://treaties.un.org/Pages/showDetails.aspx?objid=08000002800667a7) 与 [卡塔尔数字图书馆的 1934 年边界档案](https://www.qdl.qa/en/archive/81055/vdc_100040077896.0x000010)；1913—1914 年科威特与奥斯曼／英国边界参照 [QDL 海湾条约地图档案](https://qdl.qa/en/archive/81055/vdc_100022752333.0x00003d)。
 
 阿拉伯半岛早期政权的新增参考来源：
@@ -40,3 +46,5 @@
 ## GitHub Pages
 
 在仓库设置中将 Pages 的发布来源设为 `main` 分支的根目录（`/(root)`）。项目已包含 `.nojekyll`，地图数据和脚本均为本地文件。
+
+戈兰高地、西奈半岛、汉志—内志争议区和 1932 年沙特—也门未定界带都拥有独立可点击的争议地区详情；西撒哈拉本身作为独立地图实体可从摩洛哥界面继续点击进入。疆域调试器会把当前年份的争议地区列为独立 SVG 目标，并支持按相同几何时期导入、复用和导出。
