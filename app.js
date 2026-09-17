@@ -2,9 +2,46 @@
 dom.schematicCountries.forEach(bindCountry);dom.year.addEventListener("input",()=>{stop();render();boundaryDebugPopulateTargets(true)});dom.play.addEventListener("click",toggle);dom.overview.addEventListener("click",overview);dom.brand.addEventListener("click",overview);dom.about.addEventListener("click",()=>dom.dialog.showModal());dom.close.addEventListener("click",()=>dom.dialog.close());dom.confirm.addEventListener("click",()=>dom.dialog.close());dom.dialog.addEventListener("click",e=>{if(e.target===dom.dialog)dom.dialog.close()});dom.jump.addEventListener("click",()=>{const raw=prompt("输入1797—2026之间的年份：",dom.year.value);if(raw===null)return;dom.year.value=Math.max(1797,Math.min(2026,parseInt(raw,10)||+dom.year.value));stop();render();boundaryDebugPopulateTargets(true)});boundaryDebugLoadStore();boundaryDebugBind();render();boundaryDebugRenderLayer(Number(dom.year.value));
 // Keep the public map heading tied to the historical period title, including on real-boundary years.
 const _renderWithHistoricalTitle=render;render=()=>{_renderWithHistoricalTitle();dom.title.textContent=eraFor(+dom.year.value).map;const status=dom.facts.querySelectorAll("div strong")[2];if(status&&historicalBoundaryYear(+dom.year.value))status.textContent="历史 GIS 年度边界"};
-const displayNameAt=(id,y)=>id==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):id==="ottoman"?"奥斯曼帝国":(meta[id]?.[0]||id);
+const displayNameAt=(id,y)=>{
+  if(id==="yemen-south")return y<1967?"亚丁保护国":"南也门";
+  if(id==="ottoman")return"奥斯曼帝国";
+  if(id==="gaza-strip")return y<=1966?"加沙地带（埃及占领）":y<=1987?"加沙地带（以色列占领）":y<=2006?"加沙地带（巴勒斯坦国）":"加沙地带（哈马斯控制）";
+  if(id==="west-bank")return y<=1966?"约旦河西岸（约旦占领）":y<=1987?"约旦河西岸（以色列占领）":y<=2006?"约旦河西岸（巴勒斯坦国）":"约旦河西岸（巴勒斯坦民族权力机构）";
+  return meta[id]?.[0]||id;
+};
 const formalNameAt=(id,y)=>((window.MENA_FORMAL_NAMES?.[id]||[]).find(([from,to])=>y>=from&&y<=to)||[])[2]||countryEra(id,y)?.[2]||displayNameAt(id,y);
 const _renderWithFormalNames=render;render=()=>{_renderWithFormalNames();const y=+dom.year.value;updateFlagDebugPreview(selected,y);if(dom.flagDebugButton)dom.flagDebugButton.hidden=!selected;activeCountries().forEach(path=>{const label=displayNameAt(path.dataset.id,y);path.setAttribute("aria-label",`查看${label}`)});document.querySelectorAll(".map-labels text[data-for]").forEach(label=>{label.textContent=displayNameAt(label.dataset.for,y)});if(!selected)return;const display=displayNameAt(selected,y);dom.selectedLabel.textContent=display;dom.polityName.textContent=formalNameAt(selected,y);dom.polityNative.textContent=display;const firstFact=dom.facts.querySelector("div strong");if(firstFact){firstFact.textContent=rulingGroupAt(selected,y);const firstLabel=firstFact.previousElementSibling;if(firstLabel)firstLabel.textContent="执政党／统治集团"}};
+const WIKI_COUNTRY_PAGES={ottoman:"奥斯曼帝国",morocco:"摩洛哥", "morocco-spanish":"摩洛哥", "western-sahara":"西撒哈拉",algeria:"阿尔及利亚",tunisia:"突尼斯",libya:"利比亚",egypt:"埃及",sudan:"苏丹",turkey:"土耳其",syria:"叙利亚",lebanon:"黎巴嫩",israel:"以色列",palestine:"巴勒斯坦国","gaza-strip":"加沙地带","west-bank":"约旦河西岸",jordan:"约旦",iraq:"伊拉克",iran:"伊朗",kuwait:"科威特",saudi:"沙特阿拉伯",hejaz:"汉志王国",shammar:"贾巴尔·舍迈尔酋长国",najd:"内志",qatar:"卡塔尔",uae:"阿拉伯联合酋长国",oman:"阿曼", "yemen-north":"也门阿拉伯共和国","yemen-south":"南也门",yemen:"也门",bahrain:"巴林"};
+const ROYAL_RULERS={
+  ottoman:[[1797,1807,"塞利姆三世"],[1808,1839,"马哈茂德二世"],[1839,1861,"阿卜杜勒-迈吉德一世"],[1861,1876,"阿卜杜勒-阿齐兹"],[1876,1876,"穆拉德五世"],[1876,1909,"阿卜杜勒-哈米德二世"],[1909,1918,"穆罕默德五世"],[1918,1922,"穆罕默德六世"]],
+  morocco:[[1797,1894,"哈桑一世"],[1894,1908,"阿卜杜勒-阿齐兹"],[1908,1912,"阿卜杜勒-哈菲兹"],[1912,1927,"优素福"],[1927,1961,"穆罕默德五世"],[1961,1999,"哈桑二世"],[1999,2026,"穆罕默德六世"]],
+  jordan:[[1918,1951,"阿卜杜拉一世"],[1951,1952,"塔拉勒"],[1953,1999,"侯赛因·本·塔拉勒"],[1999,2026,"阿卜杜拉二世"]],
+  iraq:[[1921,1933,"费萨尔一世"],[1933,1939,"加齐"],[1939,1958,"费萨尔二世"]],
+  iran:[[1797,1834,"法特赫-阿里沙"],[1834,1848,"穆罕默德沙"],[1848,1896,"纳赛尔丁沙"],[1896,1907,"穆扎法尔丁沙"],[1907,1909,"穆罕默德-阿里沙"],[1909,1925,"艾哈迈德沙"],[1925,1941,"礼萨汗"],[1941,1979,"穆罕默德-礼萨·巴列维"]],
+  egypt:[[1805,1848,"穆罕默德·阿里帕夏"],[1848,1848,"易卜拉欣帕夏"],[1849,1854,"阿拔斯一世"],[1854,1863,"赛义德帕夏"],[1863,1879,"伊斯梅尔帕夏"],[1879,1892,"陶菲克帕夏"],[1892,1914,"阿拔斯二世"],[1914,1917,"侯赛因·卡迈勒"],[1917,1936,"福阿德一世"],[1936,1952,"法鲁克一世"]],
+  saudi:[[1932,1953,"伊本·沙特"],[1953,1964,"沙特·本·阿卜杜勒-阿齐兹"],[1964,1975,"费萨尔·本·阿卜杜勒-阿齐兹"],[1975,1982,"哈立德·本·阿卜杜勒-阿齐兹"],[1982,2005,"法赫德·本·阿卜杜勒-阿齐兹"],[2005,2015,"阿卜杜拉·本·阿卜杜勒-阿齐兹"],[2015,2026,"萨勒曼·本·阿卜杜勒-阿齐兹"]],
+  libya:[[1951,1969,"伊德里斯一世"]],hejaz:[[1917,1925,"侯赛因·本·阿里"]],shammar:[[1886,1897,"阿卜杜拉·本·拉希德"],[1897,1906,"阿卜杜勒-阿齐兹·本·穆塔卜"],[1906,1908,"米特阿卜·本·阿卜杜勒-阿齐兹"],[1908,1914,"萨乌德·本·阿卜杜勒-阿齐兹"],[1914,1921,"阿卜杜拉·本·米特阿卜"]],najd:[[1902,1932,"伊本·沙特"]],
+  kuwait:[[1797,1892,"阿卜杜拉一世·萨巴赫"],[1892,1915,"穆巴拉克·萨巴赫"],[1915,1921,"贾比尔二世·萨巴赫"],[1921,1950,"艾哈迈德·贾比尔·萨巴赫"],[1950,1965,"阿卜杜拉三世·萨利姆·萨巴赫"],[1965,1977,"萨巴赫三世·萨利姆·萨巴赫"],[1977,1986,"贾比尔三世·艾哈迈德·萨巴赫"],[1986,2006,"萨阿德·阿卜杜拉·萨利姆·萨巴赫"],[2006,2020,"萨巴赫四世·艾哈迈德·萨巴赫"],[2020,2023,"纳瓦夫·艾哈迈德·萨巴赫"],[2023,2026,"米沙勒·艾哈迈德·萨巴赫"]],
+  qatar:[[1797,1913,"阿卜杜拉·本·贾西姆"],[1913,1949,"阿卜杜拉·本·贾西姆"],[1949,1960,"阿里·本·阿卜杜拉"],[1960,1972,"艾哈迈德·本·阿里"],[1972,1995,"哈利法·本·哈马德"],[1995,2013,"哈马德·本·哈利法"],[2013,2026,"塔米姆·本·哈马德"]],
+  oman:[[1797,1804,"苏丹·本·艾哈迈德"],[1804,1856,"赛义德·本·苏丹"],[1856,1866,"图瓦伊尼·本·赛义德"],[1866,1871,"阿赞·本·盖斯"],[1871,1888,"图尔基·本·赛义德"],[1888,1913,"费萨尔·本·图尔基"],[1913,1932,"泰穆尔·本·费萨尔"],[1932,1970,"赛义德·本·泰穆尔"],[1970,2020,"卡布斯·本·赛义德"],[2020,2026,"海赛姆·本·塔里克"]],
+  bahrain:[[1797,1825,"萨勒曼·本·艾哈迈德"],[1825,1843,"阿卜杜拉·本·艾哈迈德"],[1843,1868,"穆罕默德·本·哈利法"],[1869,1923,"伊萨·本·阿里"],[1923,1942,"哈马德·本·伊萨"],[1942,1961,"萨勒曼二世"],[1961,1999,"伊萨二世"],[1999,2026,"哈马德二世"]],
+  uae:[[1971,2004,"扎耶德·本·苏丹·阿勒纳哈扬"],[2004,2022,"哈利法·本·扎耶德·阿勒纳哈扬"],[2022,2026,"穆罕默德·本·扎耶德·阿勒纳哈扬"]]
+};
+const PARTY_WIKI_PAGES=[["民族解放阵线","民族解放阵线（阿尔及利亚）"],["民族独立联盟","民族独立联盟（摩洛哥）"],["正义与发展党","正义与发展党（摩洛哥）"],["人民力量社会主义联盟","人民力量社会主义联盟"],["独立党","独立党（摩洛哥）"],["民族民主联盟","全国民主联盟（阿尔及利亚）"],["阿拉伯复兴社会党","阿拉伯复兴社会党"],["法塔赫","法塔赫"],["哈马斯","哈马斯"],["巴勒斯坦民族权力机构","巴勒斯坦民族权力机构"],["巴解组织","巴勒斯坦解放组织"],["华夫脱党","华夫脱党"],["国家民主党","国家民主党（埃及）"],["自由与正义党","自由与正义党（埃及）"],["共和人民党","共和人民党（土耳其）"],["民主党","民主党（土耳其）"],["正义党","正义党（土耳其）"],["利库德集团","利库德集团"],["以色列工党","以色列工党"],["全国人民大会","全国人民大会（也门）"],["伊斯兰改革集团","也门改革集团"],["伊斯兰共和党","伊斯兰共和党（伊朗）"],["穆斯林兄弟会","穆斯林兄弟会"]];
+function wikiCountryPageAt(id){return WIKI_COUNTRY_PAGES[id]||meta[id]?.[0]||id}
+function royalRulerPageAt(id,y){const detailId=sidebarEntityAt(id,y),key=detailId==="morocco-spanish"?"morocco":detailId==="west-bank"?"jordan":detailId,hit=(ROYAL_RULERS[key]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||null}
+function rulingWikiPageAt(id,y,text){
+  const ruler=royalRulerPageAt(id,y);
+  if(ruler&&/王室|王朝|君主|苏丹|国王|帕夏|家族|酋长|谢里夫|伊玛目/.test(text))return ruler;
+  const hit=PARTY_WIKI_PAGES.find(([label])=>text.includes(label));
+  if(hit)return hit[1];
+  if(text.includes("军事占领"))return"以色列军事政府";
+  if(text.includes("军事管理"))return id==="gaza-strip"?(y<=1952?"法鲁克一世":"埃及"):"约旦";
+  if(text.includes("殖民当局"))return id==="morocco-spanish"?"西班牙殖民帝国":"殖民主义";
+  return text;
+}
+function setWikiLink(element,text,page){if(!element)return;element.textContent="";const link=document.createElement("a");link.className="wiki-link";link.href=wiki(page);link.target="_blank";link.rel="noopener noreferrer";link.textContent=text;element.append(link)}
+const _renderWithSidebarLinks=render;render=()=>{_renderWithSidebarLinks();const y=+dom.year.value;if(!selected)return;const detailId=sidebarEntityAt(selected,y),detail=countryEra(detailId,y),detailMeta=meta[detailId]||meta[selected];if(detailId!==selected&&detail){dom.summary.textContent=detail[3];const facts=dom.facts.querySelectorAll("div");if(facts[1])facts[1].querySelector("strong").textContent=detail[4]||"见该年史料";if(facts[2])facts[2].querySelector("strong").textContent=detail[5]||"主权国家／政治实体"}const countryText=displayNameAt(selected,y);setWikiLink(dom.selectedLabel,countryText,wikiCountryPageAt(selected));setWikiLink(dom.polityName,formalNameAt(selected,y),wikiCountryPageAt(selected));setWikiLink(dom.polityNative,detailMeta?.[0]||countryText,wikiCountryPageAt(selected));const firstFact=dom.facts.querySelector("div strong");if(firstFact)setWikiLink(firstFact,rulingGroupAt(selected,y),rulingWikiPageAt(selected,y,rulingGroupAt(selected,y)))};
 const _renderWithBoundaryDebugLayer=render;render=()=>{_renderWithBoundaryDebugLayer();boundaryDebugRenderLayer(Number(dom.year.value))};
  function debugFormValues(){return{scaleX:Number(dom.flagDebugScaleX.value),scaleY:Number(dom.flagDebugScaleY.value),offsetX:Number(dom.flagDebugOffsetX.value),offsetY:Number(dom.flagDebugOffsetY.value),color:dom.flagDebugColor.value,flagFill:dom.flagDebugFill.value}}
  function updateDebugOutputs(){const pairs=[[dom.flagDebugScaleX,document.querySelector("#flagDebugScaleXValue"),v=>`${Number(v).toFixed(2)}×`],[dom.flagDebugScaleY,document.querySelector("#flagDebugScaleYValue"),v=>`${Number(v).toFixed(2)}×`],[dom.flagDebugOffsetX,document.querySelector("#flagDebugOffsetXValue"),v=>`${v}`],[dom.flagDebugOffsetY,document.querySelector("#flagDebugOffsetYValue"),v=>`${v}`],[dom.flagDebugColor,document.querySelector("#flagDebugColorValue"),v=>String(v).toUpperCase()],[dom.flagDebugFill,document.querySelector("#flagDebugFillValue"),v=>String(v).toUpperCase()]];pairs.forEach(([input,out,format])=>{if(out)out.textContent=format(input.value)})}

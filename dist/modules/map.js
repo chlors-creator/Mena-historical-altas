@@ -2,6 +2,7 @@
 function historicalStyles(y){
   const dependentIds=y<1919?["algeria","tunisia","libya","egypt","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","morocco-spanish","yemen-south"]:y<1962?["algeria","tunisia","morocco","morocco-spanish","western-sahara","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","oman","yemen-north","yemen-south"]:["western-sahara","morocco-spanish","yemen-south"];
   const countries=activeCountries(),polities=countries.map(path=>polityAt(path.dataset.id,y));
+  if(y>=1949)dependentIds.push("gaza-strip","west-bank");
   // Do not derive colours from the order of paths in a yearly snapshot: that
   // made every transition reshuffle the palette.  A stable polity key keeps
   // shared regimes (for example Ottoman provinces) visually unified across
@@ -87,8 +88,17 @@ function annualCohortFeatures(features,y){
   });
   return result;
 }
+function splitPalestineFeature(feature){
+  const parts=flagPathParts(feature.path).map(path=>({path,box:pathDataBox(path)})).filter(item=>item.box).sort((a,b)=>a.box.x-b.box.x);
+  if(parts.length<2)return[{...feature,id:"west-bank",name:"West Bank"}];
+  const shared={...feature,source:`${feature.source||"Palestine reference"} · split into Gaza Strip and West Bank`};
+  return[
+    {...shared,id:"gaza-strip",name:"Gaza Strip",path:parts[0].path},
+    {...shared,id:"west-bank",name:"West Bank",path:parts[parts.length-1].path}
+  ];
+}
 function boundaryFeaturesForYear(y){
-  if(!historicalBoundaryYear(y))return window.MENA_2026||[];
+  if(!historicalBoundaryYear(y))return (window.MENA_2026||[]).flatMap(feature=>feature.id==="palestine"?splitPalestineFeature(feature):[feature]);
   const grouped=new Map();
   const sourceFeatures=y<1924?(window.MENA_HISTORICAL_1886_1923||[]):(window.MENA_HISTORICAL_INTERVALS||[]);
   // Work on shallow feature copies. The Ottoman cleanup below annotates the
@@ -122,6 +132,14 @@ function boundaryFeaturesForYear(y){
   // The CShapes record for 1959—1975 omits the northern claim area. Union the
   // complete Western Sahara reference outline so no portion disappears between years.
   if(y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
+  // CShapes stops carrying a separate Palestine record after 1967 because
+  // the area was under Israeli military occupation. Keep the two geographic
+  // pieces selectable by reusing the modern reference outline as a dated
+  // context overlay; the Israeli control polygon remains underneath it.
+  if(y>=1968&&!selectedFeatures.some(feature=>feature.id==="palestine")){
+    const modernPalestine=(window.MENA_2026||[]).find(feature=>feature.id==="palestine");
+    if(modernPalestine)selectedFeatures.push({...modernPalestine,from:y,to:y,source:"Natural Earth reference · Palestinian geographic pieces during occupation"});
+  }
   if(y>=1886&&window.MENA_HISTORICAL_ADEN)selectedFeatures.push(...window.MENA_HISTORICAL_ADEN.filter(feature=>feature.from<=y&&feature.to>=y));
   // Until the post-war settlements, the Ottoman imperial polygon contains
   // Tripolitania/Cyrenaica and the Hejaz record as internal regions. Keep
@@ -138,7 +156,8 @@ function boundaryFeaturesForYear(y){
       ottoman.basePath=cleaned;ottoman.path=cleaned;ottoman.cutoutPaths=cuts.map(feature=>feature.path);ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutout mask for ${cuts.map(feature=>feature.id).join("/")}`
     }
   }
-  selectedFeatures.forEach(feature=>{
+  const splitFeatures=selectedFeatures.flatMap(feature=>feature.id==="palestine"&&y>=1949?splitPalestineFeature(feature):[feature]);
+  splitFeatures.forEach(feature=>{
     const id=["yemen-north","yemen-south"].includes(feature.id)&&y>=1990?"yemen":feature.id;
     const current=grouped.get(id)||{id,name:feature.name,path:"",source:feature.source,cutoutCount:0,basePath:feature.basePath||"",cutoutPaths:[]};
     current.path+=feature.path;
@@ -147,13 +166,21 @@ function boundaryFeaturesForYear(y){
     current.source=current.source===feature.source?current.source:[...new Set([current.source,feature.source].filter(Boolean).flatMap(source=>source.split(" + ")))].join(" + ");
     grouped.set(id,current);
   });
-  return [...grouped.values()];
+  const features=[...grouped.values()];
+  const overlays=features.filter(feature=>["gaza-strip","west-bank"].includes(feature.id));
+  return [...features.filter(feature=>!["gaza-strip","west-bank"].includes(feature.id)),...overlays];
 }
 function renderFrontierOverlays(y){
   if(!dom.frontierOverlays)return;
   dom.frontierOverlays.innerHTML="";
   const ns="http://www.w3.org/2000/svg";
   const appendOverlay=(d,titleText,kind="frontier-gap")=>{const p=document.createElementNS(ns,"path");p.classList.add(kind,"disputed");p.setAttribute("d",d);p.setAttribute("fill","url(#hatch)");p.setAttribute("fill-rule","evenodd");const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
+  const appendClaimOverlay=(d,titleText,color,id)=>{
+    const defs=dom.map.querySelector("defs");let pattern=defs?.querySelector(`#${id}`);
+    if(!pattern&&defs){pattern=document.createElementNS(ns,"pattern");pattern.id=id;pattern.setAttribute("width","8");pattern.setAttribute("height","8");pattern.setAttribute("patternUnits","userSpaceOnUse");pattern.setAttribute("patternTransform","rotate(45)");const line=document.createElementNS(ns,"line");line.setAttribute("x1","0");line.setAttribute("y1","0");line.setAttribute("x2","0");line.setAttribute("y2","8");line.setAttribute("stroke",color);line.setAttribute("stroke-width","2.2");line.setAttribute("opacity",".88");pattern.append(line);defs.append(pattern)}
+    const p=document.createElementNS(ns,"path");p.classList.add("claim-overlay");p.setAttribute("d",d);p.setAttribute("fill",`url(#${id})`);p.setAttribute("fill-rule","evenodd");p.setAttribute("data-claim-color",color);const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)
+  };
+  const appendActualControlOverlay=(d,titleText)=>{const p=document.createElementNS(ns,"path");p.classList.add("actual-control");p.setAttribute("d",d);p.setAttribute("fill",stablePolityColor("israel"));p.setAttribute("fill-rule","evenodd");const title=document.createElementNS(ns,"title");title.textContent=titleText;p.append(title);dom.frontierOverlays.append(p)};
   // The 1914 reference labels the unclaimed belt between Hejaz and the
   // Wahhabi/Najd polity as an “area of dispute”; retain it rather than invent
   // a shared sovereign frontier. This also prevents a visual overlap.
@@ -162,6 +189,10 @@ function renderFrontierOverlays(y){
   // frontier was still unsettled, so the gap is shown as a hatched disputed
   // belt rather than silently assigning it to Saudi Arabia or Yemen.
   if(y===1932)appendOverlay("M793,403L800,406L795,414L791,420L792,426L787,427L786,420L789,412Z","1932年沙特—也门未定界争议带（塔伊夫条约前）");
+  // Keep the controlled area inside the Israeli boundary fill and use the
+  // claimant's polity colour only for the diagonal claim hatch.
+  if(y>=1967){const golan="M699,182L701,182L701,188L700,193L697,193L697,187Z";appendActualControlOverlay(golan,"1967年至今：以色列实际控制的戈兰高地");appendClaimOverlay(golan,"1967年至今：以色列实际控制的戈兰高地；叙利亚声索","#9b713e","claim-hatch-syria")}
+  if(y>=1968&&y<=1979){const sinai="M666,232L682,232L685,238L684,246L682,252L682,256L678,254L672,248L670,240Z";appendActualControlOverlay(sinai,"1968—1979：以色列占领西奈半岛");appendClaimOverlay(sinai,"1968—1979：以色列占领西奈半岛；埃及声索","#a65d37","claim-hatch-egypt")}
 }
 function buildBoundaryMap(y){
   const ns="http://www.w3.org/2000/svg",defs=dom.map.querySelector("defs");dom.realRoot.innerHTML="";
@@ -185,10 +216,9 @@ function buildBoundaryMap(y){
       }
       if(mask){feature.cutoutPaths.forEach(cutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
     }
-    // The mandate is a British colonial/League of Nations territory through
-    // the 1948 annual snapshot. Only post-mandate Palestine remains styled as
-    // disputed; otherwise 1920—1948 would look like an unfilled state claim.
-    if(logicalId==="western-sahara"||(logicalId==="palestine"&&y>=1949))p.classList.add("disputed");
+    // Western Sahara and the post-1948 Palestinian pieces are disputed in
+    // status, but still receive ordinary opaque polity fills. Claim hatching
+    // is reserved for the explicit control/claim overlays below.
     if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
     if(feature.source?.includes("context"))p.classList.add("context");
     // Compound historical records for Aden and the Ottoman/Turkish core are

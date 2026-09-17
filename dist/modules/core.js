@@ -3,6 +3,10 @@ const meta={
 morocco:["摩洛哥",["北部","菲斯","马拉喀什","苏斯"]],"morocco-spanish":["西属摩洛哥",["里夫","北部保护地"]],"western-sahara":["西撒哈拉",["萨基亚-哈姆拉","达赫拉"]],algeria:["阿尔及利亚",["奥兰","阿尔及尔","君士坦丁","撒哈拉"]],tunisia:["突尼斯",["突尼斯","萨赫勒","南部"]],libya:["利比亚",["的黎波里塔尼亚","昔兰尼加","费赞"]],egypt:["埃及",["下埃及","上埃及","西奈","努比亚"]],sudan:["苏丹",["喀土穆","达尔富尔","科尔多凡","东部"]],turkey:["土耳其",["安纳托利亚西部","安纳托利亚中部","黑海","东部"]],syria:["叙利亚",["阿勒颇","大马士革","沿海","幼发拉底河谷"]],lebanon:["黎巴嫩",["贝鲁特","黎巴嫩山","贝卡"]],israel:["以色列",["北部区","中央区","南部区"]],palestine:["巴勒斯坦",["约旦河西岸","加沙"]],jordan:["约旦",["北部","安曼","南部"]],iraq:["伊拉克",["摩苏尔","巴格达","巴士拉","库尔德地区"]],iran:["伊朗",["阿塞拜疆","里海地区","中央高原","胡齐斯坦","呼罗珊"]],kuwait:["科威特",["科威特城","外围地区"]],saudi:["沙特阿拉伯",["汉志","内志","东部省","阿西尔"]],hejaz:["汉志",["麦加","麦地那","红海沿岸"]],shammar:["舍迈尔",["海勒","北内志","沙马尔沙漠"]],najd:["内志",["利雅得","卡西姆","东部绿洲"]],qatar:["卡塔尔",["多哈","北部"]],uae:["阿联酋",["阿布扎比","迪拜","北部酋长国"]],oman:["阿曼",["马斯喀特","内地","佐法尔"]],"yemen-north":["北也门",["萨那","蒂哈马"]],"yemen-south":["南也门",["亚丁","哈德拉毛"]],yemen:["也门",["萨那","蒂哈马","亚丁","哈德拉毛"]],bahrain:["巴林",["麦纳麦","穆哈拉格"]]};
 // Ottoman is deliberately a separate map tag from the post-1923 Turkish republic.
 meta.ottoman=["奥斯曼帝国",["安纳托利亚","叙利亚","美索不达米亚","阿拉伯行省"]];
+// Gaza and the West Bank become independently selectable map entities from
+// the 1949 armistice period onward. Their shared Palestinian detail is
+// resolved by sidebarEntityAt() for the 1988—2006 period.
+Object.assign(meta,{"gaza-strip":["加沙地带",["加沙市","汗尤尼斯","拉法"]],"west-bank":["约旦河西岸",["东耶路撒冷","拉姆安拉","纳布卢斯","希伯伦"]]});
 const wiki=t=>`https://zh.wikipedia.org/wiki/${encodeURIComponent(t)}`;
 const eras=[
 {from:1797,to:1829,title:"帝国、行省与地方王朝",native:"الدولة العثمانية · دولت قاجار",badge:"近代早期",map:"奥斯曼时代的中东与北非",summary:"十八世纪末，中东与北非由奥斯曼帝国、伊朗卡扎尔王朝、摩洛哥阿拉维王朝及众多地方政权共同构成。名义宗主权、地方自治和部族势力经常相互重叠。",events:[[1798,"法国入侵埃及","远征改变了地中海东部的力量关系。","法国入侵埃及和叙利亚"],[1805,"穆罕默德·阿里掌权","埃及进入改革与扩张时期。","穆罕默德·阿里王朝"],[1821,"希腊独立战争","战争动摇奥斯曼帝国在东地中海的统治。","希腊独立战争"]]},
@@ -34,6 +38,21 @@ sudan:[[1797,1820,"丰吉苏丹国及地方政权","青尼罗河流域的森纳�
 // `turkey` for the imperial period.
 overrides.ottoman=overrides.turkey;
 
+// The two post-mandate Palestinian map pieces share one national detail
+// during the State of Palestine phase, then diverge after the June 2007
+// Hamas takeover of Gaza. The 1967—1987 entries make the interim Israeli
+// occupation explicit instead of silently retaining the 1949 labels.
+overrides["gaza-strip"]=[
+  [1949,1966,"加沙地带（埃及占领）","1949年停战线形成后，加沙地带由埃及管理；当地保留巴勒斯坦身份与独立行政安排。","加沙市","埃及军事管理下的巴勒斯坦地区"],
+  [1967,1987,"加沙地带（以色列占领）","1967年战争后加沙地带转入以色列军事占领，原有埃及行政安排终止。","加沙市","以色列军事占领当局"],
+  [2007,2026,"加沙地带（哈马斯控制）","2007年6月哈马斯在与法塔赫武装冲突后取得加沙地带事实控制，巴勒斯坦民族权力机构的治理中心转至约旦河西岸。","加沙市","哈马斯事实当局"]
+];
+overrides["west-bank"]=[
+  [1949,1966,"约旦河西岸（约旦占领）","1949年停战线形成后，约旦管理并于1950年宣布将约旦河西岸并入王国；该并入未获广泛国际承认。","安曼／耶路撒冷","约旦哈希姆王室与政府"],
+  [1967,1987,"约旦河西岸（以色列占领）","1967年战争后约旦河西岸转入以色列军事占领，约旦的行政统治终止。","耶路撒冷／拉姆安拉","以色列军事占领当局"],
+  [2007,2026,"约旦河西岸（巴勒斯坦民族权力机构）","2007年后，巴勒斯坦民族权力机构以约旦河西岸为治理中心，法塔赫主导的行政体系与加沙的哈马斯事实当局分立。","拉姆安拉","法塔赫／巴勒斯坦民族权力机构"]
+];
+
 // The first fact in a country detail is political control, not a duplicate
 // geographic label.  These time-bounded names intentionally use a party when
 // one existed and otherwise the ruling house, military council or colonial
@@ -60,7 +79,9 @@ const rulingGroups={
   kuwait:[[1797,1898,"萨巴赫酋长家族（奥斯曼宗主权下）"],[1899,1960,"萨巴赫酋长家族／英国保护关系"],[1961,2026,"萨巴赫王室"]],saudi:[[1797,1817,"沙特家族"],[1818,1931,"内志部落联盟与地方酋长"],[1932,2026,"沙特王室"]],hejaz:[[1886,1916,"麦加谢里夫与奥斯曼宗主权"],[1917,1925,"哈希姆王室"]],shammar:[[1886,1921,"拉希德王室（贾巴尔·舍迈尔）"]],najd:[[1886,1901,"内志部落与绿洲酋长"],[1902,1931,"沙特家族／伊本·沙特王室"]],qatar:[[1797,2026,"阿勒萨尼王室"]],uae:[[1797,1970,"特鲁西尔酋长家族"],[1971,2026,"阿布扎比与迪拜等酋长家族"]],oman:[[1797,2026,"阿勒赛义德王室与伊玛目集团"]],
   "yemen-north":[[1797,1918,"扎伊迪伊玛目／卡西姆王朝"],[1918,1962,"穆塔瓦基利特王室"],[1962,1978,"共和指挥委员会"],[1978,1990,"全国人民大会（GPC）／总统联盟"]],"yemen-south":[[1886,1967,"英国殖民当局"],[1967,1978,"民族解放阵线（NLF）"],[1978,1990,"也门社会党"]],yemen:[[1990,1993,"全国人民大会（GPC）／伊斯兰改革集团（JMP）联合"],[1994,2011,"全国人民大会（GPC）"],[2012,2014,"过渡政府与全国对话联盟"],[2015,2026,"总统领导委员会／国际承认政府与胡塞当局分治"]],bahrain:[[1797,2026,"阿勒哈利法王室"]]
 };
-const rulingGroupAt=(id,y)=>{const hit=(rulingGroups[id]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||"地方统治集团"};
+Object.assign(rulingGroups,{palestine:[[1797,1917,"奥斯曼总督"],[1918,1948,"英国委任统治当局"],[1949,1993,"巴解组织／法塔赫"],[1994,2005,"法塔赫／巴勒斯坦民族权力机构"],[2006,2006,"哈马斯胜选后的联合政府／法塔赫总统体系"],[2007,2026,"法塔赫（西岸）／哈马斯（加沙）分治"]],"gaza-strip":[[1949,1966,"埃及军事管理当局"],[1967,1987,"以色列军事占领当局"],[2007,2026,"哈马斯（加沙事实当局）"]],"west-bank":[[1949,1966,"约旦哈希姆王室／约旦政府"],[1967,1987,"以色列军事占领当局"],[2007,2026,"法塔赫／巴勒斯坦民族权力机构"]]});
+const sidebarEntityAt=(id,y)=>(["gaza-strip","west-bank"].includes(id)&&y>=1988&&y<=2006)?"palestine":id;
+const rulingGroupAt=(id,y)=>{const detailId=sidebarEntityAt(id,y),hit=(rulingGroups[detailId]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||"地方统治集团"};
 const $=s=>document.querySelector(s),dom={year:$("#yearRange"),yearText:$("#yearText"),play:$("#playButton"),title:$("#mapTitle"),selectedLabel:$("#selectedLabel"),map:$("#menaMap"),schematicRoot:$("#countries"),realRoot:$("#realCountries"),schematicCountries:[...document.querySelectorAll("#countries path")],realCountries:[],labels:$("#labels"),regionLines:$("#regionLines"),frontierOverlays:$("#frontierOverlays"),historyConnectors:$("#historyConnectors"),panelKicker:$("#panelKicker"),polityName:$("#polityName"),polityNative:$("#polityNative"),badge:$("#eraBadge"),facts:$("#facts"),summaryHeading:$("#summaryHeading"),summary:$("#summary"),eventList:$("#eventList"),eventCount:$("#eventCount"),source:$("#boundarySource"),overview:$("#overviewButton"),brand:$("#brandButton"),about:$("#aboutButton"),dialog:$("#aboutDialog"),close:$("#dialogClose"),confirm:$("#dialogConfirm"),jump:$("#jumpButton"),flagDebugButton:$("#flagDebugButton"),flagDebugDialog:$("#flagDebugDialog"),flagDebugClose:$("#flagDebugClose"),flagDebugScaleX:$("#flagDebugScaleX"),flagDebugScaleY:$("#flagDebugScaleY"),flagDebugOffsetX:$("#flagDebugOffsetX"),flagDebugOffsetY:$("#flagDebugOffsetY"),flagDebugColor:$("#flagDebugColor"),flagDebugSave:$("#flagDebugSave"),flagDebugReset:$("#flagDebugReset"),flagDebugExport:$("#flagDebugExport"),flagDebugStatus:$("#flagDebugStatus"),flagDebugCurrent:$("#flagDebugCurrent"),flagDebugPreview:$("#flagDebugPreview"),boundaryDebugLayer:$("#boundaryDebugLayer"),boundaryDebugButton:$("#boundaryDebugButton"),boundaryDebugDialog:$("#boundaryDebugDialog"),boundaryDebugClose:$("#boundaryDebugClose"),boundaryDebugFile:$("#boundaryDebugFile"),boundaryDebugImport:$("#boundaryDebugImport"),boundaryDebugConfigImportButton:$("#boundaryDebugConfigImportButton"),boundaryDebugConfigFile:$("#boundaryDebugConfigFile"),boundaryDebugTarget:$("#boundaryDebugTarget"),boundaryDebugCurrent:$("#boundaryDebugCurrent"),boundaryDebugScaleX:$("#boundaryDebugScaleX"),boundaryDebugScaleY:$("#boundaryDebugScaleY"),boundaryDebugOffsetX:$("#boundaryDebugOffsetX"),boundaryDebugOffsetY:$("#boundaryDebugOffsetY"),boundaryDebugRotation:$("#boundaryDebugRotation"),boundaryDebugOpacity:$("#boundaryDebugOpacity"),boundaryDebugSave:$("#boundaryDebugSave"),boundaryDebugSaveCurrent:$("#boundaryDebugSaveCurrent"),boundaryDebugSaveAll:$("#boundaryDebugSaveAll"),boundaryDebugReset:$("#boundaryDebugReset"),boundaryDebugDelete:$("#boundaryDebugDelete"),boundaryDebugExportSvg:$("#boundaryDebugExportSvg"),boundaryDebugExportPaths:$("#boundaryDebugExportPaths"),boundaryDebugExportAllSvg:$("#boundaryDebugExportAllSvg"),boundaryDebugExport:$("#boundaryDebugExport"),boundaryDebugStatus:$("#boundaryDebugStatus")};
 Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill")});
 let selected=null,activeFlagId=null,timer=null,realMode=false,boundaryKey="";
@@ -102,4 +123,5 @@ function stablePolityColor(polity){
   let hash=0;for(const char of String(polity||""))hash=(hash*31+char.charCodeAt(0))>>>0;
   return mapColors[hash%mapColors.length];
 }
+Object.assign(POLITY_COLORS,{palestine:"#7b4d58","gaza-hamas":"#6d5680","west-bank-pa":"#4f755e"});
 const FLAG_DIR="assets/flags/";

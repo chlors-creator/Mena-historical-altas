@@ -76,6 +76,7 @@ function flagAssetFor(id,y){
   if(id==="syria")return y<=1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<=1931?flagAsset("syria-1930.svg","叙利亚委任统治（1920—1931）"):y<=1957?flagAsset("syria-1932.svg","叙利亚共和国（1932—1957）"):y<=1960?flagAsset("united-arab-republic.svg","阿拉伯联合共和国（1958—1961）"):y<=1962?flagAsset("syria-1932.svg","叙利亚共和国（1961—1963）"):y<=1971?flagAsset("syria-1963.svg","叙利亚（1963—1972）"):y<=1979?flagAsset("syria-1972.svg","阿拉伯共和国联邦时期（1972—1980）"):y<=2024?flagAsset("united-arab-republic.svg","叙利亚（1980—2024）"):flagAsset("syria.svg","叙利亚（2025—）");
   if(id==="lebanon")return y<1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<1943?flagAsset("lebanon-1920.svg","法属黎巴嫩委任统治（1920—1943）"):flagAsset("lebanon.svg","黎巴嫩共和国（1943—）");
   if(id==="israel")return y<1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1927—1948海事旗）"):flagAsset("israel.svg","以色列（1948—）");
+  if(id==="gaza-strip"||id==="west-bank")return y<1917?flagAsset("ottoman-empire.svg","奥斯曼巴勒斯坦（至1917）"):y<=1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1920—1948海事旗）"):flagAsset("palestine.svg","巴勒斯坦（1949—）");
   if(id==="palestine")return y<1917?flagAsset("ottoman-empire.svg","奥斯曼巴勒斯坦（至1917）"):y<=1948?flagAsset("palestine-mandate.svg","英属巴勒斯坦托管地（1920—1948海事旗）"):flagAsset("palestine.svg","巴勒斯坦（1949—）");
   if(id==="jordan")return y<1918?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1918）"):y<1928?flagAsset("uk.svg","英国委任／保护时期"):flagAsset("jordan.png","约旦（1928—）");
   if(id==="iraq")return y<=1920?flagAsset("ottoman-empire.svg","奥斯曼帝国（至1920）"):y<=1923?flagAsset("iraq-1921.svg","伊拉克王国（1921—1924）"):y<=1958?flagAsset("iraq-1924.svg","伊拉克王国（1924—1959）"):y<=1962?flagAsset("iraq-1959.svg","伊拉克共和国（1959—1963）"):y<=1990?flagAsset("iraq-1963.svg","伊拉克（1963—1991）"):y<=2003?flagAsset("iraq-1991.svg","伊拉克（1991—2004）"):flagAsset("iraq.svg","伊拉克共和国（2004—）");
@@ -157,6 +158,8 @@ function polityAt(id,y){
   if(id==="morocco-spanish")return y<1956?"spanish-empire":"morocco";
   if(["syria","lebanon","palestine","jordan","iraq"].includes(id)&&y<=1917)return"ottoman";
   if(id==="syria"||id==="lebanon")return y<=1945?"french-empire":id;
+  if(id==="gaza-strip")return y<1967?"egypt":y<1988?"israel":y<2007?"palestine":"gaza-hamas";
+  if(id==="west-bank")return y<1967?"jordan":y<1988?"israel":y<2007?"palestine":"west-bank-pa";
   if(id==="palestine"||id==="jordan")return y<=1948?"british-empire":id;
   if(id==="iraq")return y<=1931?"british-empire":"iraq";
   if(id==="algeria")return y<1830?"ottoman":y<1962?"french-empire":"algeria";
