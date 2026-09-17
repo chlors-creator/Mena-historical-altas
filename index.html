@@ -150,13 +150,14 @@
     <button class="dialog-close" id="flagDebugClose" type="button" aria-label="关闭">×</button>
     <p class="eyebrow">FLAG / FILL DEBUGGER</p>
     <h2 id="flagDebugTitle">当前国家国旗与背景色调试</h2>
-    <p class="debug-intro">此面板只调整当前选中的国家。拖动滑块可实时调整当前年份国旗的位置与缩放；“国旗填充”填补原图未覆盖的剩余区域，“背景色”调整地图地块本身。若该国属于奥斯曼、英国、法国、意大利或西班牙共享组，背景色修改会同步整组成员。点击“保存到浏览器”会写入当前浏览器的 localStorage（键名：menaFlagDebugV1）；“导出 JSON”会把已保存和当前未保存的实时调试值一起下载，支持选择本地文件位置。</p>
+    <p class="debug-intro">此面板只调整当前选中的国家。拖动滑块可实时调整当前年份国旗的位置、缩放与旋转；“国旗填充”填补原图未覆盖的剩余区域，“背景色”调整地图地块本身。若该国属于奥斯曼、英国、法国、意大利或西班牙共享组，背景色修改会同步整组成员。点击“保存到浏览器”会写入当前浏览器的 localStorage（键名：menaFlagDebugV1）；“导出 JSON”会把已保存和当前未保存的实时调试值一起下载，支持选择本地文件位置。</p>
     <p class="debug-current" id="flagDebugCurrent">当前国家：—</p>
     <div class="debug-grid">
       <label>横向缩放<input id="flagDebugScaleX" type="range" min="0.5" max="2.5" step="0.01" value="1"><output id="flagDebugScaleXValue">1.00×</output></label>
       <label>纵向缩放<input id="flagDebugScaleY" type="range" min="0.5" max="2.5" step="0.01" value="1"><output id="flagDebugScaleYValue">1.00×</output></label>
       <label>水平平移<input id="flagDebugOffsetX" type="range" min="-80" max="80" step="1" value="0"><output id="flagDebugOffsetXValue">0</output></label>
       <label>垂直平移<input id="flagDebugOffsetY" type="range" min="-80" max="80" step="1" value="0"><output id="flagDebugOffsetYValue">0</output></label>
+      <label>旋转角度<input id="flagDebugRotation" type="range" min="-180" max="180" step="1" value="0"><output id="flagDebugRotationValue">0°</output></label>
       <label>背景色<input id="flagDebugColor" type="color" value="#a44e3b"><output id="flagDebugColorValue">#a44e3b</output></label>
       <label class="flag-fill-field">国旗填充<span class="flag-fill-picker"><input id="flagDebugFill" type="color" value="#a44e3b"><img id="flagDebugPreview" class="flag-debug-preview" alt="当前国家国旗预览"></span><output id="flagDebugFillValue">#a44e3b</output></label>
     </div>
