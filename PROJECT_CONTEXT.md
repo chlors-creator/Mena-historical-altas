@@ -34,3 +34,4 @@ node scripts/verify.mjs
 ```
 
 验证脚本检查 JavaScript 语法、HTML 脚本引用以及根目录与 `dist/` 的 SHA-256 一致性。
+详情侧栏事件使用 `modules/events.js` 的国家／地区目录；只有区域总览使用 `core.js` 的区域事件，事件卡片通过中文维基百科链接到具体条目。
