@@ -173,11 +173,10 @@
     <button class="dialog-close" id="boundaryDebugClose" type="button" aria-label="关闭">×</button>
     <p class="eyebrow">BOUNDARY / GEOMETRY DEBUGGER</p>
     <h2 id="boundaryDebugTitle">疆域导入与平移缩放调试</h2>
-    <p class="debug-intro">原始地图疆域始终保留不变。先选择当前年份的疆域，再点击“导入并预览”即可直接绑定新的 SVG。系统会按原始疆域几何计算相同时间段，让同一段内的年份共用一个 SVG；路径、填充规则和挖空路径完全相同的导入文件只保留一份，文件名按“正式名称+起止年份”生成，例如“伊朗伊斯兰共和国1979-2026”。调整参数后点击“保存调试值”，导出按钮可下载当前疆域的 SVG 或路径 JSON。</p>
     <div class="boundary-debug-import">
-      <label class="debug-file-label">导入疆域文件
-        <input id="boundaryDebugFile" type="file" accept=".geojson,.json,.svg,.js,application/geo+json,application/json,image/svg+xml,text/javascript">
-      </label>
+      <div class="debug-file-label"><span class="debug-file-title">导入疆域文件</span><button class="debug-file-button" id="boundaryDebugChooseFile" type="button">导入文件</button>
+        <input id="boundaryDebugFile" type="file" accept=".geojson,.json,.svg,.js,application/geo+json,application/json,image/svg+xml,text/javascript" hidden>
+      </div>
       <div class="boundary-debug-import-actions">
         <button class="primary-button" id="boundaryDebugImport" type="button">导入并预览</button>
         <button class="text-button" id="boundaryDebugConfigImportButton" type="button">导入调试配置</button>
