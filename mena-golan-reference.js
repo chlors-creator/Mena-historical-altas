@@ -1,0 +1,2 @@
+/* Updated Golan Heights boundary imported from assets/boundaries/戈兰高地.svg. */
+window.MENA_GOLAN_REFERENCE={id:"golan-heights",name:"戈兰高地",from:1967,to:2026,source:"戈兰高地.svg · 用户更新的戈兰高地边界",transform:"",fillRule:"evenodd",path:"m 701.8,179.3 0.3,-0.2 -0.1,1.8 0.6,1.1 0.3,1.7 0.3,1 -0.3,1.2 -1.1,1.8 -0.9,0.5 -0.23173,0.0772 -0.36827,0.1228 0.0905,-0.52057 0.2,-0.4 -0.1,-0.5 -0.3,-0.3 0.1,-0.6 -0.3,-0.6 0.2,-0.5 v -0.9 l 0.1,-0.7 0.1,-0.6 v -0.5 l 0.2,-1.2 0.1,-0.5 -0.2,-0.1 z"};

@@ -10,7 +10,7 @@ const boundaryFiles=fs.existsSync(path.join(root,boundaryDirectory))
   : [];
 const mirrorFiles=[
   "app.js","formal-names.js","index.html","mena-2026.js",
-  "mena-western-sahara-reference.js","mena-hejaz-reference.js",
+  "mena-western-sahara-reference.js","mena-hejaz-reference.js","mena-sinai-reference.js","mena-golan-reference.js",
   ...boundaryFiles,
   "mena-flag-debug.json","mena-historical-1886-1923.js",
   "mena-historical-1924-1999.js","mena-historical-aden.js",

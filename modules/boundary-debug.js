@@ -33,7 +33,7 @@ function boundaryDebugPathRecordsForYear(id,y){
   if(!canonical)return[];
   const records=[];
   const dispute=typeof disputeRegionForYear==="function"&&disputeRegionForYear(canonical,y);
-  if(dispute)return[{id:canonical,d:dispute.path,fillRule:"evenodd",cutoutPaths:[]}];
+  if(dispute){const reference=canonical==="sinai-peninsula"?window.MENA_SINAI_REFERENCE:canonical==="golan-heights"?window.MENA_GOLAN_REFERENCE:null;return[{id:canonical,d:reference?.path||dispute.path,fillRule:reference?.fillRule||"evenodd",cutoutPaths:[]}]}
   if(y>=1886){
     boundaryDebugFeaturesForYear(y).forEach(feature=>{
       const logicalId=feature.id==="turkey"&&y<=1922?"ottoman":feature.id;
