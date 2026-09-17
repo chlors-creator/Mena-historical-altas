@@ -17,7 +17,6 @@
     </button>
     <div class="top-actions">
       <button class="text-button" id="overviewButton" type="button">区域总览</button>
-      <button class="text-button" id="boundaryDebugButton" type="button">疆域调试</button>
       <button class="round-button" id="aboutButton" type="button" aria-label="关于本项目">i</button>
     </div>
   </header>
@@ -80,7 +79,6 @@
           </g>
           <g id="regionLines" class="region-lines" aria-hidden="true"></g>
           <g id="frontierOverlays" class="frontier-overlays" aria-hidden="true"></g>
-          <g id="boundaryDebugLayer" class="boundary-debug-layer" aria-hidden="true"></g>
           <g id="historyConnectors" class="history-connectors" aria-hidden="true"></g>
           <g id="labels" class="map-labels" aria-hidden="true"></g>
           <g class="compass" transform="translate(1010 520)" aria-hidden="true"><circle r="37"/><path d="M0-31 7 0 0 31-7 0Z"/><text x="0" y="-44">N</text></g>
@@ -166,43 +164,6 @@
       <button class="text-button" id="flagDebugExport" type="button">导出 JSON</button>
     </div>
     <p class="debug-status" id="flagDebugStatus" role="status"></p>
-  </dialog>
-  <dialog id="boundaryDebugDialog" class="boundary-debug-dialog" aria-labelledby="boundaryDebugTitle">
-    <button class="dialog-close" id="boundaryDebugClose" type="button" aria-label="关闭">×</button>
-    <p class="eyebrow">BOUNDARY / GEOMETRY DEBUGGER</p>
-    <h2 id="boundaryDebugTitle">疆域导入与平移缩放调试</h2>
-    <p class="debug-intro">导入 GeoJSON、GeoJSON FeatureCollection、SVG 或包含 <code>path</code> 字段的 JSON。GeoJSON 会按当前 MENA 地图的经纬度投影预览；SVG 路径保留原始坐标。调试结果只覆盖当前浏览器中的预览，不会直接改写历史数据源。</p>
-    <div class="boundary-debug-import">
-      <label class="debug-file-label">导入疆域文件
-        <input id="boundaryDebugFile" type="file" accept=".geojson,.json,.svg,.js,application/geo+json,application/json,image/svg+xml,text/javascript">
-      </label>
-      <div class="boundary-debug-import-actions">
-        <button class="primary-button" id="boundaryDebugImport" type="button">导入并预览</button>
-        <button class="text-button" id="boundaryDebugConfigImportButton" type="button">导入调试配置</button>
-        <input id="boundaryDebugConfigFile" type="file" accept=".json,application/json" hidden>
-      </div>
-    </div>
-    <label class="debug-select-label">调试对象
-      <select id="boundaryDebugTarget" class="debug-select"></select>
-    </label>
-    <p class="debug-current" id="boundaryDebugCurrent">当前年份：—</p>
-    <div class="debug-grid boundary-debug-grid">
-      <label>横向缩放<input id="boundaryDebugScaleX" type="range" min="0.25" max="3" step="0.01" value="1"><output id="boundaryDebugScaleXValue">1.00×</output></label>
-      <label>纵向缩放<input id="boundaryDebugScaleY" type="range" min="0.25" max="3" step="0.01" value="1"><output id="boundaryDebugScaleYValue">1.00×</output></label>
-      <label>水平平移<input id="boundaryDebugOffsetX" type="range" min="-240" max="240" step="1" value="0"><output id="boundaryDebugOffsetXValue">0</output></label>
-      <label>垂直平移<input id="boundaryDebugOffsetY" type="range" min="-240" max="240" step="1" value="0"><output id="boundaryDebugOffsetYValue">0</output></label>
-      <label>旋转<input id="boundaryDebugRotation" type="range" min="-30" max="30" step="0.5" value="0"><output id="boundaryDebugRotationValue">0°</output></label>
-      <label>预览透明度<input id="boundaryDebugOpacity" type="range" min="0.15" max="1" step="0.01" value="0.72"><output id="boundaryDebugOpacityValue">72%</output></label>
-    </div>
-    <div class="debug-actions boundary-debug-actions">
-      <button class="primary-button" id="boundaryDebugSave" type="button">保存调试值</button>
-      <button class="text-button" id="boundaryDebugSaveCurrent" type="button">保存当前疆域</button>
-      <button class="text-button" id="boundaryDebugSaveAll" type="button">保存本年全部疆域</button>
-      <button class="text-button" id="boundaryDebugReset" type="button">恢复默认</button>
-      <button class="text-button" id="boundaryDebugDelete" type="button">删除导入项</button>
-      <button class="text-button" id="boundaryDebugExport" type="button">导出调试 JSON</button>
-    </div>
-    <p class="debug-status" id="boundaryDebugStatus" role="status"></p>
   </dialog>
   <script src="mena-2026.js"></script>
   <script src="mena-historical-1886-1923.js"></script>
