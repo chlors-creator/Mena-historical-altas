@@ -83,8 +83,8 @@ const mapColors=["#9d4035","#486f78","#b0792f","#655782","#4f755e","#a05262","#5
 // snapshot.  Ottoman and Turkish republican colours are intentionally
 // different keys even though the modern map uses the same geographic area.
 const POLITY_COLORS={
-  ottoman:"#6b4a3a",turkey:"#315f66", "spanish-empire":"#b0792f",morocco:"#9d4035",
-  "french-empire":"#486f78", "british-empire":"#655782",iraq:"#a05262",algeria:"#4f755e",
+  ottoman:"#8eb785",turkey:"#315f66", "spanish-empire":"#b0792f",morocco:"#9d4035",
+  "french-empire":"#5b69b9", "british-empire":"#bf7d87",iraq:"#a05262",algeria:"#4f755e",
   tunisia:"#8d653d", "italian-empire":"#7b4d58",libya:"#74763c", "muhammad-ali":"#35678a",
   egypt:"#a65d37", "sudan-sultanates":"#60754c",mahdi:"#6d5680",sudan:"#3f786f",
   "sahrawi-polities":"#99604a", "western-sahara":"#8a4f76",qajar:"#54637b",pahlavi:"#9b713e",
@@ -213,14 +213,34 @@ const flagDebugAssetVariants={
   bahrain:["bahrain.svg"],
   algeria:["ottoman-empire.svg","france.svg","algeria.svg"],
   libya:["ottoman-empire.svg","italy.svg","uk.svg","libya-1951.svg","libya-1969.svg","egypt-1972.svg","libya-1977.svg"],
-  iran:["qajar-iran.svg","iran-1933.svg","iran-1964.svg","iran.svg"]
+  iran:["qajar-iran.svg","iran-1933.svg","iran-1964.svg","iran.svg"],
+  egypt:["egypt-1882.svg"],ottoman:["ottoman-empire.svg"],iraq:["iraq-1963.svg"],
+  morocco:["morocco.svg"],tunisia:["tunisia.svg"],israel:["israel.svg"]
 };
 const flagDebugBuiltIn={};Object.entries(flagDebugAssetVariants).forEach(([id,files])=>files.forEach(file=>{flagDebugBuiltIn[`${id}::${file}`]={...flagDebugCountryDefaults[id]}}));
+// Exact values from the latest exported debugger file. These override the
+// older country-wide fallback only for the flag asset that was tuned.
+Object.assign(flagDebugBuiltIn,{
+  "egypt::egypt-1882.svg":{scaleX:.93,scaleY:1.09,offsetX:20,offsetY:0,color:"#bf7d87",flagFill:"#ce1127"},
+  "ottoman::ottoman-empire.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#8eb785",flagFill:"#6b4a3a"},
+  "turkey::turkey.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#d07a01",flagFill:"#e30a17"},
+  "algeria::france.svg":{scaleX:1.11,scaleY:1,offsetX:0,offsetY:0,color:"#5b69b9",flagFill:"#ffffff"},
+  "libya::italy.svg":{scaleX:1.19,scaleY:1.2,offsetX:0,offsetY:0,color:"#7b4d58",flagFill:"#35678a"},
+  "iran::qajar-iran.svg":{scaleX:1.96,scaleY:1,offsetX:0,offsetY:0,color:"#3c96e6",flagFill:"#54637b"},
+  "iraq::iraq-1963.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#9b713e",flagFill:"#ffffff"},
+  "libya::libya-1951.svg":{scaleX:1.76,scaleY:.97,offsetX:0,offsetY:0,color:"#35678a",flagFill:"#35678a"},
+  "morocco::morocco.svg":{scaleX:1.03,scaleY:1,offsetX:5,offsetY:0,color:"#9d4035",flagFill:"#c1272d"},
+  "tunisia::tunisia.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#8d653d",flagFill:"#e70013"},
+  "saudi::saudi-1938.svg":{scaleX:1,scaleY:1.42,offsetX:-18,offsetY:0,color:"#9b713e",flagFill:"#006c35"},
+  "israel::israel.svg":{scaleX:1.28,scaleY:.57,offsetX:0,offsetY:-5,color:"#9eb5b7",flagFill:"#ffffff"}
+});
 const SHARED_POLITIES=new Set(["ottoman","british-empire","french-empire","spanish-empire","italian-empire"]);
+const SHARED_DEFAULT_COLORS={ottoman:"#8eb785","british-empire":"#bf7d87","french-empire":"#5b69b9","spanish-empire":"#b0792f","italian-empire":"#7b4d58"};
 let flagDebugDrafts={},flagDebugSharedDrafts={};
 function readFlagDebug(){try{return JSON.parse(localStorage.getItem(FLAG_DEBUG_STORAGE)||"{}")}catch{return{}}}
 function flagDebugKey(id,y){return `${id}::${flagAssetFor(id,y).file}`}
-function sharedColorFor(polity){if(!SHARED_POLITIES.has(polity))return"";const draft=flagDebugSharedDrafts[polity],saved=readFlagDebug();return draft||saved.__sharedColors?.[polity]||""}
+function normalizeSharedColor(polity,color){if(polity==="british-empire"&&String(color||"").toLowerCase()==="#b76277")return SHARED_DEFAULT_COLORS[polity];return color||""}
+function sharedColorFor(polity){if(!SHARED_POLITIES.has(polity))return"";const draft=flagDebugSharedDrafts[polity],saved=readFlagDebug();return draft||normalizeSharedColor(polity,saved.__sharedColors?.[polity])||SHARED_DEFAULT_COLORS[polity]||""}
 function flagDebugSettings(id,y){const key=flagDebugKey(id,y),polity=polityAt(id,y),saved=readFlagDebug();let exact=saved[key];if(!exact&&saved[id]){exact=saved[id];const migrated={...saved,[key]:saved[id]};if(SHARED_POLITIES.has(polity)&&saved[id].color){migrated.__sharedColors={...(saved.__sharedColors||{}),[polity]:saved[id].color}}delete migrated[id];try{localStorage.setItem(FLAG_DEBUG_STORAGE,JSON.stringify(migrated))}catch{}}const builtIn={...(flagDebugBuiltIn[key]||{})};if(SHARED_POLITIES.has(polity))delete builtIn.color;const settings={...flagDebugDefaults,...builtIn,...(exact||{})};if(SHARED_POLITIES.has(polity))settings.color=sharedColorFor(polity)||"";return settings}
 function flagPathParts(d){return (d.match(/M[^M]*/g)||[d]).map(part=>part.trim()).filter(Boolean)}
 function pathDataBox(d){const nums=[...d.matchAll(/-?\d+(?:\.\d+)?/g)].map(match=>Number(match[0]));if(nums.length<2)return null;const xs=nums.filter((_,i)=>i%2===0),ys=nums.filter((_,i)=>i%2===1);return{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)}}
@@ -465,5 +485,7 @@ const _renderWithFormalNames=render;render=()=>{_renderWithFormalNames();const y
  function refreshDebugDraft(){const id=selected;if(!id)return;const y=Number(dom.year.value),key=flagDebugKey(id,y),values=debugFormValues(),path=activeCountries().find(candidate=>candidate.dataset.id===id),polity=path?.dataset.polity||polityAt(id,y);flagDebugDrafts[key]=values;if(SHARED_POLITIES.has(polity))flagDebugSharedDrafts[polity]=values.color;updateDebugOutputs();applyFlagDebugSettings(id,y);dom.flagDebugStatus.textContent="实时预览中；点击“保存到浏览器”后将在本机保留。"}
  function saveDebugSettings(){const id=selected;if(!id)return;const y=Number(dom.year.value),key=flagDebugKey(id,y),values=debugFormValues(),path=activeCountries().find(candidate=>candidate.dataset.id===id),polity=path?.dataset.polity||polityAt(id,y),saved=readFlagDebug();saved[key]={...flagDebugSettings(id,y),...values};delete saved[id];if(SHARED_POLITIES.has(polity)){saved.__sharedColors={...(saved.__sharedColors||{}),[polity]:values.color};flagDebugSharedDrafts[polity]=values.color}try{localStorage.setItem(FLAG_DEBUG_STORAGE,JSON.stringify(saved,null,2));flagDebugDrafts[key]={...saved[key]};dom.flagDebugStatus.textContent="已保存到本浏览器。"}catch{dom.flagDebugStatus.textContent="浏览器存储不可用，请使用导出 JSON。"}applyFlagDebugSettings(id,y)}
  function resetDebugSettings(){const id=selected;if(!id)return;const y=Number(dom.year.value),key=flagDebugKey(id,y),path=activeCountries().find(candidate=>candidate.dataset.id===id),polity=path?.dataset.polity||polityAt(id,y);delete flagDebugDrafts[key];delete flagDebugSharedDrafts[polity];const saved=readFlagDebug();delete saved[key];delete saved[id];if(SHARED_POLITIES.has(polity)&&saved.__sharedColors){delete saved.__sharedColors[polity];if(!Object.keys(saved.__sharedColors).length)delete saved.__sharedColors}try{localStorage.setItem(FLAG_DEBUG_STORAGE,JSON.stringify(saved))}catch{}historicalStyles(y);syncFlags(y);loadDebugForm(id);dom.flagDebugStatus.textContent="已恢复默认设置。"}
-function exportDebugSettings(){const payload=JSON.stringify(readFlagDebug(),null,2),blob=new Blob([payload],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="mena-flag-debug.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),0);dom.flagDebugStatus.textContent="已导出 mena-flag-debug.json。"}
+function flagDebugExportPayload(){const payload={...readFlagDebug()};Object.entries(flagDebugDrafts).forEach(([key,values])=>{payload[key]={...(payload[key]||{}),...values}});if(Object.keys(flagDebugSharedDrafts).length)payload.__sharedColors={...(payload.__sharedColors||{}),...flagDebugSharedDrafts};if(payload.__sharedColors?.["british-empire"])payload.__sharedColors["british-empire"]=normalizeSharedColor("british-empire",payload.__sharedColors["british-empire"]);return payload}
+function downloadFlagDebugBlob(blob){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="mena-flag-debug.json";a.style.display="none";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0)}
+async function exportDebugSettings(){const payload=JSON.stringify(flagDebugExportPayload(),null,2),blob=new Blob([payload],{type:"application/json"});try{if(typeof window.showSaveFilePicker==="function"){try{const handle=await window.showSaveFilePicker({suggestedName:"mena-flag-debug.json",types:[{description:"JSON 配置",accept:{"application/json":[".json"]}}]});const writable=await handle.createWritable();await writable.write(payload);await writable.close();dom.flagDebugStatus.textContent="已保存 JSON 到你选择的本地文件。";return}catch(error){if(error?.name==="AbortError"){dom.flagDebugStatus.textContent="已取消导出。";return}}}downloadFlagDebugBlob(blob);dom.flagDebugStatus.textContent="已下载 mena-flag-debug.json（浏览器默认下载目录）。"}catch(error){dom.flagDebugStatus.textContent="导出失败：浏览器阻止了本地文件写入；请允许下载或改用桌面浏览器。"}}
  if(dom.flagDebugButton){dom.flagDebugButton.addEventListener("click",()=>{if(!selected)return;loadDebugForm(selected);dom.flagDebugDialog.showModal()});dom.flagDebugClose.addEventListener("click",()=>dom.flagDebugDialog.close());dom.flagDebugDialog.addEventListener("click",e=>{if(e.target===dom.flagDebugDialog)dom.flagDebugDialog.close()});[dom.flagDebugScaleX,dom.flagDebugScaleY,dom.flagDebugOffsetX,dom.flagDebugOffsetY,dom.flagDebugColor,dom.flagDebugFill].forEach(input=>input.addEventListener("input",refreshDebugDraft));dom.flagDebugSave.addEventListener("click",saveDebugSettings);dom.flagDebugReset.addEventListener("click",resetDebugSettings);dom.flagDebugExport.addEventListener("click",exportDebugSettings)}
