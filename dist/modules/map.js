@@ -132,18 +132,23 @@ function boundaryFeaturesForYear(y){
     const fallback=ottomanLibya||(window.MENA_2026||[]).find(feature=>feature.id===id||(id==="yemen-north"&&feature.id==="yemen"));
     if(fallback){selectedFeatures.push({id,from:y,to:y,path:fallback.path,source:ottomanLibya?"CShapes 2.0 contextual extension · Ottoman Tripolitania and Cyrenaica (pre-1911) · Ottoman provinces reference":"Natural Earth fallback",name:fallback.name});present.add(id)}
   });
-  // The 1959 CShapes outline is the complete Western Sahara geometry. Reuse
-  // that exact record for 1886—1958 instead of carrying the incomplete
-  // 1924—1958 outline or the modern fallback backward.
+  // The complete 1959 outline is the stable Western Sahara geometry for the
+  // whole 1886—1975 historical range; do not carry incomplete records across
+  // the period boundary or append the modern fallback to it.
   const westernSaharaReference=window.MENA_WESTERN_SAHARA_REFERENCE;
   if(y<=1958&&westernSaharaReference?.path){
     const full={...westernSaharaReference,from:y,to:y,source:`${westernSaharaReference.source} · historical continuity reference`};
     const index=selectedFeatures.findIndex(feature=>feature.id==="western-sahara");
     if(index>=0)selectedFeatures[index]=full;else selectedFeatures.push(full)
   }
-  // The 1959—1975 CShapes record is extended with the modern contextual
-  // outline because it omits part of the northern historical claim area.
-  if(y>=1959&&y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
+  // Apply the same complete outline used for 1958 to every year through
+  // 1975. This keeps 1959—1975 identical to the corrected 1958 SVG instead
+  // of reintroducing the incomplete CShapes outline or a modern appendage.
+  if(y>=1959&&y<=1975&&westernSaharaReference?.path){
+    const full={...westernSaharaReference,from:y,to:y,source:`${westernSaharaReference.source} · 1958 SVG carried forward through 1975`};
+    const index=selectedFeatures.findIndex(feature=>feature.id==="western-sahara");
+    if(index>=0)selectedFeatures[index]=full;else selectedFeatures.push(full)
+  }
   // CShapes stops carrying a separate Palestine record after 1967 because
   // the area was under Israeli military occupation. Keep the two geographic
   // pieces selectable by reusing the modern reference outline as a dated
