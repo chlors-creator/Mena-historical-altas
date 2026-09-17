@@ -126,6 +126,7 @@ const flagDebugBuiltIn={};Object.entries(flagDebugAssetVariants).forEach(([id,fi
 // older country-wide fallback only for the flag asset that was tuned.
 Object.assign(flagDebugBuiltIn,{
   "egypt::egypt-1882.svg":{scaleX:.93,scaleY:1.09,offsetX:20,offsetY:0,color:"#bf7d87",flagFill:"#ce1127"},
+  "egypt::egypt-1922.svg":{scaleX:.99,scaleY:.79,offsetX:0,offsetY:0,rotation:0,color:"#a65d37",flagFill:"#00672b"},
   "ottoman::ottoman-empire.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#8eb785",flagFill:"#6b4a3a"},
   "turkey::turkey.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#d07a01",flagFill:"#e30a17"},
   "algeria::france.svg":{scaleX:1.11,scaleY:1,offsetX:0,offsetY:0,color:"#5b69b9",flagFill:"#ffffff"},

@@ -20,6 +20,7 @@
   "iran::iran-1964.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
   "iran::iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
   "egypt::egypt-1882.svg": {"scaleX": 0.93, "scaleY": 1.09, "offsetX": 20, "offsetY": 0, "color": "#bf7d87", "flagFill": "#ce1127"},
+  "egypt::egypt-1922.svg": {"scaleX": 0.99, "scaleY": 0.79, "offsetX": 0, "offsetY": 0, "rotation": 0, "color": "#a65d37", "flagFill": "#00672b"},
   "ottoman::ottoman-empire.svg": {"scaleX": 1, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#8eb785", "flagFill": "#6b4a3a"},
   "iraq::iraq-1963.svg": {"scaleX": 1, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#9b713e", "flagFill": "#ffffff"},
   "morocco::morocco.svg": {"scaleX": 1.03, "scaleY": 1, "offsetX": 5, "offsetY": 0, "color": "#9d4035", "flagFill": "#c1272d"},
