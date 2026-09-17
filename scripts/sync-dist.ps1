@@ -1,6 +1,6 @@
 $root=Split-Path -Parent $PSScriptRoot
 $files=@(
-  'app.js','formal-names.js','index.html','mena-2026.js','mena-flag-debug.json',
+  'app.js','formal-names.js','index.html','mena-2026.js','mena-western-sahara-reference.js','mena-flag-debug.json',
   'mena-historical-1886-1923.js','mena-historical-1924-1999.js','mena-historical-aden.js',
   'mena-historical-yemen-extension.js','PROJECT_CONTEXT.md','README.md','styles.css',
   'modules/boundary-debug.js','modules/core.js','modules/events.js','modules/flags.js','modules/lazy-loader.js','modules/map.js'

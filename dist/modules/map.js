@@ -12,7 +12,10 @@ function historicalStyles(y){
 function createLabels(){
   dom.labels.innerHTML="";
   if(dom.historyConnectors)dom.historyConnectors.innerHTML="";
+  const seenLabels=new Set();
   activeCountries().forEach(p=>{
+    if(seenLabels.has(p.dataset.id))return;
+    seenLabels.add(p.dataset.id);
     const b=p.getBBox();
     if(b.width<32||b.height<24)return;
     const labelShift=p.dataset.id==="morocco-spanish"?-50:0;
@@ -43,7 +46,7 @@ function createLabels(){
   });
 }
 function regions(path){dom.regionLines.innerHTML="";const b=path.getBBox(),names=meta[path.dataset.id][1],lines=[[b.x+b.width*.36,b.y+5,b.x+b.width*.48,b.y+b.height-5],[b.x+4,b.y+b.height*.54,b.x+b.width-4,b.y+b.height*.42],[b.x+b.width*.68,b.y+5,b.x+b.width*.73,b.y+b.height-5]];lines.slice(0,Math.min(3,names.length-1)).forEach(v=>{const l=document.createElementNS("http://www.w3.org/2000/svg","line");["x1","y1","x2","y2"].forEach((k,i)=>l.setAttribute(k,v[i]));dom.regionLines.append(l)});names.slice(0,4).forEach((n,i)=>{const t=document.createElementNS("http://www.w3.org/2000/svg","text"),c=i%2,r=Math.floor(i/2);t.setAttribute("x",b.x+b.width*(c?.7:.3));t.setAttribute("y",b.y+b.height*(r?.7:.3));t.textContent=n;dom.regionLines.append(t)});dom.regionLines.classList.add("visible")}
-function choose(id){activeFlagId=null;clearHoverVisuals();const p=activeCountries().find(x=>x.dataset.id===id),disputePath=dom.frontierOverlays?.querySelector(`.dispute-hit[data-dispute-id="${id}"]`);if(!p&&!disputePath)return;selected=id;const target=p||disputePath,b=target.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{x.classList.toggle("selected",x===p);x.classList.toggle("dimmed",x!==p);x.classList.toggle("detail-static",x===p)});document.querySelectorAll(".dispute-hit").forEach(x=>{x.classList.toggle("selected",x===disputePath);x.classList.toggle("dimmed",x!==disputePath)});if(p)setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode&&p)regions(p);if(typeof requestRender==="function")requestRender();else render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
+function choose(id){activeFlagId=null;clearHoverVisuals();const p=activeCountries().find(x=>x.dataset.id===id),selectedPaths=activeCountries().filter(x=>x.dataset.id===id),disputePath=dom.frontierOverlays?.querySelector(`.dispute-hit[data-dispute-id="${id}"]`);if(!p&&!disputePath)return;selected=id;const target=p||disputePath,b=target.getBBox(),px=Math.max(45,b.width*.45),py=Math.max(38,b.height*.4);dom.map.setAttribute("viewBox",`${b.x-px} ${b.y-py} ${b.width+2*px} ${b.height+2*py}`);activeCountries().forEach(x=>{const belongs=selectedPaths.includes(x);x.classList.toggle("selected",belongs);x.classList.toggle("dimmed",!belongs);x.classList.toggle("detail-static",belongs)});document.querySelectorAll(".dispute-hit").forEach(x=>{x.classList.toggle("selected",x===disputePath);x.classList.toggle("dimmed",x!==disputePath)});if(p)setHoverState(id,false);[...dom.labels.children].forEach(l=>l.style.display=l.dataset.for===id?"none":"");if(!realMode&&p)regions(p);if(typeof requestRender==="function")requestRender();else render();if(innerWidth<781)$("#storyPanel").scrollIntoView({behavior:"smooth",block:"start"})}
 function overview(){selected=null;clearMapState();[...dom.labels.children].forEach(l=>l.style.display="");if(typeof requestRender==="function")requestRender();else render()}
 function stop(){if(timer)clearInterval(timer);timer=null;dom.play.classList.remove("playing");dom.play.setAttribute("aria-label","播放时间线")}
 function toggle(){if(timer)return stop();dom.play.classList.add("playing");dom.play.setAttribute("aria-label","暂停时间线");timer=setInterval(()=>{dom.year.value=+dom.year.value>=2026?1797:+dom.year.value+1;if(typeof requestRender==="function")requestRender();else if(typeof renderYear==="function")renderYear(Number(dom.year.value));else render()},120)}
@@ -129,9 +132,18 @@ function boundaryFeaturesForYear(y){
     const fallback=ottomanLibya||(window.MENA_2026||[]).find(feature=>feature.id===id||(id==="yemen-north"&&feature.id==="yemen"));
     if(fallback){selectedFeatures.push({id,from:y,to:y,path:fallback.path,source:ottomanLibya?"CShapes 2.0 contextual extension · Ottoman Tripolitania and Cyrenaica (pre-1911) · Ottoman provinces reference":"Natural Earth fallback",name:fallback.name});present.add(id)}
   });
-  // The CShapes record for 1959—1975 omits the northern claim area. Union the
-  // complete Western Sahara reference outline so no portion disappears between years.
-  if(y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
+  // The 1959 CShapes outline is the complete Western Sahara geometry. Reuse
+  // that exact record for 1886—1958 instead of carrying the incomplete
+  // 1924—1958 outline or the modern fallback backward.
+  const westernSaharaReference=window.MENA_WESTERN_SAHARA_REFERENCE;
+  if(y<=1958&&westernSaharaReference?.path){
+    const full={...westernSaharaReference,from:y,to:y,source:`${westernSaharaReference.source} · historical continuity reference`};
+    const index=selectedFeatures.findIndex(feature=>feature.id==="western-sahara");
+    if(index>=0)selectedFeatures[index]=full;else selectedFeatures.push(full)
+  }
+  // The 1959—1975 CShapes record is extended with the modern contextual
+  // outline because it omits part of the northern historical claim area.
+  if(y>=1959&&y<=1975){const ws=selectedFeatures.find(feature=>feature.id==="western-sahara"),modern=(window.MENA_2026||[]).find(feature=>feature.id==="western-sahara");if(modern&&(!ws||ws.path!==modern.path))selectedFeatures.push({id:"western-sahara",from:y,to:y,path:modern.path,source:"Natural Earth contextual extension · Western Sahara full historical claim area",name:"Western Sahara"})}
   // CShapes stops carrying a separate Palestine record after 1967 because
   // the area was under Israeli military occupation. Keep the two geographic
   // pieces selectable by reusing the modern reference outline as a dated
@@ -213,31 +225,46 @@ function buildBoundaryMap(y){
   defs?.querySelector("#ottomanCutoutMask")?.remove();
   const replacements=boundaryDebugReplacementEntriesForYear(y),replacementIds=new Set(replacements.map(entry=>entry.id));
   boundaryFeaturesForYear(y).forEach(feature=>{
-    const p=document.createElementNS(ns,"path"),pathData=feature.path;
+    const pathData=feature.path;
     // CShapes calls the pre-1923 imperial polygon `turkey`; expose it as its
     // own Ottoman tag so it can never be confused with the Turkish republic.
     const logicalId=feature.id==="turkey"&&y<=1922?"ottoman":feature.id;
     if(replacementIds.has(logicalId))return;
-    p.dataset.id=logicalId;p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||pathData;if(feature.cutoutPaths?.length)p.dataset.cutoutPaths=JSON.stringify(feature.cutoutPaths);p.setAttribute("d",pathData);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":feature.source?.includes("extension")?"nonzero":"evenodd");
-    if(logicalId==="ottoman"&&feature.cutoutPaths?.length){
-      let mask=defs?.querySelector("#ottomanCutoutMask");
-      if(!mask&&defs){
-        mask=document.createElementNS(ns,"mask");mask.id="ottomanCutoutMask";mask.setAttribute("mask-type","luminance");mask.setAttribute("maskUnits","userSpaceOnUse");mask.setAttribute("maskContentUnits","userSpaceOnUse");mask.setAttribute("x","0");mask.setAttribute("y","0");mask.setAttribute("width","1080");mask.setAttribute("height","650");
-        const white=document.createElementNS(ns,"rect");white.setAttribute("x","0");white.setAttribute("y","0");white.setAttribute("width","1080");white.setAttribute("height","650");white.setAttribute("fill","white");mask.append(white);defs.append(mask)
+    // CShapes and the contextual Western Sahara outline can overlap while
+    // using opposite winding directions. Keep each subpath as its own opaque
+    // SVG element so one source cannot turn the other into a transparent hole.
+    const pathParts=logicalId==="western-sahara"?flagPathParts(pathData):[pathData];
+    pathParts.forEach((part,partIndex)=>{
+      const p=document.createElementNS(ns,"path");
+      p.dataset.id=logicalId;p.dataset.part=String(partIndex);p.dataset.source=feature.source||"";p.dataset.sourceId=feature.id;p.dataset.cutoutCount=String(feature.cutoutCount||0);p.dataset.flagPath=feature.basePath||part;if(feature.cutoutPaths?.length)p.dataset.cutoutPaths=JSON.stringify(feature.cutoutPaths);p.setAttribute("d",part);p.setAttribute("fill-rule",logicalId==="ottoman"?"evenodd":logicalId==="western-sahara"?"nonzero":feature.source?.includes("extension")?"nonzero":"evenodd");
+      if(logicalId==="western-sahara"&&y>=1886&&y<=1958){
+        // The Spanish colonial area must be an ordinary opaque country fill.
+        // Set the colour on each split source path itself; an overlay would
+        // sit above the flag layer and hide the Spanish flag.
+        const spanishColor=stablePolityColor("spanish-empire");
+        p.style.setProperty("--polity-color",spanishColor);
+        p.setAttribute("fill",spanishColor)
       }
-      if(mask){feature.cutoutPaths.forEach(cutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
-    }
-    // Western Sahara and the post-1948 Palestinian pieces are disputed in
-    // status, but still receive ordinary opaque polity fills. Claim hatching
-    // is reserved for the explicit control/claim overlays below.
-    if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
-    if(feature.source?.includes("context"))p.classList.add("context");
-    // Compound historical records for Aden and the Ottoman/Turkish core are
-    // one polity even when the source geometry contains touching subpaths.
-    if((feature.id==="yemen-south"&&y<=1967)||(feature.id==="turkey"&&y<=1922))p.classList.add("merged-feature");
-    const title=document.createElementNS(ns,"title");
-    const label=logicalId==="ottoman"?"奥斯曼帝国":logicalId==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):(meta[logicalId]?.[0]||feature.name||logicalId);
-    title.textContent=`${label} · ${feature.source||"地图数据"}`;p.append(title);dom.realRoot.append(p)
+      if(logicalId==="ottoman"&&feature.cutoutPaths?.length){
+        let mask=defs?.querySelector("#ottomanCutoutMask");
+        if(!mask&&defs){
+          mask=document.createElementNS(ns,"mask");mask.id="ottomanCutoutMask";mask.setAttribute("mask-type","luminance");mask.setAttribute("maskUnits","userSpaceOnUse");mask.setAttribute("maskContentUnits","userSpaceOnUse");mask.setAttribute("x","0");mask.setAttribute("y","0");mask.setAttribute("width","1080");mask.setAttribute("height","650");
+          const white=document.createElementNS(ns,"rect");white.setAttribute("x","0");white.setAttribute("y","0");white.setAttribute("width","1080");white.setAttribute("height","650");white.setAttribute("fill","white");mask.append(white);defs.append(mask)
+        }
+        if(mask){feature.cutoutPaths.forEach(cutPath=>{const cut=document.createElementNS(ns,"path");cut.setAttribute("d",cutPath);cut.setAttribute("fill","black");cut.setAttribute("fill-rule","nonzero");mask.append(cut)});p.setAttribute("mask","url(#ottomanCutoutMask)")}
+      }
+      // Western Sahara and the post-1948 Palestinian pieces are disputed in
+      // status, but still receive ordinary opaque polity fills. Claim hatching
+      // is reserved for the explicit control/claim overlays below.
+      if(feature.source?.includes("Natural Earth fallback"))p.classList.add("fallback");
+      if(feature.source?.includes("context"))p.classList.add("context");
+      // Compound historical records for Aden and the Ottoman/Turkish core are
+      // one polity even when the source geometry contains touching subpaths.
+      if((feature.id==="yemen-south"&&y<=1967)||(feature.id==="turkey"&&y<=1922))p.classList.add("merged-feature");
+      const title=document.createElementNS(ns,"title");
+      const label=logicalId==="ottoman"?"奥斯曼帝国":logicalId==="yemen-south"?(y<1967?"亚丁保护国":"南也门"):(meta[logicalId]?.[0]||feature.name||logicalId);
+      title.textContent=`${label} · ${feature.source||"地图数据"}`;p.append(title);dom.realRoot.append(p)
+    })
   });
   replacements.forEach(({id,item})=>{
     const paths=item.paths.filter(record=>record?.d),pathData=paths.map(record=>record.d).join("");
