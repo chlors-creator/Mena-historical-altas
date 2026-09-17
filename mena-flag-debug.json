@@ -18,5 +18,6 @@
   "iran::qajar-iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
   "iran::iran-1933.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
   "iran::iran-1964.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
-  "iran::iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"}
+  "iran::iran.svg": {"scaleX": 1.96, "scaleY": 1, "offsetX": 0, "offsetY": 0, "color": "#54637b", "flagFill": "#54637b"},
+  "__sharedColors": {}
 }

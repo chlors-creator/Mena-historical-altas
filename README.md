@@ -18,7 +18,7 @@
 - 1932 年沙特—也门边界在 1934 年《塔伊夫条约》前尚未完成法理划定，地图以阴影争议带表示阿西尔、吉赞和纳季兰相关未定界区域，不将其误画为已确定的沙特或也门领土。
 - 西属摩洛哥地块保持原始 GIS 位置，仅将国名向左偏移 50px，并以两条细黑线连接至两个子地块中心。
 - 科威特 1899 年前显示为奥斯曼宗主权下的萨巴赫酋长国，1899—1960 年显示为英国保护关系（不是英国殖民地）；1920—1948 年巴勒斯坦年度快照显示为英属巴勒斯坦托管地，并使用统一的英国控制色。口径参照 [科威特政府历史说明](https://e.gov.kw/sites/kgoenglish/Pages/Visitors/AboutKuwait/GoverningBodyOverView.aspx) 与 [联合国巴勒斯坦问题历史资料](https://www.un.org/unispal/document/auto-insert-185776/)。
-- `mena-flag-debug.json` 是本次提供的国旗调试参数固化副本；参数按“国家 + 具体历史国旗资源”唯一绑定（例如 `libya::italy.svg`），应用启动时内置同一组参数，浏览器 localStorage 仅作为后续个人覆盖。共享的奥斯曼、英国、法国、意大利和西班牙政权在地图着色时使用统一的稳定变量。
+- `mena-flag-debug.json` 是本次提供的国旗调试参数固化副本；参数按“国家 + 具体历史国旗资源”唯一绑定（例如 `libya::italy.svg`），应用启动时内置同一组参数，浏览器 localStorage 仅作为后续个人覆盖。共享的奥斯曼、英国、法国、意大利和西班牙政权在地图着色时使用统一变量；任一成员国调试器修改“背景色”都会写入 `__sharedColors` 并同步该组所有成员。
 
 数据来源：ETH Zurich International Conflict Research 的 [CShapes 2.0](https://icr.ethz.ch/data/cshapes/)（CC BY-NC-SA 4.0）、[Natural Earth 50m Cultural Vectors](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)，以及 [ArcGIS Kingdom of Hejaz FeatureServer 22](https://services6.arcgis.com/AZvnIky2AKQNH37M/ArcGIS/rest/services/KingdomofHejaz/FeatureServer/22) 和 [1910 年 Hejaz Vilayet 行政图](https://commons.wikimedia.org/wiki/File:Hejaz_Vilayet.png) 的汉志历史几何。1932 年未定界说明参照 [联合国《塔伊夫条约》登记记录](https://treaties.un.org/Pages/showDetails.aspx?objid=08000002800667a7) 与 [卡塔尔数字图书馆的 1934 年边界档案](https://www.qdl.qa/en/archive/81055/vdc_100040077896.0x000010)；1913—1914 年科威特与奥斯曼／英国边界参照 [QDL 海湾条约地图档案](https://qdl.qa/en/archive/81055/vdc_100022752333.0x00003d)。
 
