@@ -135,8 +135,9 @@ Object.assign(flagDebugBuiltIn,{
   "libya::libya-1951.svg":{scaleX:1.76,scaleY:.97,offsetX:0,offsetY:0,color:"#35678a",flagFill:"#35678a"},
   "morocco::morocco.svg":{scaleX:1.03,scaleY:1,offsetX:5,offsetY:0,color:"#9d4035",flagFill:"#c1272d"},
   "tunisia::tunisia.svg":{scaleX:1,scaleY:1,offsetX:0,offsetY:0,color:"#8d653d",flagFill:"#e70013"},
-  "saudi::saudi-1938.svg":{scaleX:1,scaleY:1.42,offsetX:-18,offsetY:0,color:"#9b713e",flagFill:"#006c35"},
-  "israel::israel.svg":{scaleX:1.28,scaleY:.57,offsetX:0,offsetY:-5,color:"#9eb5b7",flagFill:"#ffffff"}
+  "saudi::saudi-1938.svg":{scaleX:.5,scaleY:.5,offsetX:-7,offsetY:0,color:"#9b713e",flagFill:"#006c35"},
+  "israel::israel.svg":{scaleX:1.28,scaleY:.57,offsetX:0,offsetY:-5,color:"#9eb5b7",flagFill:"#ffffff"},
+  "hejaz::hejaz-1917.svg":{scaleX:1.99,scaleY:1,offsetX:-4,offsetY:-39,color:"#9a5a35",flagFill:"#ffffff"}
 });
 const SHARED_POLITIES=new Set(["ottoman","british-empire","french-empire","spanish-empire","italian-empire"]);
 const SHARED_DEFAULT_COLORS={ottoman:"#8eb785","british-empire":"#bf7d87","french-empire":"#5b69b9","spanish-empire":"#b0792f","italian-empire":"#7b4d58"};
