@@ -24,7 +24,8 @@ function ensureBoundaryDebugLoaded(){return loadLazyScript("modules/boundary-deb
 let renderRequestToken=0;
 function renderYear(year){
   const y=Number(year),token=++renderRequestToken;
-  return ensureHistoricalData(y).then(()=>{
+  const flagDefaults=typeof flagDebugFileDefaultsReady==="undefined"?Promise.resolve():flagDebugFileDefaultsReady;
+  return Promise.all([ensureHistoricalData(y),flagDefaults]).then(()=>{
     if(token===renderRequestToken&&Number(dom.year.value)===y)render();
   });
 }
