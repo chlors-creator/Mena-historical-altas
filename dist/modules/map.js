@@ -9,7 +9,9 @@ function historicalStyles(y){
   // years while preserving separate Ottoman and Turkish republican colours.
   countries.forEach((path,index)=>{const polity=polities[index],baseColor=stablePolityColor(polity);path.dataset.polity=polity;path.dataset.basePolityColor=baseColor;path.style.setProperty("--polity-color",sharedColorFor(polity)||baseColor);path.classList.toggle("dependent",dependentIds.includes(path.dataset.id));path.classList.toggle("context",["shammar","najd"].includes(path.dataset.id))});
   const israelPath=countries.find(path=>path.dataset.id==="israel"),configuredIsraelColor=typeof flagDebugSettings==="function"?String(flagDebugSettings("israel",y).color||"").trim():"";
-  if(dom.frontierOverlays)dom.frontierOverlays.style.setProperty("--israel-background-color",configuredIsraelColor||israelPath?.style.getPropertyValue("--polity-color").trim()||stablePolityColor("israel"));
+  const israelColor=configuredIsraelColor||israelPath?.style.getPropertyValue("--polity-color").trim()||stablePolityColor("israel");
+  if(israelPath)israelPath.style.setProperty("--polity-color",israelColor);
+  if(dom.frontierOverlays)dom.frontierOverlays.style.setProperty("--israel-background-color",israelColor);
 }
 function createLabels(){
   dom.labels.innerHTML="";
@@ -183,6 +185,21 @@ function boundaryFeaturesForYear(y){
       // the early cohort. Remove that subpath from the body itself when it is
       // available; the mask below remains the fallback for partial overlaps.
       ottoman.basePath=cleaned;ottoman.path=cleaned;ottoman.cutoutPaths=cuts.map(feature=>feature.path);ottoman.cutoutTransforms=cuts.map(feature=>feature.transform||"");ottoman.cutoutCount=cuts.length;ottoman.source=`${ottoman.source||"CShapes 2.0"} + Ottoman historical cutout mask for ${cuts.map(feature=>feature.id).join("/")}`
+    }
+  }
+  // Bind the user-updated 1886—1912 Ottoman SVG as the complete imperial
+  // outline for that interval. Its SVG already carries the historical
+  // boundary and explicit mask cutouts, so it must replace the CShapes body
+  // after the generic Ottoman cleanup above.
+  const ottomanReference=window.MENA_OTTOMAN_REFERENCE;
+  if(y>=1886&&y<=1912&&ottomanReference?.path){
+    const ottoman=selectedFeatures.find(feature=>feature.id==="turkey");
+    if(ottoman){
+      ottoman.path=ottomanReference.path;ottoman.basePath=ottomanReference.path;
+      ottoman.cutoutPaths=[...(ottomanReference.cutoutPaths||[])];
+      ottoman.cutoutTransforms=[...(ottomanReference.cutoutTransforms||[])];
+      ottoman.cutoutCount=ottoman.cutoutPaths.length;
+      ottoman.source=`${ottomanReference.source||"奥斯曼帝国1886-1912.svg"} · 1886—1912 historical binding`;
     }
   }
   const splitFeatures=selectedFeatures.flatMap(feature=>feature.id==="palestine"&&y>=1949?splitPalestineFeature(feature):[feature]);

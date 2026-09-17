@@ -116,7 +116,7 @@ const POLITY_COLORS={
   tunisia:"#8d653d", "italian-empire":"#7b4d58",libya:"#74763c", "muhammad-ali":"#35678a",
   egypt:"#a65d37", "sudan-sultanates":"#60754c",mahdi:"#6d5680",sudan:"#3f786f",
   "sahrawi-polities":"#99604a", "western-sahara":"#8a4f76",qajar:"#54637b",pahlavi:"#9b713e",
-  iran:"#765c42",saudi:"#4d7c69", "arabian-polities":"#b06f3e",hejaz:"#9a5a35",
+  iran:"#765c42",israel:"#9eb5b7",saudi:"#4d7c69", "arabian-polities":"#b06f3e",hejaz:"#9a5a35",
   shammar:"#99604a", "najd-tribal":"#8d653d",najd:"#3f786f",kuwait:"#516987",
   qatar:"#35706b",uae:"#5d7050", "yemen-north":"#6d5680", "yemen-south":"#7f4f58",
   yemen:"#a04d3f", "yemen-divided":"#a65d37"
