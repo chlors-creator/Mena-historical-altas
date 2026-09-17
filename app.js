@@ -65,7 +65,7 @@ Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill")});
 let selected=null,activeFlagId=null,timer=null,realMode=false,boundaryKey="";
 const BOUNDARY_DEBUG_STORAGE="menaBoundaryDebugV2";
 const boundaryDebugDefaults={scaleX:1,scaleY:1,offsetX:0,offsetY:0,rotation:0,opacity:.72};
-let boundaryDebugTransforms={},boundaryDebugImported=[],boundaryDebugSaved=[],boundaryDebugDrafts={},boundaryDebugTarget="";
+let boundaryDebugTransforms={},boundaryDebugImported=[],boundaryDebugSaved=[],boundaryDebugDrafts={},boundaryDebugTarget="",boundaryDebugGeometryCache={},boundaryDebugFeatureCache={};
 const eraFor=y=>eras.find(e=>y>=e.from&&y<=e.to)||eras.at(-1);const countryEra=(id,y)=>(overrides[id]||[]).find(([a,b])=>y>=a&&y<=b);
 const historicalBoundaryYear=y=>y>=1886&&y<=1999;
 const realBoundaryYear=y=>y>=1886;
@@ -374,7 +374,13 @@ function boundaryFeaturesForYear(y){
   if(!historicalBoundaryYear(y))return window.MENA_2026||[];
   const grouped=new Map();
   const sourceFeatures=y<1924?(window.MENA_HISTORICAL_1886_1923||[]):(window.MENA_HISTORICAL_INTERVALS||[]);
-  const selectedFeatures=annualCohortFeatures(sourceFeatures,y).filter(feature=>!(feature.id==="saudi"&&y<1932));
+  // Work on shallow feature copies. The Ottoman cleanup below annotates the
+  // selected feature with a body path and cutout paths; mutating the shared
+  // CShapes source object would make later yearly comparisons inherit an
+  // earlier year's geometry and could incorrectly merge two SVG periods.
+  const selectedFeatures=annualCohortFeatures(sourceFeatures,y)
+    .filter(feature=>!(feature.id==="saudi"&&y<1932))
+    .map(feature=>({...feature}));
   // Pre-1912 Spanish Morocco and pre-1918 northern Yemen are contextual
   // extensions of the nearest valid GIS cohort, never the modern unified shapes.
   if(y<1912){const spanish=[...(window.MENA_HISTORICAL_1886_1923||[]),...(window.MENA_HISTORICAL_INTERVALS||[])].find(feature=>feature.id==="morocco-spanish");if(spanish)selectedFeatures.push({...spanish,from:y,to:y,source:"CShapes 2.0 contextual extension · Spanish Morocco (pre-1912)"})}
@@ -476,13 +482,88 @@ function buildBoundaryMap(y){
   dom.realCountries=[...dom.realRoot.querySelectorAll("path")];dom.realCountries.forEach(bindCountry);renderFrontierOverlays(y)
 }
 function boundaryDebugReadStore(){try{const value=JSON.parse(localStorage.getItem(BOUNDARY_DEBUG_STORAGE)||"{}");return value&&typeof value==="object"?value:{}}catch{return{}}}
-function boundaryDebugLoadStore(value=boundaryDebugReadStore()){boundaryDebugTransforms=value.transforms&&typeof value.transforms==="object"?value.transforms:{};boundaryDebugImported=Array.isArray(value.imported)?value.imported.filter(item=>item&&Array.isArray(item.paths)):[];boundaryDebugSaved=Array.isArray(value.saved)?value.saved.filter(item=>item&&Array.isArray(item.paths)):[]}
+function boundaryDebugLoadStore(value=boundaryDebugReadStore()){boundaryDebugTransforms=value.transforms&&typeof value.transforms==="object"?value.transforms:{};boundaryDebugImported=Array.isArray(value.imported)?value.imported.filter(item=>item&&Array.isArray(item.paths)):[];boundaryDebugSaved=Array.isArray(value.saved)?value.saved.filter(item=>item&&Array.isArray(item.paths)):[];boundaryDebugNormalizeSavedPeriods()}
 function boundaryDebugStoreValue(){return{version:2,updatedAt:new Date().toISOString(),year:Number(dom.year.value),transforms:boundaryDebugTransforms,imported:boundaryDebugImported,saved:boundaryDebugSaved}}
 function boundaryDebugPersist(){try{localStorage.setItem(BOUNDARY_DEBUG_STORAGE,JSON.stringify(boundaryDebugStoreValue()))}catch{return false}return true}
 function boundaryDebugId(prefix="boundary"){return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`}
 function boundaryDebugTargetMeta(value=boundaryDebugTarget){const [type,...rest]=String(value||"").split(":");const id=rest.join(":");return type&&id?{type,id,value}:null}
 function boundaryDebugItemFor(target){if(!target)return null;if(target.type==="imported")return boundaryDebugImported.find(item=>item.key===target.id)||null;if(target.type==="saved")return boundaryDebugSaved.find(item=>item.key===target.id)||null;return null}
 function boundaryDebugStorageKey(target,y=Number(dom.year.value)){return target?.type==="current"?`${y}::${target.id}`:target?.id||""}
+// The filename range must describe an unchanged SVG geometry, not merely a
+// formal-name interval. CShapes has annual cohorts and the Ottoman outline in
+// particular changes around 1913 and 1918, so compare exact path data for each
+// adjacent year before creating a shared period.
+function boundaryDebugCanonicalId(id,y){if(id==="ottoman")return y<=1922?"ottoman":null;return id==="turkey"&&y<=1922?"ottoman":id}
+function boundaryDebugSourceId(canonical){return canonical==="ottoman"?"turkey":canonical}
+function boundaryDebugFeaturesForYear(y){if(!boundaryDebugFeatureCache[y])boundaryDebugFeatureCache[y]=y>=1886?boundaryFeaturesForYear(y):null;return boundaryDebugFeatureCache[y]||[]}
+function boundaryDebugPathRecordsForYear(id,y){
+  const canonical=boundaryDebugCanonicalId(id,y);
+  if(!canonical)return[];
+  const records=[];
+  if(y>=1886){
+    boundaryDebugFeaturesForYear(y).forEach(feature=>{
+      const logicalId=feature.id==="turkey"&&y<=1922?"ottoman":feature.id;
+      if(logicalId!==canonical||!feature.path)return;
+      records.push({
+        id:logicalId,
+        d:feature.path,
+        fillRule:logicalId==="ottoman"?"evenodd":feature.source?.includes("extension")?"nonzero":"evenodd",
+        cutoutPaths:Array.isArray(feature.cutoutPaths)?[...feature.cutoutPaths]:[]
+      });
+    });
+  }else{
+    const sourceId=boundaryDebugSourceId(canonical);
+    dom.schematicCountries.filter(path=>path.dataset.id===sourceId).forEach((path,index)=>records.push({
+      id:canonical,
+      d:path.getAttribute("d")||"",
+      fillRule:path.getAttribute("fill-rule")||"nonzero",
+      cutoutPaths:[]
+    }));
+  }
+  return records.filter(record=>record.d);
+}
+function boundaryDebugPathSignature(records){return JSON.stringify(records.map(record=>({id:record.id,d:record.d,fillRule:record.fillRule||"nonzero",cutoutPaths:record.cutoutPaths||[]})))}
+function boundaryDebugGeometryForYear(id,y){
+  const canonical=boundaryDebugCanonicalId(id,y);
+  if(!canonical)return{canonical:null,records:[],signature:""};
+  const key=`${y}:${canonical}`;
+  if(boundaryDebugGeometryCache[key])return boundaryDebugGeometryCache[key];
+  const records=boundaryDebugPathRecordsForYear(canonical,y),value={canonical,records,signature:records.length?boundaryDebugPathSignature(records):""};
+  boundaryDebugGeometryCache[key]=value;
+  return value;
+}
+function boundaryDebugNameAt(canonical,y){
+  const periods=window.MENA_FORMAL_NAMES?.[canonical]||[],hit=periods.find(([from,to])=>y>=from&&y<=to);
+  if(hit)return hit[2];
+  const fallback=countryEra(canonical,y);
+  return fallback?.[2]||meta[canonical]?.[0]||canonical;
+}
+function boundaryDebugPeriodFor(id,y){
+  const canonical=boundaryDebugCanonicalId(id,y),year=Number(y);
+  if(!canonical)return{name:id,from:year,to:year};
+  const current=boundaryDebugGeometryForYear(canonical,year),signature=current.signature;
+  if(!signature)return{name:boundaryDebugNameAt(canonical,year),from:year,to:year};
+  let from=year,to=year;
+  for(let candidate=year-1;candidate>=1797;candidate--){
+    if(boundaryDebugCanonicalId(id,candidate)!==canonical)break;
+    const previous=boundaryDebugGeometryForYear(canonical,candidate);
+    if(!previous.signature||previous.signature!==signature)break;
+    from=candidate;
+  }
+  for(let candidate=year+1;candidate<=2026;candidate++){
+    if(boundaryDebugCanonicalId(id,candidate)!==canonical)break;
+    const next=boundaryDebugGeometryForYear(canonical,candidate);
+    if(!next.signature||next.signature!==signature)break;
+    to=candidate;
+  }
+  // Use the first year's formal name as the stable stem when a name change
+  // happens without a geometry change. Geometry, not nomenclature, owns the
+  // shared-file interval.
+  return{name:boundaryDebugNameAt(canonical,from),from,to}
+}
+function boundaryDebugNormalizeSavedPeriods(){boundaryDebugSaved.forEach(item=>{if(!item?.year||String(item.id||"").startsWith("snapshot-"))return;const id=item.paths?.find(record=>record?.id)?.id;if(!id)return;const period=boundaryDebugPeriodFor(id,Number(item.year));if(period?.from===undefined)return;item.period=period;item.name=period.name})}
+function boundaryDebugPeriodLabel(period){return period&&period.from!==undefined?`${period.name} ${period.from}-${period.to}`:period?.name||"疆域"}
+function boundaryDebugFileStem(item){const period=item?.period;if(period&&period.from!==undefined)return`${period.name}${period.from}-${period.to}`;return`${item?.name||"疆域"}${item?.year??Number(dom.year.value)}`}
 function boundaryDebugSettings(target,y=Number(dom.year.value)){const item=boundaryDebugItemFor(target);return{...boundaryDebugDefaults,...(item?.transform||{}),...(boundaryDebugTransforms[boundaryDebugStorageKey(target,y)]||{}),...(boundaryDebugDrafts[target?.value]||{})}}
 function boundaryDebugReadForm(){return{scaleX:Number(dom.boundaryDebugScaleX.value)||1,scaleY:Number(dom.boundaryDebugScaleY.value)||1,offsetX:Number(dom.boundaryDebugOffsetX.value)||0,offsetY:Number(dom.boundaryDebugOffsetY.value)||0,rotation:Number(dom.boundaryDebugRotation.value)||0,opacity:Number(dom.boundaryDebugOpacity.value)||.72}}
 function boundaryDebugWriteForm(settings){const value={...boundaryDebugDefaults,...settings};dom.boundaryDebugScaleX.value=value.scaleX;dom.boundaryDebugScaleY.value=value.scaleY;dom.boundaryDebugOffsetX.value=value.offsetX;dom.boundaryDebugOffsetY.value=value.offsetY;dom.boundaryDebugRotation.value=value.rotation;dom.boundaryDebugOpacity.value=value.opacity;boundaryDebugUpdateOutputs()}
@@ -496,17 +577,17 @@ function boundaryDebugFeatureItem(feature,index,prefix="imported"){const props=f
 function boundaryDebugParseSvg(text){const doc=new DOMParser().parseFromString(text,"image/svg+xml"),items=[];[...doc.querySelectorAll("path[d]")].forEach((path,index)=>{const record={d:path.getAttribute("d")||"",fillRule:path.getAttribute("fill-rule")||"nonzero"},name=path.getAttribute("data-id")||path.getAttribute("id")||path.getAttribute("aria-label")||`SVG 路径 ${index+1}`;if(!record.d)return;const existing=items.find(item=>item.name===name);if(existing)existing.paths.push(record);else items.push({key:boundaryDebugId("imported"),id:`svg-${index+1}`,name,year:null,source:"SVG 路径导入",paths:[record]})});return items}
 function boundaryDebugParseJson(value){if(value?.version&&Array.isArray(value.imported)){boundaryDebugLoadStore(value);return{config:true,items:[]}}if(["Polygon","MultiPolygon","GeometryCollection"].includes(value?.type))return{config:false,items:[boundaryDebugFeatureItem({type:"Feature",properties:{},geometry:value},0,"geometry")].filter(Boolean)};const features=value?.type==="FeatureCollection"?value.features:value?.type==="Feature"?[value]:null;if(Array.isArray(features))return{config:false,items:features.map((feature,index)=>boundaryDebugFeatureItem(feature,index)).filter(Boolean)};const records=Array.isArray(value)?value:[value];const items=records.map((item,index)=>{const paths=Array.isArray(item?.paths)?item.paths.map(path=>typeof path==="string"?{d:path}:{d:path?.d||path?.path,fillRule:path?.fillRule||"nonzero"}).filter(path=>path.d):(item?.path||item?.d)?[{d:item.path||item.d,fillRule:item.fillRule||"nonzero"}]:[];return paths.length?{key:boundaryDebugId("imported"),id:String(item.id||`json-${index+1}`),name:String(item.name||item.name_zh||item.id||`JSON 路径 ${index+1}`),year:item.year??null,source:String(item.source||"JSON 路径导入"),paths}:null}).filter(Boolean);return{config:false,items}}
 function boundaryDebugParseImport(text,fileName){const extension=String(fileName||"").toLowerCase().split(".").pop();if(extension==="svg"||/\<svg[\s\S]*\<path/i.test(text))return{config:false,items:boundaryDebugParseSvg(text)};const source=extension==="js"?text.slice(text.indexOf("["),text.lastIndexOf("]")+1):text;try{return boundaryDebugParseJson(JSON.parse(source))}catch(error){throw new Error("文件不是有效的 SVG、GeoJSON、JSON 或地图数据 JS 文件")}}
-function boundaryDebugPopulateTargets(preserve=true){const previous=preserve?(dom.boundaryDebugTarget.value||boundaryDebugTarget):"",y=Number(dom.year.value);dom.boundaryDebugTarget.innerHTML="";const addGroup=(label,entries)=>{if(!entries.length)return;const group=document.createElement("optgroup");group.label=label;entries.forEach(entry=>{const option=document.createElement("option");option.value=entry.value;option.textContent=entry.label;group.append(option)});dom.boundaryDebugTarget.append(group)};const currentIds=[...new Set(activeCountries().map(path=>path.dataset.id))];addGroup(`当前地图 · ${y}`,currentIds.map(id=>({value:`current:${id}`,label:id==="ottoman"?"奥斯曼帝国":meta[id]?.[0]||id})));addGroup("已导入疆域",boundaryDebugImported.map(item=>({value:`imported:${item.key}`,label:`${item.name||item.id} · 导入`})));addGroup("已保存疆域",boundaryDebugSaved.map(item=>({value:`saved:${item.key}`,label:`${item.name||item.id} · 快照`})));const option=[...dom.boundaryDebugTarget.options].find(item=>item.value===previous)||[...dom.boundaryDebugTarget.options].find(item=>item.value===boundaryDebugTarget)||dom.boundaryDebugTarget.options[0];if(option){dom.boundaryDebugTarget.value=option.value;boundaryDebugTarget=option.value;boundaryDebugLoadForm()}}
-function boundaryDebugLoadForm(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target){dom.boundaryDebugCurrent.textContent=`当前年份：${dom.year.value} · 没有可调试对象`;return}boundaryDebugTarget=target.value;boundaryDebugWriteForm(boundaryDebugSettings(target));const item=boundaryDebugItemFor(target),name=target.type==="current"?(target.id==="ottoman"?"奥斯曼帝国":meta[target.id]?.[0]||target.id):item?.name||item?.id||target.id;dom.boundaryDebugCurrent.textContent=`${dom.year.value} · ${name} · ${target.type==="current"?"现有疆域副本":"调试预览"}`;boundaryDebugRenderLayer(Number(dom.year.value))}
+function boundaryDebugPopulateTargets(preserve=true){const previous=preserve?(dom.boundaryDebugTarget.value||boundaryDebugTarget):"",y=Number(dom.year.value);dom.boundaryDebugTarget.innerHTML="";const addGroup=(label,entries)=>{if(!entries.length)return;const group=document.createElement("optgroup");group.label=label;entries.forEach(entry=>{const option=document.createElement("option");option.value=entry.value;option.textContent=entry.label;group.append(option)});dom.boundaryDebugTarget.append(group)};const currentIds=[...new Set(activeCountries().map(path=>path.dataset.id))];addGroup(`当前地图 · ${y}`,currentIds.map(id=>{const period=boundaryDebugPeriodFor(id,y);return{value:`current:${id}`,label:boundaryDebugPeriodLabel(period)}}));addGroup("已导入疆域",boundaryDebugImported.map(item=>({value:`imported:${item.key}`,label:`${item.name||item.id} · 导入`})));addGroup("已保存疆域",boundaryDebugSaved.map(item=>({value:`saved:${item.key}`,label:`${item.name||item.id} · 快照`})));const option=[...dom.boundaryDebugTarget.options].find(item=>item.value===previous)||[...dom.boundaryDebugTarget.options].find(item=>item.value===boundaryDebugTarget)||dom.boundaryDebugTarget.options[0];if(option){dom.boundaryDebugTarget.value=option.value;boundaryDebugTarget=option.value;boundaryDebugLoadForm()}}
+function boundaryDebugLoadForm(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target){dom.boundaryDebugCurrent.textContent=`当前年份：${dom.year.value} · 没有可调试对象`;return}boundaryDebugTarget=target.value;boundaryDebugWriteForm(boundaryDebugSettings(target));const item=boundaryDebugItemFor(target),period=target.type==="current"?boundaryDebugPeriodFor(target.id,Number(dom.year.value)):item?.period,name=target.type==="current"?boundaryDebugPeriodLabel(period):item?.name||item?.id||target.id;dom.boundaryDebugCurrent.textContent=`${target.type==="current"?boundaryDebugPeriodLabel(period):name} · ${target.type==="current"?"现有疆域副本":"调试预览"}`;boundaryDebugRenderLayer(Number(dom.year.value))}
 function boundaryDebugRefreshDraft(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target)return;boundaryDebugTarget=target.value;boundaryDebugDrafts[target.value]=boundaryDebugReadForm();boundaryDebugUpdateOutputs();boundaryDebugRenderLayer(Number(dom.year.value))}
 function boundaryDebugCommit(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target)return false;boundaryDebugTransforms[boundaryDebugStorageKey(target)]=boundaryDebugReadForm();boundaryDebugDrafts[target.value]={...boundaryDebugTransforms[boundaryDebugStorageKey(target)]};const ok=boundaryDebugPersist();boundaryDebugRenderLayer(Number(dom.year.value));return ok}
-function boundaryDebugCapturePaths(elements){return elements.map((element,index)=>({d:element.getAttribute("d")||"",fillRule:element.getAttribute("fill-rule")||"nonzero",id:element.dataset.id||`part-${index}`})).filter(record=>record.d)}
-function boundaryDebugSaveSnapshot(all=false){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget),elements=all?activeCountries():target?.type==="current"?activeCountries().filter(path=>path.dataset.id===target.id):[];if(!elements.length){dom.boundaryDebugStatus.textContent="请选择当前地图中的疆域后再保存。";return}const y=Number(dom.year.value),item={key:boundaryDebugId("saved"),id:all?`snapshot-${y}`:`${elements[0].dataset.id}-${y}`,name:all?`${y} 年全部现有疆域`:`${y} 年 · ${elements[0].dataset.id}`,year:y,source:"现有地图 SVG 快照",transform:target?.type==="current"?{...boundaryDebugSettings(target,y)}:{...boundaryDebugDefaults},paths:boundaryDebugCapturePaths(elements)};boundaryDebugSaved.push(item);boundaryDebugTarget=`saved:${item.key}`;boundaryDebugPersist();boundaryDebugPopulateTargets(false);dom.boundaryDebugStatus.textContent=`已保存 ${item.name}；原始地图疆域保持不变。`}
+function boundaryDebugCapturePaths(elements){return elements.map((element,index)=>({d:element.getAttribute("d")||"",fillRule:element.getAttribute("fill-rule")||"nonzero",id:element.dataset.id||`part-${index}`,cutoutPaths:(()=>{try{const value=JSON.parse(element.dataset.cutoutPaths||"[]");return Array.isArray(value)?value:[]}catch{return[]}})()})).filter(record=>record.d)}
+function boundaryDebugSaveSnapshot(all=false){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget),elements=all?activeCountries():target?.type==="current"?activeCountries().filter(path=>path.dataset.id===target.id):[];if(!elements.length){dom.boundaryDebugStatus.textContent="请选择当前地图中的疆域后再保存。";return}const y=Number(dom.year.value),period=all?null:boundaryDebugPeriodFor(elements[0].dataset.id,y),paths=boundaryDebugCapturePaths(elements),transform=target?.type==="current"?{...boundaryDebugSettings(target,y)}:{...boundaryDebugDefaults},existing=!all?boundaryDebugSaved.find(saved=>saved.id===elements[0].dataset.id&&saved.period?.from===period.from&&saved.period?.to===period.to):null;if(existing){existing.name=period.name;existing.period=period;existing.year=y;existing.transform=transform;existing.paths=paths;boundaryDebugTarget=`saved:${existing.key}`;boundaryDebugPersist();boundaryDebugPopulateTargets(false);dom.boundaryDebugStatus.textContent=`已更新共享疆域文件 ${boundaryDebugFileStem(existing)}；同一时期继续使用同一个文件。`;return}const item={key:boundaryDebugId("saved"),id:all?`snapshot-${y}`:`${elements[0].dataset.id}-${y}`,name:all?`${y} 年全部现有疆域`:period?.name||elements[0].dataset.id,period,year:y,source:"现有地图 SVG 快照",transform,paths};boundaryDebugSaved.push(item);boundaryDebugTarget=`saved:${item.key}`;boundaryDebugPersist();boundaryDebugPopulateTargets(false);dom.boundaryDebugStatus.textContent=`已保存 ${period?boundaryDebugPeriodLabel(period):item.name}；原始地图疆域保持不变。`}
 function boundaryDebugAppendItem(item,settings,className){const ns="http://www.w3.org/2000/svg",group=document.createElementNS(ns,"g"),anchor=boundaryDebugPathRecordsBounds(item.paths);group.classList.add(className);group.setAttribute("opacity",String(settings.opacity));group.setAttribute("transform",boundaryDebugTransform(anchor,settings));item.paths.forEach(record=>{const path=document.createElementNS(ns,"path");path.setAttribute("d",record.d);path.setAttribute("fill-rule",record.fillRule||"nonzero");group.append(path)});dom.boundaryDebugLayer.append(group)}
-function boundaryDebugExportTarget(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target)return null;const y=Number(dom.year.value);if(target.type==="current"){const paths=activeCountries().filter(path=>path.dataset.id===target.id).map((path,index)=>({d:path.getAttribute("d")||"",fillRule:path.getAttribute("fill-rule")||"nonzero",id:path.dataset.id||`part-${index}`})).filter(path=>path.d);return paths.length?{paths,name:target.id==="ottoman"?"奥斯曼帝国":meta[target.id]?.[0]||target.id,source:"现有地图 SVG",year:y,settings:boundaryDebugSettings(target,y)}:null}const item=boundaryDebugItemFor(target);return item?.paths?.length?{paths:item.paths,name:item.name||item.id||target.id,source:item.source||"疆域调试对象",year:item.year??y,settings:boundaryDebugSettings(target,y)}:null}
+function boundaryDebugExportTarget(){const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target)return null;const y=Number(dom.year.value);if(target.type==="current"){const paths=boundaryDebugCapturePaths(activeCountries().filter(path=>path.dataset.id===target.id)),period=boundaryDebugPeriodFor(target.id,y);return paths.length?{paths,name:period.name,period,source:"现有地图 SVG",year:y,settings:boundaryDebugSettings(target,y)}:null}const item=boundaryDebugItemFor(target);return item?.paths?.length?{paths:item.paths,name:item.name||item.id||target.id,period:item.period||null,source:item.source||"疆域调试对象",year:item.year??y,settings:boundaryDebugSettings(target,y)}:null}
 function boundaryDebugEscapeXml(value){return String(value).replace(/[&<>"']/g,character=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&apos;"}[character]))}
 function boundaryDebugDownload(content,fileName,type){const url=URL.createObjectURL(new Blob([content],{type})),anchor=document.createElement("a");anchor.href=url;anchor.download=fileName;anchor.style.display="none";document.body.append(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),0)}
-function boundaryDebugExportGeometryForItem(format,item){if(!item){dom.boundaryDebugStatus.textContent="请先选择要导出的疆域。";return}const anchor=boundaryDebugPathRecordsBounds(item.paths),transform=boundaryDebugTransform(anchor,item.settings),safeName=String(item.name).replace(/[\\/:*?"<>|]/g,"-").replace(/\s+/g,"_")||"boundary",year=item.year??Number(dom.year.value);if(format==="svg"){const paths=item.paths.map(record=>`<path data-id="${boundaryDebugEscapeXml(record.id||"")}" d="${boundaryDebugEscapeXml(record.d)}" fill-rule="${boundaryDebugEscapeXml(record.fillRule||"nonzero")}"/>`).join("");const svg=`<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 650"><title>${boundaryDebugEscapeXml(item.name)}</title><g transform="${boundaryDebugEscapeXml(transform)}" opacity="${Number(item.settings.opacity)||.72}" fill="#a43b2f" stroke="#54231d" stroke-width="1.5">${paths}</g></svg>\n`;boundaryDebugDownload(svg,`${safeName}-${year}.svg`,`image/svg+xml;charset=utf-8`);dom.boundaryDebugStatus.textContent="已导出疆域 SVG 文件。";return}const payload={version:1,type:"boundary-paths",name:item.name,year,source:item.source,coordinateSpace:"svg-viewBox",viewBox:[0,0,1080,650],transform:item.settings,paths:item.paths};boundaryDebugDownload(JSON.stringify(payload,null,2),`${safeName}-${year}.json`,`application/json;charset=utf-8`);dom.boundaryDebugStatus.textContent="已导出疆域路径 JSON 文件。"}
+function boundaryDebugExportGeometryForItem(format,item){if(!item){dom.boundaryDebugStatus.textContent="请先选择要导出的疆域。";return}const anchor=boundaryDebugPathRecordsBounds(item.paths),transform=boundaryDebugTransform(anchor,item.settings),safeName=boundaryDebugFileStem(item).replace(/[\\/:*?"<>|]/g,"-").replace(/\s+/g,"_")||"boundary",year=item.year??Number(dom.year.value);if(format==="svg"){const cutouts=item.paths.flatMap(record=>record.cutoutPaths||[]),mask=cutouts.length?`<defs><mask id="boundaryCutoutMask" mask-type="luminance" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1080" height="650"><rect x="0" y="0" width="1080" height="650" fill="white"/>${cutouts.map(path=>`<path d="${boundaryDebugEscapeXml(path)}" fill="black" fill-rule="nonzero"/>`).join("")}</mask></defs>`:"",paths=item.paths.map(record=>`<path data-id="${boundaryDebugEscapeXml(record.id||"")}" d="${boundaryDebugEscapeXml(record.d)}" fill-rule="${boundaryDebugEscapeXml(record.fillRule||"nonzero")}"${record.cutoutPaths?.length?' mask="url(#boundaryCutoutMask)"':''}/>`).join("");const svg=`<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 650"><title>${boundaryDebugEscapeXml(item.name)}</title>${mask}<g transform="${boundaryDebugEscapeXml(transform)}" opacity="${Number(item.settings.opacity)||.72}" fill="#a43b2f" stroke="#54231d" stroke-width="1.5">${paths}</g></svg>\n`;boundaryDebugDownload(svg,`${safeName}.svg`,`image/svg+xml;charset=utf-8`);dom.boundaryDebugStatus.textContent=`已导出 ${safeName}.svg。`;return}const payload={version:1,type:"boundary-paths",name:item.name,period:item.period||null,year,source:item.source,coordinateSpace:"svg-viewBox",viewBox:[0,0,1080,650],transform:item.settings,paths:item.paths};boundaryDebugDownload(JSON.stringify(payload,null,2),`${safeName}.json`,`application/json;charset=utf-8`);dom.boundaryDebugStatus.textContent=`已导出 ${safeName}.json。`}
 function boundaryDebugExportGeometry(format){boundaryDebugExportGeometryForItem(format,boundaryDebugExportTarget())}
 function boundaryDebugExportAllSvg(){const y=Number(dom.year.value),paths=boundaryDebugCapturePaths(activeCountries());if(!paths.length){dom.boundaryDebugStatus.textContent="当前年份没有可导出的疆域。";return}boundaryDebugExportGeometryForItem("svg",{name:`${y} 年全部现有疆域`,year:y,source:"现有地图 SVG",settings:{...boundaryDebugDefaults,opacity:1},paths})}
 function boundaryDebugRenderLayer(y){if(!dom.boundaryDebugLayer)return;dom.boundaryDebugLayer.innerHTML="";const target=boundaryDebugTargetMeta(dom.boundaryDebugTarget?.value||boundaryDebugTarget);if(!target)return;const ns="http://www.w3.org/2000/svg";if(target.type==="current"){const paths=activeCountries().filter(path=>path.dataset.id===target.id);paths.forEach(path=>{const outline=document.createElementNS(ns,"path");outline.classList.add("boundary-debug-reference");outline.setAttribute("d",path.getAttribute("d")||"");outline.setAttribute("fill-rule",path.getAttribute("fill-rule")||"nonzero");dom.boundaryDebugLayer.append(outline)});const hasDraft=Object.keys(boundaryDebugDrafts[target.value]||{}).length>0||Object.prototype.hasOwnProperty.call(boundaryDebugTransforms,boundaryDebugStorageKey(target,y));if(!hasDraft)return;return boundaryDebugAppendItem({paths:paths.map(path=>({d:path.getAttribute("d")||"",fillRule:path.getAttribute("fill-rule")||"nonzero"}))},boundaryDebugSettings(target,y),"boundary-debug-outline")}const item=boundaryDebugItemFor(target);if(item)boundaryDebugAppendItem(item,boundaryDebugSettings(target,y),target.type==="saved"?"boundary-debug-saved":"boundary-debug-outline")}
