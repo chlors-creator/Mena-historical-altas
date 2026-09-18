@@ -1,6 +1,7 @@
 /* Historical boundary selection, SVG map construction, labels, and interactions. */
 function historicalStyles(y){
-  const dependentIds=y<1919?["algeria","tunisia","libya","egypt","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","morocco-spanish","yemen-south"]:y<1962?["algeria","tunisia","morocco","morocco-spanish","western-sahara","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","oman","yemen-north","yemen-south"]:["western-sahara","morocco-spanish","yemen-south"];
+  const dependentIds=y<1919?["algeria","tunisia","libya","egypt","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","yemen-south"]:y<1962?["algeria","tunisia","morocco","western-sahara","sudan","syria","lebanon","palestine","jordan","iraq","kuwait","qatar","uae","oman","yemen-north","yemen-south"]:["western-sahara","yemen-south"];
+  if(y>=1904)dependentIds.push("morocco-spanish");
   const countries=activeCountries(),polities=countries.map(path=>polityAt(path.dataset.id,y));
   if(y>=1949)dependentIds.push("gaza-strip","west-bank");
   // Do not derive colours from the order of paths in a yearly snapshot: that
@@ -114,11 +115,11 @@ function boundaryFeaturesForYear(y){
   // CShapes source object would make later yearly comparisons inherit an
   // earlier year's geometry and could incorrectly merge two SVG periods.
   const selectedFeatures=annualCohortFeatures(sourceFeatures,y)
-    .filter(feature=>!(feature.id==="saudi"&&y<1932))
+    .filter(feature=>!(feature.id==="saudi"&&y<1932)&&!(feature.id==="morocco-spanish"&&y<1904))
     .map(feature=>({...feature}));
   // Pre-1912 Spanish Morocco and pre-1918 northern Yemen are contextual
   // extensions of the nearest valid GIS cohort, never the modern unified shapes.
-  if(y<1912){const spanish=[...(window.MENA_HISTORICAL_1886_1923||[]),...(window.MENA_HISTORICAL_INTERVALS||[])].find(feature=>feature.id==="morocco-spanish");if(spanish)selectedFeatures.push({...spanish,from:y,to:y,source:"CShapes 2.0 contextual extension · Spanish Morocco (pre-1912)"})}
+  if(y>=1904&&y<1912){const spanish=[...(window.MENA_HISTORICAL_1886_1923||[]),...(window.MENA_HISTORICAL_INTERVALS||[])].find(feature=>feature.id==="morocco-spanish");if(spanish)selectedFeatures.push({...spanish,from:y,to:y,source:"CShapes 2.0 contextual extension · Spanish Morocco (1904—1911)"})}
   if(y<1918){const north=[...(window.MENA_HISTORICAL_1886_1923||[]),...(window.MENA_HISTORICAL_INTERVALS||[])].find(feature=>feature.id==="yemen-north");if(north)selectedFeatures.push({...north,from:y,to:y,source:"CShapes 2.0 contextual extension · northern Yemen (pre-1918)"})}
   // Add named Arabian polities for the period before the Kingdom of Saudi Arabia.
   if(y<1932)selectedFeatures.push(...MENA_ARABIAN_CONTEXT.filter(feature=>feature.from<=y&&feature.to>=y));

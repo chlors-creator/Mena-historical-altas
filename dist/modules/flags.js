@@ -66,7 +66,7 @@ const flagAsset=(file,period)=>({path:`${FLAG_DIR}${file}`,file,period,source:fl
 function flagAssetFor(id,y){
   if(id==="ottoman")return flagAsset("ottoman-empire.svg","奥斯曼帝国（至1922）");
   if(id==="turkey")return flagAsset("turkey.svg","土耳其共和国（1923—）");
-  if(id==="morocco-spanish")return y<1956?flagAsset("spain.svg","西班牙保护地（至1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
+  if(id==="morocco-spanish")return y<1904?flagAsset("morocco-alaouite.svg","1904年前不存在西属摩洛哥"):y<1956?flagAsset("spain.svg","西班牙保护地（1904—1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
   if(id==="morocco")return y<1912?flagAsset("morocco-alaouite.svg","摩洛哥阿拉维苏丹国（至1912）"):y<1956?flagAsset("france.svg","法属摩洛哥保护国（1912—1956）"):flagAsset("morocco.svg","摩洛哥王国（1956—）");
   if(id==="golan-heights")return y<1967?flagAsset(y<1946?"syria-1932.svg":"syria.svg","叙利亚戈兰高地（至1966）"):flagAsset("israel.svg","以色列实际控制戈兰高地（1967—）");
   if(id==="sinai-peninsula")return y>=1968&&y<=1979?flagAsset("israel.svg","以色列占领西奈半岛（1968—1979）"):flagAsset("egypt.svg","埃及西奈半岛");
@@ -173,7 +173,7 @@ function setHoverState(id,on){if(timer)return;const locked=selected===id,path=ac
 function polityAt(id,y){
   if(id==="ottoman")return "ottoman";
   if(id==="turkey")return "turkey";
-  if(id==="morocco-spanish")return y<1956?"spanish-empire":"morocco";
+  if(id==="morocco-spanish")return y<1904?"morocco":y<1956?"spanish-empire":"morocco";
   if(["syria","lebanon","palestine","jordan","iraq"].includes(id)&&y<=1917)return"ottoman";
   if(id==="syria"||id==="lebanon")return y<=1945?"french-empire":id;
   if(id==="gaza-strip")return y<1967?"egypt":y<1988?"israel":y<2007?"palestine":"gaza-hamas";
