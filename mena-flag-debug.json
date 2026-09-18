@@ -146,13 +146,13 @@
     "color": "#9b713e",
     "flagFill": "#ffffff"
   },
-  "lebanon::lebanon.svg": {
+  "sudan::uk.svg": {
     "scaleX": 1,
     "scaleY": 1,
     "offsetX": 0,
     "offsetY": 0,
     "rotation": 0,
-    "color": "#e2c660",
-    "flagFill": "#35678a"
+    "color": "#bf7d87",
+    "flagFill": "#012169"
   }
 }
