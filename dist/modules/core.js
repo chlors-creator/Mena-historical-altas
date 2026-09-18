@@ -85,6 +85,47 @@ const rulingGroups={
 Object.assign(rulingGroups,{palestine:[[1797,1917,"奥斯曼总督"],[1918,1948,"英国委任统治当局"],[1949,1993,"巴解组织／法塔赫"],[1994,2005,"法塔赫／巴勒斯坦民族权力机构"],[2006,2006,"哈马斯胜选后的联合政府／法塔赫总统体系"],[2007,2026,"法塔赫（西岸）／哈马斯（加沙）分治"]],"gaza-strip":[[1949,1966,"埃及军事管理当局"],[1967,1987,"以色列军事占领当局"],[2007,2026,"哈马斯（加沙事实当局）"]],"west-bank":[[1949,1966,"约旦哈希姆王室／约旦政府"],[1967,1987,"以色列军事占领当局"],[2007,2026,"法塔赫／巴勒斯坦民族权力机构"]]});
 const sidebarEntityAt=(id,y)=>(["gaza-strip","west-bank"].includes(id)&&y>=1988&&y<=2006)?"palestine":id;
 const rulingGroupAt=(id,y)=>{const detailId=sidebarEntityAt(id,y),hit=(rulingGroups[detailId]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||"地方统治集团"};
+// The sidebar intentionally exposes one of five project-wide polity labels.
+// For colonial and mandate periods, the label follows the governing authority
+// because the local territory did not yet have a separate sovereign regime.
+const polityTypes={
+  ottoman:[[1797,1922,"君主制"]],
+  turkey:[[1923,2017,"议会共和制"],[2018,2026,"总统共和制"]],
+  morocco:[[1797,2026,"君主制"]],
+  "morocco-spanish":[[1886,1930,"君主制"],[1931,1938,"议会共和制"],[1939,1955,"法西斯体制"],[1956,2026,"君主制"]],
+  "western-sahara":[[1797,1883,"君主制"],[1884,1930,"君主制"],[1931,1938,"议会共和制"],[1939,1975,"法西斯体制"],[1976,2026,"总统共和制"]],
+  algeria:[[1797,1829,"君主制"],[1830,1940,"议会共和制"],[1941,1944,"法西斯体制"],[1945,1961,"议会共和制"],[1962,2026,"总统共和制"]],
+  tunisia:[[1797,1880,"君主制"],[1881,1940,"议会共和制"],[1941,1944,"法西斯体制"],[1945,1956,"议会共和制"],[1957,2026,"总统共和制"]],
+  libya:[[1797,1911,"君主制"],[1912,1921,"君主制"],[1922,1943,"法西斯体制"],[1943,1950,"议会共和制"],[1951,1969,"君主制"],[1969,1976,"总统共和制"],[1977,2011,"社会主义体制"],[2012,2026,"总统共和制"]],
+  egypt:[[1797,1952,"君主制"],[1953,2026,"总统共和制"]],
+  sudan:[[1797,1955,"君主制"],[1956,1958,"议会共和制"],[1959,1963,"总统共和制"],[1964,1969,"议会共和制"],[1970,2026,"总统共和制"]],
+  syria:[[1797,1917,"君主制"],[1918,1945,"议会共和制"],[1946,1957,"议会共和制"],[1958,1961,"总统共和制"],[1962,1962,"议会共和制"],[1963,2026,"总统共和制"]],
+  lebanon:[[1797,1917,"君主制"],[1918,1919,"议会共和制"],[1920,2026,"议会共和制"]],
+  israel:[[1948,2026,"议会共和制"]],
+  palestine:[[1797,1917,"君主制"],[1918,1948,"君主制"],[1949,2026,"总统共和制"]],
+  "gaza-strip":[[1949,1952,"君主制"],[1953,1966,"总统共和制"],[1967,1987,"议会共和制"],[2007,2026,"总统共和制"]],
+  "west-bank":[[1949,1966,"君主制"],[1967,1987,"议会共和制"],[2007,2026,"总统共和制"]],
+  jordan:[[1797,2026,"君主制"]],
+  iraq:[[1797,1958,"君主制"],[1958,2026,"总统共和制"]],
+  iran:[[1797,1979,"君主制"],[1979,2026,"总统共和制"]],
+  kuwait:[[1797,2026,"君主制"]],
+  saudi:[[1797,2026,"君主制"]],
+  hejaz:[[1886,1925,"君主制"],[1926,2026,"君主制"]],
+  shammar:[[1886,1921,"君主制"],[1922,2026,"君主制"]],
+  najd:[[1886,1931,"君主制"],[1932,2026,"君主制"]],
+  qatar:[[1797,2026,"君主制"]],
+  uae:[[1797,2026,"君主制"]],
+  oman:[[1797,2026,"君主制"]],
+  "yemen-north":[[1797,1962,"君主制"],[1962,2026,"总统共和制"]],
+  "yemen-south":[[1886,1967,"君主制"],[1967,1990,"社会主义体制"],[1990,2026,"总统共和制"]],
+  yemen:[[1990,2026,"总统共和制"]],
+  bahrain:[[1797,2026,"君主制"]],
+  "golan-heights":[[1797,1917,"君主制"],[1918,1945,"议会共和制"],[1946,1966,"总统共和制"],[1967,2026,"议会共和制"]],
+  "sinai-peninsula":[[1797,1952,"君主制"],[1953,1955,"总统共和制"],[1956,1957,"议会共和制"],[1958,1967,"总统共和制"],[1968,1979,"议会共和制"],[1980,2026,"总统共和制"]],
+  "arabian-dispute":[[1886,1925,"君主制"],[1926,2026,"君主制"]],
+  "saudi-yemen-dispute":[[1932,2026,"君主制"]]
+};
+const polityTypeAt=(id,y)=>{const detailId=sidebarEntityAt(id,y),hit=(polityTypes[detailId]||polityTypes[id]||[]).find(([from,to])=>y>=from&&y<=to);return hit?.[2]||"总统共和制"};
 const $=s=>document.querySelector(s),dom={year:$("#yearRange"),yearText:$("#yearText"),play:$("#playButton"),title:$("#mapTitle"),selectedLabel:$("#selectedLabel"),map:$("#menaMap"),schematicRoot:$("#countries"),realRoot:$("#realCountries"),schematicCountries:[...document.querySelectorAll("#countries path")],realCountries:[],labels:$("#labels"),regionLines:$("#regionLines"),frontierOverlays:$("#frontierOverlays"),historyConnectors:$("#historyConnectors"),panelKicker:$("#panelKicker"),polityName:$("#polityName"),polityNative:$("#polityNative"),badge:$("#eraBadge"),facts:$("#facts"),summaryHeading:$("#summaryHeading"),summary:$("#summary"),eventList:$("#eventList"),eventCount:$("#eventCount"),source:$("#boundarySource"),overview:$("#overviewButton"),brand:$("#brandButton"),about:$("#aboutButton"),dialog:$("#aboutDialog"),close:$("#dialogClose"),confirm:$("#dialogConfirm"),jump:$("#jumpButton"),flagDebugButton:$("#flagDebugButton"),flagDebugDialog:$("#flagDebugDialog"),flagDebugClose:$("#flagDebugClose"),flagDebugScaleX:$("#flagDebugScaleX"),flagDebugScaleY:$("#flagDebugScaleY"),flagDebugOffsetX:$("#flagDebugOffsetX"),flagDebugOffsetY:$("#flagDebugOffsetY"),flagDebugRotation:$("#flagDebugRotation"),flagDebugColor:$("#flagDebugColor"),flagDebugSave:$("#flagDebugSave"),flagDebugSaveDefault:$("#flagDebugSaveDefault"),flagDebugReset:$("#flagDebugReset"),flagDebugExport:$("#flagDebugExport"),flagDebugStatus:$("#flagDebugStatus"),flagDebugCurrent:$("#flagDebugCurrent"),flagDebugPreview:$("#flagDebugPreview"),boundaryDebugLayer:$("#boundaryDebugLayer"),boundaryDebugButton:$("#boundaryDebugButton"),boundaryDebugDialog:$("#boundaryDebugDialog"),boundaryDebugClose:$("#boundaryDebugClose"),boundaryDebugChooseFile:$("#boundaryDebugChooseFile"),boundaryDebugFile:$("#boundaryDebugFile"),boundaryDebugImport:$("#boundaryDebugImport"),boundaryDebugConfigImportButton:$("#boundaryDebugConfigImportButton"),boundaryDebugConfigFile:$("#boundaryDebugConfigFile"),boundaryDebugTarget:$("#boundaryDebugTarget"),boundaryDebugCurrent:$("#boundaryDebugCurrent"),boundaryDebugScaleX:$("#boundaryDebugScaleX"),boundaryDebugScaleXNumber:$("#boundaryDebugScaleXNumber"),boundaryDebugScaleY:$("#boundaryDebugScaleY"),boundaryDebugScaleYNumber:$("#boundaryDebugScaleYNumber"),boundaryDebugOffsetX:$("#boundaryDebugOffsetX"),boundaryDebugOffsetXNumber:$("#boundaryDebugOffsetXNumber"),boundaryDebugOffsetY:$("#boundaryDebugOffsetY"),boundaryDebugOffsetYNumber:$("#boundaryDebugOffsetYNumber"),boundaryDebugRotation:$("#boundaryDebugRotation"),boundaryDebugRotationNumber:$("#boundaryDebugRotationNumber"),boundaryDebugOpacity:$("#boundaryDebugOpacity"),boundaryDebugOpacityNumber:$("#boundaryDebugOpacityNumber"),boundaryDebugSave:$("#boundaryDebugSave"),boundaryDebugSaveDefault:$("#boundaryDebugSaveDefault"),boundaryDebugReset:$("#boundaryDebugReset"),boundaryDebugDelete:$("#boundaryDebugDelete"),boundaryDebugExportSvg:$("#boundaryDebugExportSvg"),boundaryDebugExportPaths:$("#boundaryDebugExportPaths"),boundaryDebugExportAllSvg:$("#boundaryDebugExportAllSvg"),boundaryDebugExport:$("#boundaryDebugExport"),boundaryDebugStatus:$("#boundaryDebugStatus")};
 Object.assign(dom,{mapStage:$("#mapStage"),flagDebugFill:$("#flagDebugFill")});
 Object.assign(dom,{flagLayer:$("#flagLayer")});
@@ -106,6 +147,22 @@ function clearMapState(){activeFlagId=null;dom.map.setAttribute("viewBox","0 0 1
 const _setMapModeWithFrontierOverlay=setMapMode;
 setMapMode=function(y){_setMapModeWithFrontierOverlay(y);renderFrontierOverlays(y)};
  function render(){const y=+dom.year.value,e=eraFor(y),visibleEvents=selected?eventsFor(selected,y):e.events;setMapMode(y);dom.title.textContent=realMode?`${y}年中东与北非国家边界`:e.map;dom.yearText.textContent=y;dom.year.style.setProperty("--progress",`${(y-1797)/229*100}%`);if(!selected){dom.summaryHeading.textContent="历史概述";dom.selectedLabel.textContent="区域总览";dom.panelKicker.textContent=`${y} · REGIONAL OVERVIEW`;dom.polityName.textContent=e.title;dom.polityNative.textContent=e.native;dom.badge.textContent=e.badge;dom.summary.textContent=e.summary;dom.facts.innerHTML=`<div><span>区域格局</span><strong>${e.title}</strong></div><div><span>观察年份</span><strong>${y}</strong></div><div><span>地图状态</span><strong>${historicalBoundaryYear(y)?"CShapes 年度边界":realMode?"GIS 国界快照":"年度示意快照"}</strong></div>`}else{const m=meta[selected],o=countryEra(selected,y);dom.summaryHeading.innerHTML="政权概述 <span>REGIME</span>";dom.selectedLabel.textContent=m[0];dom.panelKicker.textContent=`${y} · ${selected.toUpperCase()}`;dom.polityName.textContent=o?.[2]||`${m[0]} · ${e.badge}`;dom.polityNative.textContent=m[0];dom.badge.textContent=e.badge;dom.summary.textContent=o?.[3]||`在${y}年的区域格局中，${m[0]}处于“${e.title}”这一历史阶段。地图使用该年度边界图层展示其空间位置。`;dom.facts.innerHTML=`<div><span>地区</span><strong>${m[0]}</strong></div><div><span>首府／政治中心</span><strong>${o?.[4]||"见该年史料"}</strong></div><div><span>政权性质</span><strong>${o?.[5]||"主权国家／政治实体"}</strong></div>`}dom.eventList.innerHTML=eventCards(visibleEvents);dom.eventCount.textContent=`${visibleEvents.length} 项`;historicalStyles(y);syncFlags(y);if(realMode){if(dom.realRoot.classList.contains("updating"))requestAnimationFrame(()=>{if(realMode&&boundaryKey===boundaryKeyFor(+dom.year.value))dom.realRoot.classList.remove("updating")})}else dom.realRoot.classList.remove("updating")}
+const renderWithPolityFacts=render;
+render=()=>{
+  renderWithPolityFacts();
+  if(!selected)return;
+  const y=Number(dom.year.value),facts=dom.facts.querySelectorAll("div");
+  if(facts[0]){
+    const label=facts[0].querySelector("span"),value=facts[0].querySelector("strong");
+    if(label)label.textContent="执政党／统治集团";
+    if(value)value.textContent=rulingGroupAt(selected,y);
+  }
+  if(facts[2]){
+    const label=facts[2].querySelector("span"),value=facts[2].querySelector("strong");
+    if(label)label.textContent="政权性质";
+    if(value)value.textContent=polityTypeAt(selected,y);
+  }
+};
 const mapColors=["#9d4035","#486f78","#b0792f","#655782","#4f755e","#a05262","#516987","#8d653d","#35706b","#7b4d58","#74763c","#35678a","#a65d37","#5d7050","#8a4f76","#54637b","#9b713e","#3f786f","#765c42","#6d5680","#99604a","#60754c"];
 // Keep each historical polity on one stable colour across every yearly
 // snapshot.  Ottoman and Turkish republican colours are intentionally

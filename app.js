@@ -44,6 +44,27 @@ function rulingWikiPageAt(id,y,text){
 }
 function setWikiLink(element,text,page){if(!element)return;element.textContent="";const link=document.createElement("a");link.className="wiki-link";link.href=wiki(page);link.target="_blank";link.rel="noopener noreferrer";link.textContent=text;element.append(link)}
 render=()=>{renderBase();const y=+dom.year.value;dom.title.textContent=eraFor(y).map;const status=dom.facts.querySelectorAll("div strong")[2];if(status&&historicalBoundaryYear(y))status.textContent="历史 GIS 年度边界";updateFlagDebugPreview(selected,y);if(dom.flagDebugButton)dom.flagDebugButton.hidden=!selected||!!(typeof disputeRegionForYear==="function"&&disputeRegionForYear(selected,y));activeCountries().forEach(path=>{const label=displayNameAt(path.dataset.id,y);path.setAttribute("aria-label",`查看${label}`)});document.querySelectorAll(".map-labels text[data-for]").forEach(label=>{label.textContent=displayNameAt(label.dataset.for,y)});if(!selected)return;const display=displayNameAt(selected,y),detailId=sidebarEntityAt(selected,y),detail=countryEra(detailId,y),detailMeta=meta[detailId]||meta[selected];if(detailId!==selected&&detail){dom.summary.textContent=detail[3];const facts=dom.facts.querySelectorAll("div");if(facts[1])facts[1].querySelector("strong").textContent=detail[4]||"见该年史料";if(facts[2])facts[2].querySelector("strong").textContent=detail[5]||"主权国家／政治实体"}setWikiLink(dom.selectedLabel,display,wikiCountryPageAt(selected));setWikiLink(dom.polityName,formalNameAt(selected,y),wikiCountryPageAt(selected));setWikiLink(dom.polityNative,detailMeta?.[0]||display,wikiCountryPageAt(selected));const firstFact=dom.facts.querySelector("div strong");if(firstFact){const ruling=rulingGroupAt(selected,y);setWikiLink(firstFact,ruling,rulingWikiPageAt(selected,y,ruling))}};
+// Normalize the selected-country facts after the base renderer and any
+// period-specific sidebar substitution have run. This prevents the first
+// fact from being mislabeled as “地区” and prevents the map-status text from
+// overwriting the polity classification.
+const renderWithSidebarFacts=render;
+render=()=>{
+  renderWithSidebarFacts();
+  if(!selected)return;
+  const y=Number(dom.year.value),facts=dom.facts.querySelectorAll("div");
+  if(facts[0]){
+    const label=facts[0].querySelector("span");
+    if(label)label.textContent="执政党／统治集团";
+  }
+  if(facts[2]){
+    const label=facts[2].querySelector("span"),value=facts[2].querySelector("strong");
+    if(label)label.textContent="政权性质";
+    if(value)value.textContent=polityTypeAt(selected,y);
+  }
+  const firstFact=facts[0]?.querySelector("strong");
+  if(firstFact){const ruling=rulingGroupAt(selected,y);setWikiLink(firstFact,ruling,rulingWikiPageAt(selected,y,ruling))}
+};
  let flagDebugControlBases={};
  function flagDebugControlBase(id,y){return flagDebugControlBases[flagDebugKey(id,y)]||null}
  function flagDebugEffectiveFormValues(id,y,values){const base=flagDebugControlBase(id,y);if(!base)return values;return{...values,scaleX:(Number(base.scaleX)||1)*(Number(values.scaleX)||1),scaleY:(Number(base.scaleY)||1)*(Number(values.scaleY)||1),offsetX:(Number(base.offsetX)||0)+(Number(values.offsetX)||0),offsetY:(Number(base.offsetY)||0)+(Number(values.offsetY)||0),rotation:(Number(base.rotation)||0)+(Number(values.rotation)||0)}}
