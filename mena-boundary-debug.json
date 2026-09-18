@@ -19,7 +19,23 @@
       "rotation": 0,
       "opacity": 0.72
     },
-    "period:1886-1921::shammar": {
+    "period:1886-1919::shammar": {
+      "scaleX": 1,
+      "scaleY": 1,
+      "offsetX": 6,
+      "offsetY": -11,
+      "rotation": 0,
+      "opacity": 0.72
+    },
+    "period:1920-1920::shammar": {
+      "scaleX": 1,
+      "scaleY": 1,
+      "offsetX": 6,
+      "offsetY": -11,
+      "rotation": 0,
+      "opacity": 0.72
+    },
+    "period:1921-1921::shammar": {
       "scaleX": 1,
       "scaleY": 1,
       "offsetX": 6,
@@ -154,13 +170,23 @@
         {
           "name": "贾巴尔·舍迈尔酋长国",
           "from": 1886,
+          "to": 1919
+        },
+        {
+          "name": "贾巴尔·舍迈尔酋长国",
+          "from": 1920,
+          "to": 1920
+        },
+        {
+          "name": "贾巴尔·舍迈尔酋长国",
+          "from": 1921,
           "to": 1921
         }
       ],
       "period": {
         "name": "贾巴尔·舍迈尔酋长国",
         "from": 1886,
-        "to": 1921
+        "to": 1919
       }
     },
     {
@@ -302,12 +328,30 @@
         "to": 1912
       }
     },
-    "period:1886-1921::shammar": {
+    "period:1886-1919::shammar": {
       "type": "imported",
       "key": "imported-1789708193440-7yjod2",
       "period": {
         "name": "贾巴尔·舍迈尔酋长国",
         "from": 1886,
+        "to": 1919
+      }
+    },
+    "period:1920-1920::shammar": {
+      "type": "imported",
+      "key": "imported-1789708193440-7yjod2",
+      "period": {
+        "name": "贾巴尔·舍迈尔酋长国",
+        "from": 1920,
+        "to": 1920
+      }
+    },
+    "period:1921-1921::shammar": {
+      "type": "imported",
+      "key": "imported-1789708193440-7yjod2",
+      "period": {
+        "name": "贾巴尔·舍迈尔酋长国",
+        "from": 1921,
         "to": 1921
       }
     },
