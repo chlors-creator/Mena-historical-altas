@@ -82,6 +82,8 @@ http://localhost:8080/
 - 点击侧栏中的国家名、政权名称、统治集团或历史事件，可打开对应中文维基百科页面。
 - 国家进入详情后，所选地块和国旗保持静止，其他地块仍可悬浮。
 
+侧栏“政权性质”按当年政治与法律形态显示“绝对君主制”或“立宪君主制”。奥斯曼帝国按 1876—1878 年第一宪政时期、1879—1907 年苏丹专制统治、1908—1922 年第二宪政时期切分；埃及、伊朗、伊拉克、约旦、摩洛哥、科威特、利比亚和巴林也按各自宪法或政体转折切分。军事占领、保护国和委任统治优先显示对应的殖民／军事类别，不再被君主制覆盖。
+
 ## 地图与历史边界口径
 
 ### 年度图层
@@ -282,6 +284,10 @@ period:1886-1912::ottoman
 - [联合国 1967 年占领资料](https://www.un.org/unispal/document/auto-insert-203742/)：以色列占领时期口径。
 - [联合国大会关于巴勒斯坦观察员国地位的资料](https://press.un.org/en/2012/ga11317.doc.htm)：巴勒斯坦国相关时期口径。
 - [联合国关于 2007 年加沙分治的资料](https://www.un.org/unispal/document/auto-insert-189444/)：加沙与西岸分治口径。
+- [土耳其大国民议会：奥斯曼议会史](https://www.tbmm.gov.tr/history/)：1876 年宪法、1877 年议会与 1908 年第二宪政时期。
+- [埃及 1923 年宪法文本](https://digitallibrary.un.org/record/860961/files/1953-E.pdf)：埃及王国的世袭代表制与 1923—1952 年宪政时期。
+- [Encyclopaedia Iranica：伊朗宪政革命与宪法](https://www.iranicaonline.org/articles/constitutional-revolution-iii/)：1906—1907 年宪法及其在巴列维时期的法律延续。
+- [约旦宪法法院：宪政史](https://cco.gov.jo/En/Pages/Constitutional_Overview)：1928 年基本法与 1952 年议会世袭君主制宪法。
 - [联合国安理会第 497 号决议](https://www.un.org/unispal/document/auto-insert-180751/)：戈兰高地法理状态说明。
 - [1979 年埃以和平条约](https://peacemaker.un.org/sites/default/files/document/files/2024/05/eg20il790326egypt20and20israel20treaty20of%20peace.pdf)：西奈撤军和主权恢复时间参考。
 - [联合国《塔伊夫条约》登记记录](https://treaties.un.org/Pages/showDetails.aspx?objid=08000002800667a7)：1934 年沙特—也门边界口径。
